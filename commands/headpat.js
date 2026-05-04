@@ -59,7 +59,12 @@ module.exports = {
                     }
 
                     if (headpatattempt.crit) {
-                        data.crit = true;
+                        if (Math.random() < 0.05) {
+                            data.doublecrit = true
+                        }
+                        else {
+                            data.crit = true;
+                        }
                     }
                     else {
                         data.nocrit = true;

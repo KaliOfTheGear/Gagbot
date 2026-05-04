@@ -1801,6 +1801,11 @@ const texts_touch = {
     headpat: {
         self: {
             hit: {
+                doublecrit: {
+                    noboundmiss: [
+                        `USER_TAG focuses USER_THEIR breath and places USER_THEIR hand on USER_THEIR waist, as if to unsheathe and perform a Middare Patsugekka on USER_THEMSELF, critting *twice* in one swing!`
+                    ]
+                },
                 crit: {
                     // This is the only thing that can occur on hit
                     noboundmiss: [
@@ -1850,6 +1855,11 @@ const texts_touch = {
         },
         other: {
             hit: {
+                doublecrit: {
+                    noboundmiss: [
+                        `USER_TAG focuses USER_THEIR breath and places USER_THEIR hand on USER_THEIR waist, as if to unsheathe and perform a Middare Patsugekka on TARGET_TAG, critting *twice* on TARGET_THEIR head in one swing!`
+                    ]
+                },
                 crit: {
                     // This is the only thing that can occur on hit
                     noboundmiss: [
