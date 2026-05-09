@@ -259,14 +259,6 @@ module.exports = {
             let punishmentarr = [];
             punishwordsseparated.forEach((w) => {
                 punishmentarr.push(w)
-                /*if (w.startsWith("/") && w.endsWith("/")) {
-                    // This is a regexp, truncate these slashes and use i 
-                    punishmentarr.push(new RegExp(w.slice(1,-1), "i"))
-                }
-                else {
-                    // This is a string, no cutting necessary
-                    punishmentarr.push(new RegExp(w, "i"))
-                }*/
             })
             setOption(interaction.user.id, optionparts[3], punishmentarr);
             await interaction.reply({ content: `Updated your punishment words to the following:\n- ${punishwordsseparated.join("\n- ")}`, flags: MessageFlags.Ephemeral });
@@ -299,6 +291,22 @@ module.exports = {
 				delete process.recentinteraction[interaction.user.id];
 			}
 		}
+        if (optionparts[3] == "forbiddengagpunishwords") {
+            choiceinput = interaction.fields.getTextInputValue("choiceinput");
+            let punishwordsseparated = choiceinput.split(",")
+            let punishmentarr = [];
+            punishwordsseparated.forEach((w) => {
+                punishmentarr.push(w)
+            })
+            setOption(interaction.user.id, optionparts[3], punishmentarr);
+            await interaction.reply({ content: `Updated your Forbidden Gag words to the following:\n- ${punishwordsseparated.join("\n- ")}`, flags: MessageFlags.Ephemeral });
+			if (process.recentinteraction) {
+				if (process.recentinteraction[interaction.user.id]?.timestamp + 895000 > performance.now()) {
+					await process.recentinteraction[interaction.user.id].interaction.editReply(await generateConfigModal(process.recentinteraction[interaction.user.id].interaction, optionparts[2], optionparts[4]));
+				}
+				delete process.recentinteraction[interaction.user.id];
+			}
+        }
         if (optionparts[3] == "profilelink") {
             choiceinput = interaction.fields.getTextInputValue("choiceinput");
             if (choiceinput && choiceinput.length > 0) {

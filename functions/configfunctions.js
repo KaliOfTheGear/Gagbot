@@ -1137,6 +1137,39 @@ const configoptions = {
 				return false;
 			},
 		},
+        forbiddengagpunishwords: {
+			name: "Forbidden Gag Forbidden Words",
+			desc: "Gag the user on these words",
+			descmodal: "What words to gag the user when saying:",
+			choices: [
+				{
+					name: "Set Forbidden Words",
+					helptext: "Forbidden words set to: ",
+					helptextnone: "*No forbidden words*",
+					select_function: (userID) => {
+						return false;
+					},
+					value: "None",
+					style: ButtonStyle.Primary,
+				},
+			],
+			customtext: (userID) => {
+				return `person,/h+u+m+a+n+/`;
+			},
+			placeholder: (userID) => {
+				return `person,/h+u+m+a+n+/,grin`;
+			},
+            textvaluedisplay: (val) => {
+                return (val ? val.join(", ") : "**None Set**")
+            },
+			menutype: "choice_textentry",
+			default: (userID) => {
+				return ``;
+			},
+			disabled: () => {
+				return false;
+			},
+		},
 	},
     Content: {
         "wearabletags-latex": {
