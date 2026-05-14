@@ -84,6 +84,12 @@ module.exports = {
 				data.noheavy = true;
 				if (getHeavy(heavyuser.id, heavytype)) {
 					data.heavyequipped = true;
+                    if (interaction.user == heavyuser) {
+                        data.self = true;
+                    }
+                    else {
+                        data.other = true;
+                    }
 					// Now lets make sure the wearer wants that.
 					if (checkBondageRemoval(interaction.user.id, heavyuser.id, "heavy") == true) {
 						// Allowed immediately, lets go
