@@ -387,6 +387,13 @@ function runProcessedEvents() {
                 if (process.eventfunctions.collar && process.eventfunctions.collar[getCollar(userid).collartype]) {
 					process.eventfunctions.collar[getCollar(userid).collartype](userid);
 				}
+                if (getCollar(userid).additionalcollars) {
+                    getCollar(userid).additionalcollars.forEach((ac) => {
+                        if (process.eventfunctions.collar && process.eventfunctions.collar[ac]) {
+                            process.eventfunctions.collar[ac](userid);
+                        }
+                    })
+                }
             }
 		});
 	}

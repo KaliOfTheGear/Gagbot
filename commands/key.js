@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, ComponentType, ButtonBuilder, ActionRowBuilder, ButtonStyle, MessageFlags } = require("discord.js");
 const { generateConfigModal, configoptions, getOption, setOption, config } = require("./../functions/configfunctions.js");
 const { getHeadwear, getHeadwearName, getLockedHeadgear, addLockedHeadgear, removeLockedHeadgear } = require("./../functions/headwearfunctions.js");
-const { canAccessCollar, promptCloneCollarKey, cloneCollarKey, revokeCollarKey, getClonedCollarKeysOwned, getOtherKeysCollar, getCollar, transferCollarKey, promptTransferCollarKey, collartypes, getCollarName, getBaseCollar } = require("./../functions/collarfunctions.js");
+const { canAccessCollar, promptCloneCollarKey, cloneCollarKey, revokeCollarKey, getClonedCollarKeysOwned, getOtherKeysCollar, getCollar, transferCollarKey, promptTransferCollarKey, collartypes, getCollarName, getBaseCollar, addAdditionalCollarEffect, removeAdditionalCollarEffect } = require("./../functions/collarfunctions.js");
 const { canAccessChastity, promptCloneChastityKey, cloneChastityKey, revokeChastityKey, getClonedChastityKeysOwned, getOtherKeysChastity, getChastity, transferChastityKey, promptTransferChastityKey } = require("./../functions/vibefunctions.js");
 const { getText, getTextGeneric } = require("./../functions/textfunctions.js");
 const { getPronouns } = require("../functions/pronounfunctions.js");
@@ -63,13 +63,23 @@ module.exports = {
 				.setName("menu")
 				.setDescription("Open key giving and cloning menu")
 		)
-        /*.addSubcommand((subcommand) =>
+        .addSubcommand((subcommand) =>
             subcommand
-                .setName("discardkey")
-                .setDescription("Discard a key you're holding...")
-                .addUserOption((opt) => opt.setName("wearer").setDescription("Whose restraint to discard the key?"))
-                .addStringOption((opt) => opt.setName("restraint").setDescription("Which restraint of theirs to discard?").setAutocomplete(true)),
-        )*/,
+                .setName("additionalcollar")
+                .setDescription("Manage additional collar effects...")
+                .addStringOption((opt) => 
+                    opt
+                        .setName("type")
+                        .setDescription("Add or Remove a collar effect?")
+                        .setRequired(true)
+                        .addChoices(
+                            { name: "Add", value: "additionalcollar_add" },
+                            { name: "Remove", value: "additionalcollar_remove" }
+                        )
+                )
+                .addUserOption((opt) => opt.setName("wearer").setDescription("Whose collar to add additional effects to?"))
+                .addStringOption((opt) => opt.setName("collareffect").setDescription("Which collar effect to add?").setAutocomplete(true)),
+        ),
 	async autoComplete(interaction) {
 		const focusedValue = interaction.options.getFocused();
 		let subcommand = interaction.options.getSubcommand();
@@ -258,6 +268,79 @@ module.exports = {
                     choices.push({ name: "Chastity Bra", value: "chastitybra" });
                 }
 
+                await interaction.respond(choices);
+            } else if (subcommand == "additionalcollar") {
+                let chosenuserid = interaction.options.get("wearer")?.value ?? interaction.user.id; // Note we can only retrieve the user ID here!
+                let collarkeyholder = getCollar(chosenuserid) && (getCollar(chosenuserid).keyholder == interaction.user.id) && !getCollar(chosenuserid)?.fumbled && !canAccessCollar(chosenuserid, interaction.user.id, true).public
+                let chosentype = interaction.options.get("type")?.value;
+                let choices = [];
+                console.log(chosentype)
+                if (!collarkeyholder) {
+                    choices = [{ name: "Not holding Collar Key", value: "nokeys" }];
+                }
+                else {
+                    if (chosentype == "additionalcollar_add") {
+                        let autocompletes = process.autocompletes.collar;
+                        let matches = didYouMean(focusedValue, autocompletes, {
+                            matchPath: ['name'], 
+                            returnType: ReturnTypeEnums.ALL_SORTED_MATCHES, // Returns any match meeting 20% of the input
+                            threshold: 0.2, // Default is 0.4 - this is how much of the word must exist. 
+                        })
+                        if (matches.length == 0) {
+                            matches = autocompletes;
+                        }
+                        let tags = getUserTags(chosenuserid);
+                        let newsorted = [];
+                        matches.forEach((f) => {
+                            let tagged = false;
+                            let i = getBaseCollar(f.value)
+                            tags.forEach((t) => {
+                                if (i.tags && i.tags.includes(t)) { tagged = true }
+                            })
+                            // Only attempt to add it to the list if it is not the worn collar type or the additional collar effect
+                            if ((getCollar(chosenuserid)?.collartype != f.value) && !(getCollar(chosenuserid)?.additionalcollars && getCollar(chosenuserid)?.additionalcollars.includes(f.value))) {
+                                if (!tagged) {
+                                    newsorted.push(f);
+                                }
+                                else {
+                                    newsorted.push({ name: `${f.name} (Forbidden due to Content Preferences)`, value: f.value })
+                                }
+                            }
+                        })
+                        choices = newsorted;
+                    }
+                    if (chosentype == "additionalcollar_remove") {
+                        let autocompletes = process.autocompletes.collar;
+                        let matches = didYouMean(focusedValue, autocompletes, {
+                            matchPath: ['name'], 
+                            returnType: ReturnTypeEnums.ALL_SORTED_MATCHES, // Returns any match meeting 20% of the input
+                            threshold: 0.2, // Default is 0.4 - this is how much of the word must exist. 
+                        })
+                        if (matches.length == 0) {
+                            matches = autocompletes;
+                        }
+                        let tags = getUserTags(chosenuserid);
+                        let newsorted = [];
+                        matches.forEach((f) => {
+                            let tagged = false;
+                            let i = getBaseCollar(f.value)
+                            tags.forEach((t) => {
+                                if (i.tags && i.tags.includes(t)) { tagged = true }
+                            })
+                            // Only attempt to add it to the list if it is not the worn collar type or the additional collar effect
+                            if (getCollar(chosenuserid)?.additionalcollars && getCollar(chosenuserid)?.additionalcollars.includes(f.value)) {
+                                newsorted.push(f)
+                            }
+                        })
+                        if (newsorted.length == 0) {
+                            // No additional collar effects to remove!
+                            choices = [
+                                { name: "No Additional Effects", value: "noeffect" }
+                            ]
+                        }
+                        choices = newsorted;
+                    }
+                }
                 await interaction.respond(choices);
             }
 		} catch (err) {
@@ -864,6 +947,95 @@ module.exports = {
             }
             else if (subcommand == "menu") {
                 interaction.reply(await generateKeyGivingModal(interaction.user.id, undefined, undefined, "0000"))
+            } 
+            else if (subcommand == "additionalcollar") {
+                // Handling additional collar effects!
+                let wearer = interaction.options.getUser("wearer") ?? interaction.user;
+                let additionaltype = interaction.options.getString("type"); // "additionalcollar_add", "additionalcollar_remove"
+				let collareffect = interaction.options.getString("collareffect"); // eligible collar type!
+                let collarkeyholder = getCollar(wearer.id) && (getCollar(wearer.id).keyholder == interaction.user.id) && !getCollar(wearer.id)?.fumbled && !canAccessCollar(wearer.id, interaction.user.id, true).public
+                if ((!collarkeyholder) || (collareffect == "nokeys")) {
+                    // If we do not have the target's collar keys, go away.
+                    if (interaction.user.id == wearer.id) {
+                        interaction.reply({ content: `You do not have the keys to your collar!`, flags: MessageFlags.Ephemeral })
+                        return;
+                    }
+                    else {
+                        interaction.reply({ content: `You do not have the keys to that collar!`, flags: MessageFlags.Ephemeral })
+                        return;
+                    }
+                }
+                else {
+                    if (additionaltype == "additionalcollar_add") {
+                        if ((collareffect == "noeffect") || (collareffect == undefined)) {
+                            interaction.reply({ content: `You didn't choose an effect to add!`, flags: MessageFlags.Ephemeral })
+                            return;
+                        }
+                        else {
+                            // Check their tags and make sure they're okay with this. 
+                            let blocked = false;
+                            let tags = getUserTags(wearer.id);
+                            let i = getBaseCollar(collareffect)
+                            tags.forEach((t) => {
+                                if (i && i.tags && i.tags[t] && (wearer != interaction.user)) {
+                                    interaction.reply({ content: `${wearer}'s content settings forbid this item - ${i.name}!`, flags: MessageFlags.Ephemeral })
+                                    blocked = true;
+                                    return;
+                                }
+                            })
+                            if (blocked) {
+                                return;
+                            }
+
+                            // Okay they're probably allowed lol
+                            let data = { 
+                                textarray: "texts_key", textdata: { 
+                                    interactionuser: interaction.user, 
+                                    targetuser: wearer,
+                                    c1: getBaseCollar(collareffect)?.name,
+                                    c2: getBaseCollar(getCollar(wearer.id)?.collartype)?.name ?? "collar"
+                                },
+                            };
+                            data.additionalcollar = true;
+                            if (wearer.id == interaction.user.id) {
+                                data.self = true;
+                            }
+                            else {
+                                data.other = true;
+                            }
+                            data.add = true;
+                            interaction.reply({ content: getText(data) })
+                            addAdditionalCollarEffect(wearer.id, collareffect);
+                        }
+                    }
+                    else {
+                        if ((collareffect == "noeffect") || (collareffect == undefined)) {
+                            interaction.reply({ content: `You didn't choose an effect to remove!`, flags: MessageFlags.Ephemeral })
+                            return;
+                        }
+                        else {
+                            // Okay they're probably allowed lol
+                            let data = { 
+                                textarray: "texts_key", textdata: { 
+                                    interactionuser: interaction.user, 
+                                    targetuser: wearer,
+                                    c1: getBaseCollar(collareffect)?.name,
+                                    c2: getBaseCollar(getCollar(wearer.id)?.collartype)?.name ?? "collar"
+                                },
+                            };
+                            data.additionalcollar = true;
+                            if (wearer.id == interaction.user.id) {
+                                data.self = true;
+                            }
+                            else {
+                                data.other = true;
+                            }
+                            data.remove = true;
+                            interaction.reply({ content: getText(data) })
+                            removeAdditionalCollarEffect(wearer.id, collareffect);
+                        }
+                    }
+                }
             }
 		} catch (err) {
 			console.log(err);

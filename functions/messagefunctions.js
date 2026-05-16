@@ -279,6 +279,13 @@ function runMessageEvents(data) {
             if (process.msgfunctions.collar && process.msgfunctions.collar[getCollar(data.msg.author.id).collartype]) {
                 process.msgfunctions.collar[getCollar(data.msg.author.id).collartype](data.msg.author.id, data);
             }
+            if (getCollar(data.msg.author.id).additionalcollars) {
+                getCollar(data.msg.author.id).additionalcollars.forEach((ac) => {
+                    if (process.msgfunctions.collar && process.msgfunctions.collar[ac]) {
+                        process.msgfunctions.collar[ac](data.msg.author.id, data);
+                    }
+                })
+            }
         }
 	}
 }
@@ -287,7 +294,7 @@ function runMessageEvents(data) {
 function getAlternateName(user) {
     let outname = user.displayName // We're putting a member object in here
     // Handle pet collar name
-    if (getCollar(user.id)?.collartype == "collarengraved") {
+    if ((getCollar(user.id)?.collartype == "collarengraved") || (getCollar(user.id) && getCollar(user.id).additionalcollars && getCollar(user.id).additionalcollars.includes("collarengraved"))) {
         if (getOption(user.id, "engravedcollarname") && getOption(user.id, "engravedcollarname").length > 0) {
             outname = getOption(user.id, "engravedcollarname");
         }

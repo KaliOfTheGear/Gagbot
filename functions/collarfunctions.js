@@ -463,6 +463,46 @@ const findCollarKey = (index, newKeyholder) => {
 	return false;
 };
 
+/*******
+ * Adds an additional Collar effect to the user's collar, if they are wearing a collar. 
+ * 
+ * - (user id) user - The user wearing the collar.
+ * - (string) type - The collar effect to add
+ *******/
+const addAdditionalCollarEffect = (user, type) => {
+    try {
+        if (getCollar(user)) {
+            if (!process.collar[user].additionalcollars) { process.collar[user].additionalcollars = [] }
+            process.collar[user].additionalcollars.push(type)
+        }
+    }
+    catch (err) {
+        console.log(err);
+    }
+}
+
+/*******
+ * Removes an additional Collar effect from the user's collar, if they are wearing a collar. 
+ * 
+ * - (user id) user - The user wearing the collar.
+ * - (string) type - The collar effect to remove
+ *******/
+const removeAdditionalCollarEffect = (user, type) => {
+    try {
+        if (getCollar(user)) {
+            if (process.collar[user].additionalcollars && process.collar[user].additionalcollars.includes(type)) {
+                process.collar[user].additionalcollars.splice(process.collar[user].additionalcollars.indexOf(type), 1);
+            }
+            if (process.collar[user].additionalcollars && process.collar[user].additionalcollars.length == 0) {
+                delete process.collar[user].additionalcollars;
+            }
+        }
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+
 exports.assignCollar = assignCollar;
 exports.getCollar = getCollar;
 exports.removeCollar = removeCollar;
@@ -488,3 +528,6 @@ exports.getCollarTimelock = getCollarTimelock;
 
 exports.loadCollarTypes = loadCollarTypes;
 exports.getBaseCollar = getBaseCollar;
+
+exports.addAdditionalCollarEffect = addAdditionalCollarEffect;
+exports.removeAdditionalCollarEffect = removeAdditionalCollarEffect;

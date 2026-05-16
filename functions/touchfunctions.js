@@ -170,6 +170,13 @@ function doHeadpatFunctions(headpatter, recipient, returnedobject) {
             if (process.headpatfunctions.collar && process.headpatfunctions.collar[getCollar(recipient).collartype]) {
                 process.headpatfunctions.collar[getCollar(recipient).collartype](recipient, headpatter, returnedobject);
             }
+            if (getCollar(recipient).additionalcollars) {
+                getCollar(recipient).additionalcollars.forEach((ac) => {
+                    if (process.headpatfunctions.collar && process.headpatfunctions.collar[ac]) {
+                        process.headpatfunctions.collar[ac](recipient, headpatter, returnedobject);
+                    }
+                })
+            }
         }
 	}
 }

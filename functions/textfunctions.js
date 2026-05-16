@@ -1218,6 +1218,26 @@ const texts_key = {
                 `USER_TAG tries to throw away TARGET_TAG's key... but a mysterious entity stops USER_THEM!? (this is a bug, report)`
             ]
         }
+    },
+    additionalcollar: {
+        self: {
+            add: [
+                `USER_TAG pulls out a VAR_C1 and uses a bit of magic to transcribe its effects into USER_THEIR VAR_C2!`,
+                `USER_TAG casts a small spell on USER_THEIR VAR_C2 and clones the effects of a VAR_C1 onto it!`,
+            ],
+            remove: [
+                `USER_TAG snaps USER_THEIR fingers and dispels the VAR_C1 effect on USER_THEIR VAR_C2.`,
+            ]
+        },
+        other: {
+            add: [
+                `USER_TAG pulls out a VAR_C1 and uses a bit of magic to transcribe its effects into TARGET_TAG's VAR_C2!`,
+                `USER_TAG casts a small spell on TARGET_TAG's VAR_C2 and clones the effects of a VAR_C1 onto it!`,
+            ],
+            remove: [
+                `USER_TAG snaps USER_THEIR fingers and dispels the VAR_C1 effect on TARGET_TAG's VAR_C2.`,
+            ]
+        }
     }
 };
 
