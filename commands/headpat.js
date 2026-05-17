@@ -12,6 +12,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("headpat")
 		.setDescription("Attempt to pat someone's head")
+        .setNSFW(true)
 		.addUserOption((opt) => opt.setName("user").setDescription("Who to headpat?")),
 	async execute(interaction) {
 		try {

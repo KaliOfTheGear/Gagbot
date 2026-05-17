@@ -6,6 +6,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("inspect")
 		.setDescription(`Inspect someone's restraints if they are wearing any`)
+        .setNSFW(true)
 		.addUserOption((opt) => opt.setName("user").setDescription("Who to inspect (blank to inspect yourself)")),
     async execute(interaction) {
         try {

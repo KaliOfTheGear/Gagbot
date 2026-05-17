@@ -11,8 +11,9 @@ const { getUserTags } = require("../functions/configfunctions.js");
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("mitten")
-		.setDescription("Put mittens on yourself, preventing /ungag on yourself and /gag on others")
-		.addUserOption((opt) => opt.setName("user").setDescription("Who to apply mittens to?"))
+		.setDescription("Put mittens on someone, preventing /ungag and /gag")
+		.setNSFW(true)
+        .addUserOption((opt) => opt.setName("user").setDescription("Who to apply mittens to?"))
         .addStringOption((opt) => opt.setName("type").setDescription("What flavor of helpless mittens to wear...").setAutocomplete(true)),
 	async autoComplete(interaction) {
 		try {

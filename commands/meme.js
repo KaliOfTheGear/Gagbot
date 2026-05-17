@@ -6,6 +6,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("meme")
 		.setDescription(`Post a meme`)
+        .setNSFW(true)
 		.addStringOption((opt) => opt.setName("image").setDescription("What to post").setRequired(true).setAutocomplete(true)),
 	async autoComplete(interaction) {
         try {

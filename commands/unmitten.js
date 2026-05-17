@@ -10,6 +10,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("unmitten")
 		.setDescription(`Take someone else's mittens off`)
+        .setNSFW(true)
 		.addUserOption((opt) => opt.setName("user").setDescription("Who to free from their mittens")),
 	async execute(interaction) {
 		try {

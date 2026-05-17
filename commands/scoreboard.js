@@ -55,7 +55,10 @@ async function generateList(menuchoice) {
 }
 
 module.exports = {
-	data: new SlashCommandBuilder().setName("scoreboard").setDescription("View the Leaderboard for Stats!"),
+	data: new SlashCommandBuilder()
+        .setName("scoreboard")
+        .setDescription("View the Leaderboard for Stats!")
+        .setNSFW(true),
 	async execute(interaction) {
 		try {
 			interaction.reply(await generateList("headpatsgiven"))

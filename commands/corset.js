@@ -16,6 +16,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("corset")
 		.setDescription("Put a corset on someone, shortening their messages")
+        .setNSFW(true)
 		.addUserOption((opt) => opt.setName("user").setDescription("Who to corset?"))
 		.addNumberOption((opt) => opt.setName("intensity").setDescription("How tightly to lace their corset!").setMinValue(1).setMaxValue(10))
 		.addStringOption((opt) => opt.setName("type").setDescription("Which type of corset").setAutocomplete(true)),

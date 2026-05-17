@@ -11,6 +11,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("ungag")
 		.setDescription("Remove a gag from a user")
+        .setNSFW(true)
 		.addUserOption((opt) => opt.setName("user").setDescription("The user to remove gag from (leave blank for yourself)"))
 		.addStringOption((opt) => opt.setName("gag").setDescription("Which gag to remove?").setAutocomplete(true)),
 	async autoComplete(interaction) {

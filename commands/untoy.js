@@ -10,6 +10,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("untoy")
 		.setDescription("Remove a Toy")
+        .setNSFW(true)
 		.addUserOption((opt) => opt.setName("user").setDescription("Who to add a fun toy to"))
 		.addStringOption((opt) =>
 			opt.setName("type")

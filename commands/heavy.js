@@ -11,6 +11,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("heavy")
 		.setDescription(`Put heavy bondage on, preventing the use of any command`)
+        .setNSFW(true)
         .addUserOption((opt) => opt.setName("user").setDescription("Who to bind in heavy bondage..."))
 		.addStringOption((opt) =>
 			opt

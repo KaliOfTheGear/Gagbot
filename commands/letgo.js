@@ -6,7 +6,10 @@ const { getHeavy, getHeavyBound } = require("../functions/heavyfunctions.js");
 const { getText } = require("./../functions/textfunctions.js");
 
 module.exports = {
-	data: new SlashCommandBuilder().setName("letgo").setDescription(`Try to get release`),
+	data: new SlashCommandBuilder()
+        .setName("letgo")
+        .setDescription(`Try to get release`)
+        .setNSFW(true),
 
 	async execute(interaction) {
 		try {

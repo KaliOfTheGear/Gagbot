@@ -4,7 +4,41 @@ const { assignOutfit, restoreOutfit, getOutfits, generateOutfitModal, outfitEntr
 const PAGE_SIZE = 5;
 
 module.exports = {
-	data: new SlashCommandBuilder().setName("outfit").setDescription("Set up or restore outfits"),
+	data: new SlashCommandBuilder()
+        .setName("outfit")
+        .setDescription("Set up or restore outfits")
+        .setNSFW(true)
+        .addSubcommand((subcommand) =>
+            subcommand
+                .setName("menu")
+                .setDescription(`Manage and Configure Outfits`)
+        )
+        .addSubcommand((subcommand) =>
+            subcommand
+                .setName("restore")
+                .setDescription(`Restore an outfit from saved slot`)
+                .addIntegerOption((opt) =>
+                    opt
+                        .setName("slot")
+                        .setDescription(`Which Outfit to restore...`)
+                        .setAutocomplete(true)
+                        .setRequired(true)
+                )
+        ),
+    async autoComplete(interaction) {
+        const focusedValue = interaction.options.getFocused();
+        let choices = [
+            { name: "No Outfit to Select", value: -1 }
+        ];
+        let outfits = getOutfits(interaction.user.id)
+        if (outfits.length > 0) {
+            choices = [];
+            for (let i = 0; i < outfits.length; i++) {
+                choices.push({ name: `Slot ${i + 1}: ${outfits[i].outfitname ?? "Unnamed Outfit"}`, value: i })
+            }
+        }
+        await interaction.respond(choices)
+    },
 	async execute(interaction) {
 		try {
 			interaction.reply(await generateOutfitModal(interaction.user.id, "restore", 1, "0000000000"));

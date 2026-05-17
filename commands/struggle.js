@@ -15,6 +15,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("struggle")
 		.setDescription("Struggle with one of your restraints...")
+        .setNSFW(true)
 		.addStringOption((opt) => opt.setName("type").setDescription("Which restraint to struggle with?").setAutocomplete(true)),
 	async autoComplete(interaction) {
 		const focusedValue = interaction.options.getFocused();

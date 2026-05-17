@@ -11,6 +11,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("unheavy")
 		.setDescription(`Free someone from their heavy bondage`)
+        .setNSFW(true)
 		.addUserOption((opt) => opt.setName("user").setDescription("Who to free from their predicament..."))
         .addStringOption((opt) =>
 			opt

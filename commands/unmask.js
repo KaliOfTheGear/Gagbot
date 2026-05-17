@@ -11,6 +11,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("unmask")
 		.setDescription(`Remove headwear from someone. . .`)
+        .setNSFW(true)
 		.addUserOption((opt) => opt.setName("user").setDescription("Who to remove headwear from?"))
 		.addStringOption((opt) => opt.setName("type").setDescription("What headwear to remove...").setAutocomplete(true)),
 	async autoComplete(interaction) {

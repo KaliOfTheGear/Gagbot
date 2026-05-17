@@ -28,6 +28,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("key")
 		.setDescription(`Prevent a worn item from being removed...`)
+        .setNSFW(true)
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName("clone")

@@ -5,6 +5,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("delve")
 		.setDescription(`ALPHA - Only available to Enraa`)
+        .setNSFW(true)
         .addSubcommand((subcommand) => 
             subcommand
                 .setName("run")

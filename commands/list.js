@@ -59,7 +59,10 @@ async function generateList(listchoice, page, details) {
 }
 
 module.exports = {
-	data: new SlashCommandBuilder().setName("list").setDescription("Testing List stuff"),
+	data: new SlashCommandBuilder()
+        .setName("list")
+        .setDescription("List out items of categories")
+        .setNSFW(true),
 	async execute(interaction) {
 		try {
 			interaction.reply(await generateList("Heavy", 1, false));

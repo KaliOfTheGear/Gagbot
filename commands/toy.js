@@ -10,6 +10,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("toy")
 		.setDescription("Add a vibrator/toy, causing stuttered speech and other effects")
+        .setNSFW(true)
 		.addUserOption((opt) => opt.setName("user").setDescription("Who to add a fun toy to"))
 		.addStringOption((opt) =>
 			opt.setName("type")
