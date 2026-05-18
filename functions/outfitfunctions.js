@@ -883,7 +883,7 @@ async function inspectModal(userID, inspectuserIDin, menu, page) {
                 wearingtext = `${wearingtext}, **Free Use!**`
             }
             if (getCollar(inspectuserID).headpatvulnerable) {
-                keyedrestraints = `${keyedrestraints}, **Vulnerable from Headpat!**`
+                wearingtext = `${wearingtext}, **Vulnerable from Headpat!**`
             }
             wearingtext = `${wearingtext}\n-# Mittens: ${getCollarPerm(inspectuserID, "mitten") ? "✅" : "⛔"}, Chastity: ${getCollarPerm(inspectuserID, "chastity") ? "✅" : "⛔"}, Heavy: ${getCollarPerm(inspectuserID, "heavy") ? "✅" : "⛔"}, Masks: ${getCollarPerm(inspectuserID, "mask") ? "✅" : "⛔"}`
         }
