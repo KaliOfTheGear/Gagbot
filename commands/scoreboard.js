@@ -31,6 +31,10 @@ async function generateList(menuchoice) {
     for (let i = 0; (i < 10) && (i < stats.length); i++) {
         fulltext = `${fulltext}**${placements[i]}**: <@${stats[i][0]}> - ${stats[i][1]}\n`
     }
+    let total = stats.reduce((prev, curr) => {
+        return (prev + curr[1])
+    }, 0)
+    fulltext = `${fulltext}\n**Total:** ${total}`
 
 
 
