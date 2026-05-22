@@ -660,7 +660,9 @@ async function appendCollarEffects(msg, outtext, msgTreeMods) {
                 `Veronica's Secret Bondage - Intimate Chastity-Wear for *you*. <3`,
                 `Floe's Dressup Room - Letting your clothing dreams flow!`,
                 `Mocha - Please pat me!`,
-                `Dancer-chans Worldwide - Providing an exotic dance show at any time, globally!`
+                `Dancer-chans Worldwide - Providing an exotic dance show at any time, globally!`,
+                `Maidcorp - Glass Cleaner so effective, it works as Maid Storage!`,
+                `Cassandra's Secret - Witch by Day, Obedient Doll by Night`
             ]
             appendmessages.push(`-# Sponsored by ${sponsors[Math.floor(sponsors.length * Math.random())]}`);
         }
