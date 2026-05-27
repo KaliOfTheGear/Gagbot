@@ -11,7 +11,9 @@ function headpatfunction(recipient, data) {
     let newcharge = (getUserVar(recipient, "headpatvibecharge") ?? 0.0)
     if (data.returnedobject.hit) {
         if (newcharge == 0.0) {
-            messageSendChannel(`The headpat gives enough charge to start up a vibrator...`, process.recentmessages[recipient])
+            setTimeout(() => {
+                messageSendChannel(`The headpat gives enough charge to start up a vibrator...`, process.recentmessages[recipient])
+            }, 3000)
         }
         newcharge = newcharge + (0.05 * getOption(recipient, "headpatrestraintpotency"))
         if (data.returnedobject.crit) {
