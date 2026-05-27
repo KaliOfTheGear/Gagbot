@@ -196,6 +196,15 @@ function doHeadpatFunctions(headpatter, recipient, returnedobject) {
  ********/
 async function handleTouchEvent(user, target, type, noprompt = false) {
 	return new Promise(async (res, rej) => {
+        if (!user || !target) {
+            rej("User or Target does NOT exist")
+            return;
+        }
+        if (!user.id || !target.id) {
+            console.log("User.id or Target.id does NOT exist!")
+            rej("Blocked")
+            return;
+        }
 		let hasOption = getOption(target.id, `receive${type}`);
         if (user.id === target.id) { 
             res(true) 
