@@ -74,11 +74,11 @@ const configoptions = {
         preferredtitle: {
 			name: "Preferred Titles",
 			desc: "Set preferred titles to display when others inspect you",
-			descmodal: "Write the exact titles you wish to be addressed by:",
+			descmodal: "Write the exact title you wish to be addressed by:",
 			choices: [
 				{
 					name: "Set Titles",
-					helptext: "Displaying as **(Preferred Title: ",
+					helptext: "Displaying as **",
 					helptextnone: "*No Preferred Titles Set*",
 					select_function: (userID) => {
 						return false;
@@ -94,7 +94,7 @@ const configoptions = {
 				return `Miss, Lady, Sir, Master`;
 			},
             textvaluedisplay: (val) => {
-                return `${val})**`;
+                return `${val}**`;
             },
 			menutype: "choice_textentry",
 			default: (userID) => {
