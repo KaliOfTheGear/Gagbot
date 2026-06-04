@@ -9,8 +9,11 @@ const { getHeadwear } = require("./headwearfunctions.js");
 const { getHeavy, getHeavyList } = require("./heavyfunctions.js");
 const { getWearable } = require("./wearablefunctions.js");
 const { getToys } = require("./toyfunctions.js");
-const { getCollar } = require("./collarfunctions.js");
+const { getCollar, getBaseCollar } = require("./collarfunctions.js");
 const { updateSharedBreath } = require("./vibefunctions.js");
+const { getBaseChastity } = require("./chastityfunctions.js");
+const { messageSendChannel } = require("./messagefunctions.js");
+const { getTextGeneric } = require("./textfunctions.js");
 
 // Takes input string, outputs a date object.
 const parseTime = (text) => {
