@@ -432,6 +432,8 @@ const modifymessage = async (msg, threadId, messageonly) => {
 		msgTree.rebuild(msgTree.toString())							// Update AST to account for control char-wrapped moans.
 		textGarbleGag(msg, msgTree, msgTreeMods);					// Text garbling due to Gag
 
+        msgTree.callFunc(textGarbleDrone,true,"rawText",[msg, msgTreeMods])
+
 		// Convert the AST back to a string.
 		outtext = msgTree.toString()
 
@@ -447,10 +449,10 @@ const modifymessage = async (msg, threadId, messageonly) => {
 		outtext = outtext.replaceAll(/[]/g, "");
 
         // Get Drone Visor if worn
-        let dronetext = await textGarbleDrone(msg, outtext);
+        /*let dronetext = await textGarbleDrone(msg, outtext);
         if (dronetext.modifiedmessage) { outtext = dronetext.modifiedmessage }
         if (dronetext.dollIDDisplay) { dollIDDisplay = dronetext.dollIDDisplay }
-        if (dronetext.modified) { msgTreeMods.modified = true };
+        if (dronetext.modified) { msgTreeMods.modified = true };*/
 
         // Append any extra messages from collar effects
         let appendcollar = await appendCollarEffects(msg, outtext, msgTreeMods);
