@@ -1,9 +1,6 @@
 const { ContextMenuCommandBuilder, ApplicationCommandType, MessageFlags } = require('discord.js');
-const { canAccessCollar, getCollar, getCollarName } = require('../../functions/collarfunctions');
 const { getTextGeneric } = require('../../functions/textfunctions');
-const { addArousal } = require('../../functions/vibefunctions');
 const { handleTouchEvent, shockUser } = require('../../functions/touchfunctions');
-const { statsAddCounter } = require('../../functions/statsfunctions');
 
 module.exports = {
     data: new ContextMenuCommandBuilder()
@@ -11,6 +8,17 @@ module.exports = {
         .setType(ApplicationCommandType.User), // This command will appear when right-clicking a user
     async execute(interaction) {
         try {
+            let targetuser = await interaction.guild.members.fetch(interaction.targetId)
+            // CHECK IF THEY CONSENTED! IF NOT, MAKE THEM CONSENT
+            if (!getConsent(targetuser.id)?.mainconsent) {
+                await handleConsent(interaction, targetuser.id);
+                return;
+            }
+            // CHECK IF THEY CONSENTED! IF NOT, MAKE THEM CONSENT
+            if (!getConsent(interaction.user.id)?.mainconsent) {
+                await handleConsent(interaction, interaction.user.id);
+                return;
+            }
             let data = {
                 interactionuser: { id: interaction.user.id },
                 targetuser: { id: interaction.targetId },

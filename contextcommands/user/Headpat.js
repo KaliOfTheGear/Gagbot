@@ -1,7 +1,6 @@
 const { ContextMenuCommandBuilder, ApplicationCommandType, MessageFlags } = require('discord.js');
-const { handleConsent, getConsent } = require('../../functions/interactivefunctions');
+const { handleConsent } = require('../../functions/interactivefunctions');
 const { handleTouchEvent, rollPatChance } = require('../../functions/touchfunctions');
-const { getPronouns } = require('../../functions/pronounfunctions');
 const { getText } = require('../../functions/textfunctions');
 
 module.exports = {
