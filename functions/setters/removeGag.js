@@ -1,5 +1,5 @@
 /**********
- * Removes a gag on the user.
+ * Removes a gag from the user.
  * 
  * - (user id) userID - The person wearing the gag
  * - (string) specificgag - The type of gag to remove
