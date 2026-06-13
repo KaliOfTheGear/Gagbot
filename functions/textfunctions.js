@@ -3437,6 +3437,12 @@ const texts_unheavy = {
 				},
 				text: `USER_TAG wiggles a bit in VAR_C1, but it's so warm and comfy there...`,
 			},
+			{
+			 only: (t) => {
+			  return t.c1.includes("Sticky Glue");
+			 },
+			 text: `USER_TAG wriggles in the VAR_C1 trap, but it's very hard to escape these without outside help...`,
+			},
 		],
 		other: [`USER_TAG brushes up against TARGET_TAG to help TARGET_THEM out of TARGET_THEIR VAR_C2, but being trapped in a VAR_C1, USER_THEY can't really help TARGET_THEM out much.`],
 	},
