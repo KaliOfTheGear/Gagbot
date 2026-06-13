@@ -1,18 +1,6 @@
-const { getCollarName, getCollar, assignCollar } = require("../../functions/collarfunctions.js");
-const { assignMitten, getMitten, getMittenName, getGag, convertGagText, assignGag } = require("../../functions/gagfunctions.js");
-const { getHeadwear, DOLLVISORS, getHeadwearName, assignHeadwear } = require("../../functions/headwearfunctions.js");
-const { removeHeavy, getHeavy, assignHeavy, getHeavyName } = require("../../functions/heavyfunctions.js");
+const { DOLLVISORS } = require("../../functions/headwearfunctions.js");
 const { messageSendChannel } = require("../../functions/messagefunctions.js");
 const { getText } = require("../../functions/textfunctions.js");
-const { getChastityBra } = require("../../functions/vibefunctions.js");
-const { assignChastityBra } = require("../../functions/vibefunctions.js");
-const { getChastityBraName } = require("../../functions/vibefunctions.js");
-const { getChastityName, assignChastity } = require("../../functions/vibefunctions.js");
-const { getChastity } = require("../../functions/vibefunctions.js");
-const { getWearable, getLockedWearable, deleteWearable, getWearableName, assignWearable } = require("../../functions/wearablefunctions.js");
-const { getBaseToy, getToys, assignToy } = require("../../functions/toyfunctions");
-const { addArousal } = require("../../functions/vibefunctions");
-//const { mimicCostumes } = require('./mimic/mimicCostumes.js')
 
 // File Containing Costumer Mimic Outfits - Wearables, Headwear, Mittens, Gags, Heavy. For Static Heavies at the end of the outfit the type 'end' can be used to access specific texts.
 

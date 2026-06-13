@@ -1,15 +1,4 @@
-const { getCollar, getCollarName } = require("../../functions/collarfunctions");
-const { getCorset } = require("../../functions/corsetfunctions");
-const { getGagLast, getMitten, convertGagText, getMittenName } = require("../../functions/gagfunctions");
-const { getHeadwear } = require("../../functions/headwearfunctions");
-const { getHeavy } = require("../../functions/heavyfunctions");
 const { messageSendChannel } = require("../../functions/messagefunctions");
-const { getText } = require("../../functions/textfunctions");
-const { getUserVar, setUserVar } = require("../../functions/usercontext");
-const { getChastityBraName } = require("../../functions/vibefunctions");
-const { getChastityName } = require("../../functions/vibefunctions");
-const { getChastityBra } = require("../../functions/vibefunctions");
-const { getChastity } = require("../../functions/vibefunctions");
 
 exports.tick = async (userID, data) => {
     try {

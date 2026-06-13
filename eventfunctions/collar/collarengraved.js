@@ -1,5 +1,4 @@
 const { ModalBuilder, LabelBuilder, MessageFlags, TextInputStyle } = require("discord.js");
-const { setOption, getOption } = require("../../functions/configfunctions");
 const { TextInputBuilder } = require("discord.js");
 
 exports.modal = async (interaction, userid) => {

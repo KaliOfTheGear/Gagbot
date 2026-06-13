@@ -1,16 +1,7 @@
-const { getCollarName, getCollar, assignCollar } = require("../../functions/collarfunctions.js");
-const { assignMitten, getMitten, getMittenName } = require("../../functions/gagfunctions.js");
-const { getHeadwear, DOLLVISORS, getHeadwearName, assignHeadwear } = require("../../functions/headwearfunctions.js");
-const { removeHeavy, getHeavy } = require("../../functions/heavyfunctions.js");
+const { DOLLVISORS } = require("../../functions/headwearfunctions.js");
 const { messageSendChannel } = require("../../functions/messagefunctions.js");
 const { getText } = require("../../functions/textfunctions.js");
-const { getChastityBra } = require("../../functions/vibefunctions.js");
-const { assignChastityBra } = require("../../functions/vibefunctions.js");
-const { getChastityBraName } = require("../../functions/vibefunctions.js");
-const { getChastityName, assignChastity } = require("../../functions/vibefunctions.js");
-const { getChastity } = require("../../functions/vibefunctions.js");
-const { getWearable, getLockedWearable, deleteWearable, getWearableName, assignWearable, wearablecolors } = require("../../functions/wearablefunctions.js");
-const { getOption } = require(`../../functions/configfunctions.js`);
+const { wearablecolors } = require("../../functions/wearablefunctions.js");
 const { User } = require("discord.js");
 
 // Doll Processing Facility will slowly strip the wearer of all of their clothes!

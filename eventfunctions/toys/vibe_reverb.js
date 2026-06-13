@@ -1,5 +1,4 @@
 const { messageSendChannel } = require("../../functions/messagefunctions");
-const { setUserVar, getUserVar } = require("../../functions/usercontext");
 
 const initial_timespan = 180000
 const timespan_inc = 15000

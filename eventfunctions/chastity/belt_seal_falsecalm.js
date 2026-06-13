@@ -1,6 +1,4 @@
-const { getUserVar, setUserVar } = require("../../functions/usercontext")
-const { getToys, getBaseToy } = require("../../functions/toyfunctions");
-const { getBotOption } = require("../../functions/configfunctions.js");
+
 
 let tick = async function(userid, data) {
     //Tickrate Modifier

@@ -1,5 +1,4 @@
 const { getOption } = require("../../functions/configfunctions");
-const { getUserVar, setUserVar } = require("../../functions/usercontext");
 
 // Successful headpats will recharge the battery on the recipient's vibe by 5%. Each minute drains 2%. 
 function headpatfunction(recipient, data) {

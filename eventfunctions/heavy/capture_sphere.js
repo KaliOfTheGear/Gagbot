@@ -1,16 +1,6 @@
-const { getClonedCollarKeysOwned, getCollarKeys, getCollar } = require("../../functions/collarfunctions")
-const { getCorset } = require("../../functions/corsetfunctions")
-const { getGag, getMitten } = require("../../functions/gagfunctions")
 const { getHeadwearRestrictions } = require("../../functions/headwearfunctions")
-const { removeHeavy, getHeavy } = require("../../functions/heavyfunctions")
 const { messageSendChannel } = require("../../functions/messagefunctions")
 const { getText } = require("../../functions/textfunctions")
-const { setUserVar, getUserVar } = require("../../functions/usercontext")
-const { getClonedChastityKeysOwned, getChastityKeys, getChastity } = require("../../functions/vibefunctions")
-const { getChastityBra } = require("../../functions/vibefunctions")
-const { getChastityBraKeys } = require("../../functions/vibefunctions")
-const { getClonedChastityBraKeysOwned } = require("../../functions/vibefunctions")
-const { getArousal } = require("../../functions/vibefunctions")
 
 // Inputs a capture strength and params, outputs an array of 3 values depending on catch. 
 // This heavy is all calculated in one go at the beginning of the function

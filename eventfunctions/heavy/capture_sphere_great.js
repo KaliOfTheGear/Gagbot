@@ -1,8 +1,4 @@
-const { removeHeavy, getHeavy } = require("../../functions/heavyfunctions")
 const { messageSendChannel } = require("../../functions/messagefunctions")
-const { getText } = require("../../functions/textfunctions")
-const { getUserVar, setUserVar } = require("../../functions/usercontext.js")
-const { getArousal } = require("../../functions/vibefunctions")
 const { calculatecapture } = require("./capture_sphere.js") // reuse the calculation!
 
 let tick = async (userID, datain) => {

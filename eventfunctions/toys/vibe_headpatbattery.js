@@ -1,10 +1,5 @@
-const { getCollar } = require("../../functions/collarfunctions");
-const { getBotOption, getOption } = require("../../functions/configfunctions");
-const { assignGag } = require("../../functions/gagfunctions");
 const { messageSendChannel } = require("../../functions/messagefunctions");
-const { getPronouns } = require("../../functions/pronounfunctions");
 const { getTextGeneric } = require("../../functions/textfunctions");
-const { getUserVar, setUserVar } = require("../../functions/usercontext");
 
 // Successful headpats will recharge the battery on the recipient's vibe by 5%. Each minute drains 2%. 
 function headpatfunction(recipient, data) {

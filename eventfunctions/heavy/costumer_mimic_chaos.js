@@ -1,17 +1,11 @@
-const { getCollarName, getCollar, assignCollar, collartypes } = require("../../functions/collarfunctions.js");
-const { getUserTags } = require("../../functions/configfunctions.js");
-const { assignMitten, getMitten, getMittenName, getGag, convertGagText, assignGag, mittentypes } = require("../../functions/gagfunctions.js");
-const { getHeadwear, DOLLVISORS, getHeadwearName, assignHeadwear, headweartypes } = require("../../functions/headwearfunctions.js");
-const { removeHeavy, getHeavy, assignHeavy, heavytypes } = require("../../functions/heavyfunctions.js");
+const { collartypes } = require("../../functions/collarfunctions.js");
+const { mittentypes } = require("../../functions/gagfunctions.js");
+const { DOLLVISORS, headweartypes } = require("../../functions/headwearfunctions.js");
+const { heavytypes } = require("../../functions/heavyfunctions.js");
 const { logConsole } = require("../../functions/logfunctions.js");
 const { messageSendChannel } = require("../../functions/messagefunctions.js");
 const { getText } = require("../../functions/textfunctions.js");
-const { getChastityBra } = require("../../functions/vibefunctions.js");
-const { assignChastityBra } = require("../../functions/vibefunctions.js");
-const { getChastityBraName } = require("../../functions/vibefunctions.js");
-const { getChastityName, assignChastity } = require("../../functions/vibefunctions.js");
-const { getChastity } = require("../../functions/vibefunctions.js");
-const { getWearable, getLockedWearable, deleteWearable, getWearableName, assignWearable, wearabletypes, wearablecolors } = require("../../functions/wearablefunctions.js");
+const { wearabletypes, wearablecolors } = require("../../functions/wearablefunctions.js");
 
 //*/ Shuffler Application
 function shuffleWearables(inputArray) {

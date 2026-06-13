@@ -1,6 +1,5 @@
 const { ModalBuilder, UserSelectMenuBuilder, LabelBuilder, SectionBuilder, ButtonStyle, TextDisplayBuilder, ButtonBuilder, ActionRowBuilder } = require("discord.js");
 const { messageSendChannel } = require("../../functions/messagefunctions");
-const { getPronouns } = require("../../functions/pronounfunctions");
 
 // This is called and replaces the "equipping ___" in the chain
 exports.extraconfig = async (interaction, userid) => {

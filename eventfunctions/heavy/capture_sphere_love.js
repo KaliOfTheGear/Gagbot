@@ -1,12 +1,5 @@
-const { getCollar, getClonedCollarKey } = require("../../functions/collarfunctions.js")
-const { removeHeavy, getHeavy } = require("../../functions/heavyfunctions")
 const { messageSendChannel } = require("../../functions/messagefunctions")
 const { getText } = require("../../functions/textfunctions")
-const { getUserVar, setUserVar } = require("../../functions/usercontext.js")
-const { getArousal, getChastity } = require("../../functions/vibefunctions")
-const { getClonedChastityBraKey } = require("../../functions/vibefunctions.js")
-const { getClonedChastityKey } = require("../../functions/vibefunctions.js")
-const { getChastityBra } = require("../../functions/vibefunctions.js")
 const { calculatecapture } = require("./capture_sphere.js") // reuse the calculation!
 
 let tick = async (userID, datain) => {
