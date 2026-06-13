@@ -40,14 +40,27 @@ module.exports = {
                                     founduserid = k
                                 }
                             })
-                            // Check for Doll Visor
+                            // Doll Visors
                             let dollvisorids = getAllSelectedOption("dollvisorname")
                             Object.keys(dollvisorids).forEach((k) => {
                                 // If the visor matches, then we found our doll!
-                                if (message.author.username.startsWith(dollvisorids[k]) && (dollvisorids[k].length > 0)) {
+                                if (message.author.username.startsWith(dollvisorids[k])) {
                                     founduserid = k
                                 }
                             })
+                            // Drone Visors
+                            let dronevisorids = getAllSelectedOption("dronevisorname")
+                            Object.keys(dronevisorids).forEach((k) => {
+                                // If the visor matches, then we found our drone!
+                                if (message.author.username.startsWith(`⬡-Drone ${dronevisorids[k]}`)) {
+                                    founduserid = k
+                                }
+                            })
+                            // They're probably not visored, so lets search and see if we can find
+                            // Attempt to find the user ID in our recent messages list
+                            if (process.recordedmessages && process.recordedmessages[message.id]) {
+                                founduserid = process.recordedmessages[message.id].authorid
+                            }
                             // They're probably not a custom name
                             // them in the guild list. We'll allow for top 5 results to try to allow for some grace in confidence here. 
                             if (!founduserid) {
