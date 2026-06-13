@@ -33,51 +33,6 @@ const pronounsMap = new Map([
  *  }
  ***************************************************************/
 
-/********************************************
- * getPronoun()
- * Get a userID's pronoun of the necessary form.
- *
- * If no form specified, give the object containing all.
- * - subject: "they",
- * - object: "them",
- * - possessive: "theirs",
- * - possessiveDeterminer: "their",
- * - reflexive: "themself"
- *******************************************/
-const getPronouns = (user, form, capitalize = false) => {
-	if (process.pronouns == undefined) {
-		process.pronouns = {};
-	}
-	let output = "";
-	if (process.pronouns[user]) {
-		output = process.pronouns[user][form];
-	} else {
-		output = pronounsMap.get("they/them")[form];
-        // If the user has not set pronouns, we should try to send them a DM to have them do so
-        remindPronouns(user);
-	}
-	if (capitalize) {
-		output = output.charAt(0).toUpperCase() + output.slice(1);
-	}
-	return output;
-};
-
-/********************************************
- * getPronounsSet()
- * Get a user's pronouns in typical slash format
- * Ex: "she/her"
- * NOTE: "it/it" is grammatically correct, but repetitive. Opted for "it/its" as a stylistic choice.
- *******************************************/
-const getPronounsSet = (user) => {
-	if (process.pronouns == undefined) {
-		process.pronouns = {};
-	}
-	if (process.pronouns[user]) {
-		return `${process.pronouns[user]["subject"]}/${process.pronouns[user]["subject"] != "it" ? process.pronouns[user]["object"] : process.pronouns[user]["possessive"]}`;
-	}
-	return `no pronouns set`;
-};
-
 const setPronouns = (user, pronouns) => {
 	if (process.pronouns == undefined) {
 		process.pronouns = {};
@@ -108,7 +63,7 @@ const convertPronounsText = (text, data) => {
     if (typeof outtext !== "string") {
         console.log("Error converting text. Text supplied to convertPronounsText was:")
         console.log(text)
-        outtext = `(error text, let Enraa know)`;
+        outtext = ``;
     }
 
 	let user = { subject: getPronouns(interactionuser.id, "subject"), object: getPronouns(interactionuser.id, "object"), possessive: getPronouns(interactionuser.id, "possessive"), possessiveDeterminer: getPronouns(interactionuser.id, "possessiveDeterminer"), reflexive: getPronouns(interactionuser.id, "reflexive"), subjectIs: getPronouns(interactionuser.id, "subjectIs"), subjectWill: getPronouns(interactionuser.id, "subjectWill") };
@@ -331,7 +286,5 @@ exports.theyre = (user, capitalise = false) => getPronouns(user, "subjectIs", ca
 exports.theyll = (user, capitalise = false) => getPronouns(user, "subjectWill", capitalise);
 
 exports.setPronouns = setPronouns;
-exports.getPronouns = getPronouns;
-exports.getPronounsSet = getPronounsSet;
 exports.pronounsMap = pronounsMap;
 exports.convertPronounsText = convertPronounsText;

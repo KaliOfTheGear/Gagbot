@@ -447,44 +447,6 @@ function setNextDelveRoom(user, choice) {
     }
 }
 
-/********
- * Gets the current floor the user is on. Returns undefined if they're not on a delve, 0 if at delve entrance. 
- * 
- * - (user ID) user - The user ID doing the delve
- ********/
-function getCurrentFloor(user) {
-    if (process.delveuserdata == undefined) { process.delveuserdata = {} }
-    if (process.delveuserdata[user]) {
-        // They started a delve, return the floor
-        return process.delveuserdata[user].floor
-    }
-    else {
-        // They're not in the Delve.
-        return undefined;
-    }
-}
-
-/*******
- * Get a floor's props. 
- * 
- * - (user ID) user - The user ID doing the delve
- * - (integer) floor - Floor number they are on
- * - (string) prop - Name of the property to save
- * - (any) value - Value to store in the prop key
- *******/
-function getDelveFloorState(user, floor) {
-    if (process.delveuserdata == undefined) { process.delveuserdata = {} }
-    if (process.delveuserdata[user]) {
-        // They started a delve, now check what floor they're on
-        if (process.delveuserdata[user].floordata == undefined) { process.delveuserdata[user].floordata = [] }
-        if (process.delveuserdata[user].floordata[floor] == undefined) { process.delveuserdata[user].floordata[floor] = {} }
-        return process.delveuserdata[user].floordata[floor]
-    }
-    else {
-        return undefined;
-    }
-}
-
 /*******
  * Set a floor prop on the floordata array. This is data only used by the floor itself. 
  * 
@@ -723,23 +685,6 @@ function arrayShuffle(arr) {
 }
 
 /*******
- * Gets the user's current Resolve
- * 
- * - (user id) user - User ID doing the Delve
- *******/
-function getResolve(user) {
-    if (process.delveuserdata == undefined) { process.delveuserdata = {} }
-    if (process.delveuserdata[user]) {
-        // They started a delve, return their current resolve
-        return process.delveuserdata[user].resolve
-    }
-    else {
-        // They're not in the Delve.
-        return undefined;
-    }
-}
-
-/*******
  * Modifies the user's current Resolve, reducing it to 0 at minimum if it goes past that. 
  * 
  * - (user id) user - User ID doing the Delve
@@ -794,39 +739,6 @@ async function handleDelveSlashCommand(interaction) {
         console.log("No suitable subcommand found - " + subc);
         interaction.reply(`There was an error with the subcommand run. Please let Enraa know.`)
     }
-}
-
-/*******
- * Get player stats from process.delvestats if it exists. Otherwise, create a template for the player. 
- * 
- * - (user id) user - User ID doing the Delve
- *******/
-function getDelvePlayerStats(user) {
-    if (process.delveuserstats == undefined) { process.delveuserstats = {} }
-    if (process.delveuserstats[user] == undefined) {
-        // Create a template if it does not exist. 
-        process.delveuserstats[user] = {
-            // Main
-            strength: 6,
-            dexterity: 6,
-            intelligence: 6,
-            stamina: 6,
-            // Kink
-            dominance: 6,
-            submissive: 6,
-            rigger: 6,
-            ropebunny: 6,
-            // Affinity
-            latex: 6,
-            leather: 6,
-            metal: 6,
-            magic: 6,
-            // Unallocated
-            unallocated: 24,
-            level: 1
-        }
-    }
-    return process.delveuserstats[user]
 }
 
 /******

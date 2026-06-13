@@ -71,29 +71,6 @@ function loadMittenTypes() {
     })
 }
 
-const convertGagText = (type) => {
-	let convertgagarr;
-	for (let i = 0; i < gagtypes.length; i++) {
-		if (convertgagarr == undefined) {
-			convertgagarr = {};
-		}
-		convertgagarr[gagtypes[i].value] = gagtypes[i].name;
-	}
-	return convertgagarr[type];
-};
-
-/*const assignGag = (userID, gagtype = "ball", intensity = 5, origbinder) => {
-    if (process.gags == undefined) { process.gags = {} }
-    let originalbinder = process.gags[userID]?.origbinder
-    process.gags[userID] = {
-        gagtype: gagtype,
-        intensity: intensity,
-        origbinder: originalbinder ?? origbinder // Preserve original binder until it is removed. 
-    }
-    if (process.readytosave == undefined) { process.readytosave = {} }
-    process.readytosave.gags = true;
-}*/
-
 const assignGag = (userID, gagtype = "ball", intensity = 5, origbinder) => {
 	if (process.gags == undefined) {
 		process.gags = {};
@@ -120,64 +97,6 @@ const assignGag = (userID, gagtype = "ball", intensity = 5, origbinder) => {
 	}
 	process.readytosave.gags = true;
     process.readytosave.userstats = true;
-};
-
-// to ensure compatibility with existing code, this will retrieve the first gag
-// in the list, if not called with an extra param for specific gag.
-const getGag = (userID, gagbyname) => {
-	if (process.gags == undefined) {
-		process.gags = {};
-	}
-	if (process.gags[userID] == undefined) {
-		return undefined;
-	}
-	if (gagbyname) {
-		let foundgag = process.gags[userID].find((s) => s.gagtype == gagbyname);
-		return foundgag;
-	} else if (process.gags[userID].length > 0) {
-		return process.gags[userID][0].gagtype;
-	}
-	return undefined;
-};
-
-const getGags = (userID) => {
-	if (process.gags == undefined) {
-		process.gags = {};
-	}
-	return process.gags[userID] ?? [];
-};
-
-const getGagLast = (userID) => {
-	if (process.gags == undefined) {
-		process.gags = {};
-	}
-	if (process.gags[userID] == undefined) {
-		return undefined;
-	}
-
-	if (process.gags[userID].length > 0) {
-		return process.gags[userID][process.gags[userID].length - 1].gagtype;
-	} else {
-		return undefined;
-	}
-};
-
-const getGagBinder = (userID, item) => {
-	if (process.gags == undefined) {
-		process.gags = {};
-	}
-	return process.gags[userID]?.find((g) => g.gagtype == item)?.origbinder;
-};
-
-const getGagIntensity = (userID) => {
-	if (process.gags == undefined) {
-		process.gags = {};
-	}
-	if (process.gags[userID] && process.gags[userID].length > 0) {
-		return process.gags[userID][0].intensity;
-	} else {
-		return undefined;
-	}
 };
 
 const deleteGag = (userID, specificgag, force = false) => {
@@ -249,20 +168,6 @@ const assignMitten = (userID, mittentype, origbinder) => {
     process.readytosave.userdata = true;
 };
 
-const getMitten = (userID) => {
-	if (process.mitten == undefined) {
-		process.mitten = {};
-	}
-	return process.mitten[userID];
-};
-
-const getMittenBinder = (userID) => {
-	if (process.mitten == undefined) {
-		process.mitten = {};
-	}
-	return process.mitten[userID]?.origbinder;
-};
-
 const deleteMitten = (userID) => {
 	if (process.mitten == undefined) {
 		process.mitten = {};
@@ -273,27 +178,6 @@ const deleteMitten = (userID) => {
 	}
 	process.readytosave.mitten = true;
 };
-
-const getMittenName = (userID, mittenname) => {
-	if (process.mitten == undefined) {
-		process.mitten = {};
-	}
-	let convertmittenarr = {};
-	for (let i = 0; i < mittentypes.length; i++) {
-		convertmittenarr[mittentypes[i].value] = mittentypes[i].name;
-	}
-	if (mittenname) {
-		return convertmittenarr[mittenname];
-	} else if (process.mitten[userID]?.mittenname) {
-		return convertmittenarr[process.mitten[userID]?.mittenname];
-	} else {
-		return undefined;
-	}
-};
-
-function getBaseMitten(type) {
-    return mittentypes.find((m) => m.value == type)
-}
 
 /**********************************************
  * Punishes a doll.
@@ -923,19 +807,10 @@ exports.loadMittenTypes = loadMittenTypes;
 exports.getBaseMitten = getBaseMitten;
 
 exports.assignGag = assignGag;
-exports.getGag = getGag;
-exports.getGags = getGags;
-exports.getGagLast = getGagLast;
-exports.getGagBinder = getGagBinder;
-exports.getMittenBinder = getMittenBinder;
-exports.getGagIntensity = getGagIntensity;
 exports.deleteGag = deleteGag;
 exports.assignMitten = assignMitten;
-exports.getMitten = getMitten;
 exports.deleteMitten = deleteMitten;
 exports.modifymessage = modifymessage;
-exports.convertGagText = convertGagText;
-exports.getMittenName = getMittenName;
 exports.mittentypes = mittentypes;
 exports.gagtypes = gagtypesout;
 exports.mittentypes = mittentypes;

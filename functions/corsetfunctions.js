@@ -123,10 +123,6 @@ function setUpCorsets() {
 	});
 }
 
-function getBaseCorset(corsettype) {
-	return process.corsettypes[corsettype];
-}
-
 // NOTE: Encapsulate gaspSounds in EOT characters so the Doll Visor doesn't split on them.
 const gaspSounds = ["*hff*", "*hnnf*", "*ahff*", "*hhh*", "*nnh*", "*hnn*", "*hng*", "*uah*", "*uhf*"];
 const silenceReplacers = [" ", ".", ",", ""];
@@ -169,17 +165,6 @@ const assignCorset = (user, type, tightness, origbinder) => {
 	}
 	process.readytosave.corset = true;
     process.readytosave.userstats = true;
-};
-
-const getCorset = (user) => {
-	if (process.corset == undefined) process.corset = {};
-	const corset = process.corset[user];
-	return corset;
-};
-
-const getCorsetBinder = (user) => {
-	if (process.corset == undefined) process.corset = {};
-	return process.corset[user]?.origbinder;
 };
 
 const removeCorset = (user) => {
@@ -346,15 +331,6 @@ function calcBreath(user) {
 	return corset;
 }
 
-function getBreath(user) {
-	const corset = calcBreath(user);
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.corset = true;
-	return corset.breath;
-}
-
 // consumes specified breath and returns true if user had enough
 function tryExpendBreath(user, exertion) {
 	const corset = calcBreath(user);
@@ -373,14 +349,10 @@ function silenceMessage() {
 }
 
 exports.assignCorset = assignCorset;
-exports.getCorset = getCorset;
-exports.getBaseCorset = getBaseCorset;
-exports.getCorsetBinder = getCorsetBinder;
 exports.removeCorset = removeCorset;
 exports.corsetLimitWords = corsetLimitWords;
 exports.silenceMessage = silenceMessage;
 
-exports.getBreath = getBreath;
 exports.tryExpendBreath = tryExpendBreath;
 
 exports.setUpCorsets = setUpCorsets;

@@ -43,28 +43,6 @@ function setUpToys() {
     })
 }
 
-// Returns true/false if the toy can be placed on the user
-// Respects blockers such as chastity, if specified on the toy type
-function canPlaceToy(userID, placerID, toy) {
-    return (process.toytypes && process.toytypes[toy] && process.toytypes[toy].canEquip({ userID: userID, placerID: placerID }))
-}
-
-// Returns true/false if the toy can be removed from the user
-// Respects blockers such as chastity, if specified on the toy type
-function canRemoveToy(userID, placerID, toy) {
-    return (process.toytypes && process.toytypes[toy] && process.toytypes[toy].canUnequip({ userID: userID, placerID: placerID }))
-}
-
-// Idk what to name this honestly.
-function userBlockArousingToy(user, toy) {
-    if (toy && (getOption(user, "arousalsystem") == 0) && (process.toytypes[toy].isArousing())) {
-        return true; // Do not add a toy that can increase arousal, thats bad. 
-    }
-    else {
-        return false;
-    }
-}
-
 function assignToy (user, keyholder, intensity, toytype = "vibe_bullet", origbinder) {
     let vibe = process.toytypes[toytype];
     if (!vibe) { return "NoToy" }
@@ -116,23 +94,6 @@ function assignToy (user, keyholder, intensity, toytype = "vibe_bullet", origbin
     }
 }
 
-// This should always return an array of toys no matter who its invoked for!
-function getToys (user) {
-    if (process.toys == undefined) { process.toys = {} }
-    if (process.toys[user] == undefined) { process.toys[user] = [] }
-    return process.toys[user];
-}
-
-function getSpecificToy(user, toytype) {
-    if (process.toys == undefined) { process.toys = {} }
-    if (process.toys[user] == undefined) { process.toys[user] = [] }
-    return process.toys[user].find((toy) => toy.type == toytype);
-}
-
-function getBaseToy(toytype) {
-    return process.toytypes[toytype];
-}
-
 function removeToy(user, keyholder, toytype) {
     if (process.toys == undefined) { process.toys = {} }
     if (process.toys[user] == undefined) { process.toys[user] = [] }
@@ -153,14 +114,9 @@ function removeToy(user, keyholder, toytype) {
     process.readytosave.toys = true;
 }
 
-
 exports.setUpToys = setUpToys;
 
 exports.canPlaceToy = canPlaceToy;
 exports.canRemoveToy = canRemoveToy;
-exports.userBlockArousingToy = userBlockArousingToy;
 exports.assignToy = assignToy;
-exports.getToys = getToys;
-exports.getSpecificToy = getSpecificToy;
 exports.removeToy = removeToy;
-exports.getBaseToy = getBaseToy;

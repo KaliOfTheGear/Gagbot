@@ -46,9 +46,4 @@ function setUpChastity() {
     })
 }
 
-function getBaseChastity(chastitytype) {
-    return process.chastitytypes[chastitytype];
-}
-
 exports.setUpChastity = setUpChastity;
-exports.getBaseChastity = getBaseChastity;

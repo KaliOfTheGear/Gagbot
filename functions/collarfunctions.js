@@ -41,57 +41,6 @@ function loadCollarTypes() {
     process.collartypes = collartypes;
 }
 
-function getBaseCollar(type) {
-    return collartypes.find((c) => c.value == type)
-}
-
-const assignCollar = (user, keyholder, restraints, only, customcollar) => {
-	if (process.collar == undefined) {
-		process.collar = {};
-	}
-	process.collar[user] = { 
-        keyholder: keyholder, 
-        keyholder_only: only, 
-        mitten: restraints?.mitten, 
-        chastity: restraints?.chastity, 
-        heavy: restraints?.heavy, 
-        mask: restraints?.mask, 
-        collartype: customcollar,
-        timestamp: Date.now()
-    };
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.collar = true;
-};
-
-const getCollar = (user) => {
-	if (process.collar == undefined) {
-		process.collar = {};
-	}
-    if (process.collar[user] && !process.collar[user].timestamp) {
-        process.collar[user].timestamp = Date.now();
-        if (process.readytosave == undefined) {
-            process.readytosave = {};
-        }
-        process.readytosave.collar = true;
-    }
-	return process.collar[user];
-};
-
-// Collar orig binder is not necessary - it's keyed
-
-const getCollarPerm = (user, perm) => {
-	if (process.collar == undefined) {
-		process.collar = {};
-	}
-	if (process.collar[user]) {
-		return process.collar[user][perm];
-	} else {
-		return undefined;
-	}
-};
-
 const removeCollar = (user) => {
 	if (process.collar == undefined) {
 		process.collar = {};
@@ -101,156 +50,6 @@ const removeCollar = (user) => {
 		process.readytosave = {};
 	}
 	process.readytosave.collar = true;
-};
-
-const getCollarKeys = (user) => {
-	if (process.collar == undefined) {
-		process.collar = {};
-	}
-	let keysheld = [];
-	Object.keys(process.collar).forEach((k) => {
-		if ((process.collar[k].keyholder == user) && (!process.collar[k]?.fumbled)) {
-			keysheld.push(k);
-		}
-	});
-	return keysheld;
-};
-
-const getCollarName = (userID, collarname) => {
-	if (process.collar == undefined) {
-		process.collar = {};
-	}
-	let convertcollararr = {};
-	for (let i = 0; i < collartypes.length; i++) {
-		convertcollararr[collartypes[i].value] = collartypes[i].name;
-	}
-	if (collarname) {
-		return convertcollararr[collarname];
-	} else if (process.collar[userID]?.collartype) {
-		return convertcollararr[process.collar[userID]?.collartype];
-	} else {
-		return undefined;
-	}
-};
-
-const getCollarKeyholder = (user) => {
-	if (process.collar == undefined) {
-		process.collar = {};
-	}
-	return process.collar[user]?.keyholder;
-};
-
-// Returns an object you can check the .access prop of.
-// Unlock actions should set the third param true to ensure
-// that users are not unlocking public access.
-const canAccessCollar = (collaruser, keyholder, unlock, cloning) => {
-	// As a reference for access in timelocks:
-	// 0: "Everyone Else"
-	// 1: "Keyholder Only"
-	// 2: "Nobody"
-
-	let accessval = { access: false, public: false, hascollar: true };
-	// no collar, no need
-	if (!getCollar(collaruser)) {
-		accessval.hascollar = false;
-		return accessval;
-	}
-	// Sealed Collar - nobody gets in!
-	if (getCollar(collaruser)?.access == 2) {
-		return accessval;
-	}
-	// If unlock is set, only allow access to unlock if the keyholder is the correct one.
-	if (unlock) {
-		// Allow unlocks by a non-self keyholder at all times, assuming its not sealed.
-		if (getCollar(collaruser)?.access != 2 && getCollar(collaruser)?.keyholder == keyholder && keyholder != collaruser && !getCollar(collaruser)?.fumbled) {
-			accessval.access = true;
-		}
-		// Allow unlocks by any keyholder if no timelock.
-		if (getCollar(collaruser)?.access == undefined && getCollar(collaruser)?.keyholder == keyholder && !getCollar(collaruser)?.fumbled) {
-			accessval.access = true;
-		}
-		// Allow unlocks by secondary keyholder if no timelock
-		let clonedkeys = getCollar(collaruser)?.clonedKeyholders ?? [];
-		if (getCollar(collaruser)?.access == undefined && clonedkeys.includes(keyholder)) {
-			accessval.access = true;
-		}
-		// Else, return false.
-
-		return accessval;
-	}
-	if (cloning) {
-		// Others access only when access is set to 0.
-		if (getCollar(collaruser)?.access == 0 && keyholder != collaruser) {
-			accessval.access = true;
-			accessval.public = true;
-		}
-		// Keyholder access if access is unset (no timelocks)
-		if (getCollar(collaruser)?.access == undefined && getCollar(collaruser)?.keyholder == keyholder && !getCollar(collaruser)?.fumbled) {
-			accessval.access = true;
-		}
-		// Keyholder access if timelock is 1 (keyholder only) but only if not self.
-		if (getCollar(collaruser)?.access == 1 && getCollar(collaruser)?.keyholder == keyholder && collaruser != keyholder && !getCollar(collaruser)?.fumbled) {
-			accessval.access = true;
-		}
-
-		return accessval;
-	}
-	// Others access only when access is set to 0.
-	if (getCollar(collaruser)?.access == 0 && keyholder != collaruser) {
-		accessval.access = true;
-		accessval.public = true;
-	}
-	// Keyholder access if access is unset (no timelocks)
-	if (getCollar(collaruser)?.access == undefined && getCollar(collaruser)?.keyholder == keyholder && !getCollar(collaruser)?.fumbled) {
-		accessval.access = true;
-	}
-	// Secondary Keyholder access (cloned key), but only if cloning is NOT true and no timelocks
-	let clonedkeys = getCollar(collaruser)?.clonedKeyholders ?? [];
-	if (clonedkeys.includes(keyholder) && getCollar(collaruser)?.access == undefined) {
-		accessval.access = true;
-	}
-	// Keyholder access if timelock is 1 (keyholder only) but only if not self.
-	if (getCollar(collaruser)?.access == 1 && getCollar(collaruser)?.keyholder == keyholder && collaruser != keyholder && !getCollar(collaruser)?.fumbled) {
-		accessval.access = true;
-	}
-	// Secondary Keyholder access (cloned key) if access is 1, but only if not self.
-	if (clonedkeys.includes(keyholder) && getCollar(collaruser)?.access == 1 && collaruser != keyholder) {
-		accessval.access = true;
-	}
-	// Free use collar if not locked.
-	if (!getCollar(collaruser)?.keyholder_only) {
-		accessval.access = true;
-		accessval.public = true;
-	}
-    // Free use collar if not locked.
-	if (getCollar(collaruser)?.headpatvulnerable && (getCollar(collaruser)?.headpatvulnerable >= Date.now())) {
-		accessval.access = true;
-		accessval.public = true;
-	}
-    // Keyholder access if temporary keyholder. 
-    if (getCollar(collaruser)?.temporarykeyholder && (getCollar(collaruser)?.temporarykeyholder == keyholder) && (getCollar(collaruser)?.temporarykeyholdertime > Date.now())) {
-        accessval.access = true;
-    }
-	// Else, return false.
-
-	return accessval;
-};
-
-// Returns UNIX timestring of the wearer's unlock time.
-// second flag to true to return a Discord UNIX timestring instead.
-const getCollarTimelock = (user, UNIXTimestring) => {
-	if (process.collar == undefined) {
-		process.collar = {};
-	}
-	if (!UNIXTimestring) {
-		return process.collar[user]?.unlockTime;
-	} else {
-		if (process.collar[user]?.unlockTime) {
-			return `<t:${Math.floor(process.collar[user]?.unlockTime / 1000)}:f>`;
-		} else {
-			return null;
-		}
-	}
 };
 
 // Called to prompt the wearer if it is okay to clone a key.
@@ -364,51 +163,6 @@ const revokeCollarKey = (collarUser, newKeyholder) => {
 		process.readytosave = {};
 	}
 	process.readytosave.collar = true;
-};
-
-// Called to get cloned keys
-const getClonedCollarKey = (userID) => {
-	if (process.collar == undefined) {
-		process.collar = {};
-	}
-	let returnval = process.collar[userID]?.clonedKeyholders ?? [];
-	return returnval;
-};
-
-// Called to get owned cloned keys
-// Returns a list in format: [USERID_type]
-const getClonedCollarKeysOwned = (userID) => {
-	if (process.collar == undefined) {
-		process.collar = {};
-	}
-	let ownedkeys = [];
-	Object.keys(process.collar).forEach((k) => {
-		if (process.collar[k].clonedKeyholders) {
-			if (process.collar[k].clonedKeyholders.includes(userID)) {
-				ownedkeys.push(`${k}_collar`);
-			}
-		}
-	});
-	return ownedkeys;
-};
-
-// Called to get cloned keys from restraints the keyholder is primary for
-// Returns a list in format: [wearerID_clonedKeyholderID]
-const getOtherKeysCollar = (userID) => {
-	if (process.collar == undefined) {
-		process.collar = {};
-	}
-	let ownedkeys = [];
-	Object.keys(process.collar).forEach((k) => {
-		if (process.collar[k].keyholder == userID) {
-			if (process.collar[k].clonedKeyholders) {
-				process.collar[k].clonedKeyholders.forEach((c) => {
-					ownedkeys.push(`${k}_${c}`);
-				});
-			}
-		}
-	});
-	return ownedkeys;
 };
 
 // transfer keys and returns whether the transfer was successful
@@ -528,30 +282,17 @@ const removeAdditionalCollarEffect = (user, type) => {
 }
 
 exports.assignCollar = assignCollar;
-exports.getCollar = getCollar;
 exports.removeCollar = removeCollar;
-exports.getCollarKeys = getCollarKeys;
-exports.getCollarKeyholder = getCollarKeyholder;
 exports.transferCollarKey = transferCollarKey;
-exports.getCollarPerm = getCollarPerm;
 exports.discardCollarKey = discardCollarKey;
 exports.findCollarKey = findCollarKey;
-exports.getCollarName = getCollarName;
-exports.getCollarName = getCollarName;
 exports.collartypes = collartypes;
-exports.canAccessCollar = canAccessCollar;
 exports.promptCloneCollarKey = promptCloneCollarKey;
 exports.promptTransferCollarKey = promptTransferCollarKey;
 exports.cloneCollarKey = cloneCollarKey;
 exports.revokeCollarKey = revokeCollarKey;
-exports.getClonedCollarKey = getClonedCollarKey;
-exports.getClonedCollarKeysOwned = getClonedCollarKeysOwned;
-exports.getOtherKeysCollar = getOtherKeysCollar;
-
-exports.getCollarTimelock = getCollarTimelock;
 
 exports.loadCollarTypes = loadCollarTypes;
-exports.getBaseCollar = getBaseCollar;
 
 exports.addAdditionalCollarEffect = addAdditionalCollarEffect;
 exports.removeAdditionalCollarEffect = removeAdditionalCollarEffect;

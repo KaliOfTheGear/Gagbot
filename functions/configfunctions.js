@@ -3710,65 +3710,6 @@ function setOption(userID, option, choice) {
 	process.readytosave.configs = true;
 }
 
-function getOption(userID, option) {
-	if (process.configs == undefined) {
-		process.configs = {};
-	}
-	if (process.configs.users == undefined) {
-		process.configs.users = {};
-	}
-	if (process.configs.users[userID] == undefined) {
-		process.configs.users[userID] = {};
-		initializeOptions(userID);
-	}
-	if (process.configs.users[userID][option] == undefined) {
-		let pages = ["Me", "Arousal", "General", "Restraint Options", "Extreme", "Content"];
-		pages.forEach((p) => {
-			let optionspages = Object.keys(configoptions[p]);
-			optionspages.forEach((k) => {
-				if (k == option) {
-					if (typeof configoptions[p][k].default == "function") {
-						process.configs.users[userID][k] = configoptions[p][k].default(userID);
-					} else {
-						process.configs.users[userID][k] = configoptions[p][k].default;
-					}
-				}
-			});
-		});
-		if (process.readytosave == undefined) {
-			process.readytosave = {};
-		}
-		process.readytosave.configs = true;
-	}
-	return process.configs.users[userID][option];
-}
-
-// Fetches a list of all user IDs where option == value
-// Returns array with any users that selected that
-function getUsersWithOption(option, value) {
-    let userswithval = [];
-    if (process.configs && process.configs.users) {
-        Object.keys(process.configs.users).forEach((user) => {
-            if (process.configs.users[option] == value) {
-                userswithval.push(user)
-            }
-        })
-    }
-    return userswithval;
-}
-
-// Fetches a list of all values mapped by user ID
-// Returns a map with matching values. 
-function getAllSelectedOption(option) {
-    let selectedoption = {};
-    if (process.configs && process.configs.users) {
-        Object.keys(process.configs.users).forEach((user) => {
-            selectedoption[user] = process.configs.users[user][option]
-        })
-    }
-    return selectedoption;
-}
-
 function initializeOptions(userID) {
 	let pages = ["Me", "Arousal", "General", "Restraint Options", "Extreme", "Content"];
 	pages.forEach((p) => {
@@ -3804,32 +3745,6 @@ function setServerOption(serverID, option, choice) {
 	process.readytosave.configs = true;
 }
 
-function getServerOption(serverID, option) {
-	if (process.configs == undefined) {
-		process.configs = {};
-	}
-	if (process.configs.servers == undefined) {
-		process.configs.servers = {};
-	}
-	if (process.configs.servers[serverID] == undefined) {
-		console.log("reinitting " + option);
-		process.configs.servers[serverID] = {};
-		initializeServerOptions(serverID);
-	}
-	if (process.configs.servers[serverID][option] == undefined) {
-		Object.keys(configoptions["Server"]).forEach((k) => {
-			if (k == option) {
-				process.configs.servers[serverID][k] = configoptions["Server"][k].default;
-			}
-		});
-		if (process.readytosave == undefined) {
-			process.readytosave = {};
-		}
-		process.readytosave.configs = true;
-	}
-	return process.configs.servers[serverID][option];
-}
-
 function initializeServerOptions(serverID) {
 	if (process.configs == undefined) {
 		process.configs = {};
@@ -3861,28 +3776,6 @@ function setBotOption(option, choice) {
 		process.readytosave = {};
 	}
 	process.readytosave.configs = true;
-}
-
-function getBotOption(option) {
-	if (process.configs == undefined) {
-		process.configs = {};
-	}
-	if (process.configs.botglobal == undefined) {
-		console.log("Setting up global bot settings");
-		initializeBotOptions();
-	}
-	if (process.configs.botglobal[option] == undefined) {
-		Object.keys(configoptions["Bot"]).forEach((k) => {
-			if (k == option) {
-				process.configs.botglobal[k] = configoptions["Bot"][k].default;
-			}
-		});
-		if (process.readytosave == undefined) {
-			process.readytosave = {};
-		}
-		process.readytosave.configs = true;
-	}
-	return process.configs.botglobal[option];
 }
 
 function initializeBotOptions() {
@@ -3925,18 +3818,6 @@ async function removeAllCommands(interaction, serverID) {
 	} catch (err) {
 		console.log(err);
 	}
-}
-
-// Returns 0, or however many seconds
-function getServerCmdRefresh(serverID) {
-	if (process.servercmdcooldown == undefined) {
-		process.servercmdcooldown = {};
-	}
-	if (process.servercmdcooldown[serverID]) {
-		console.log(process.servercmdcooldown[serverID].date - Math.floor(performance.now()));
-		return Math.floor(Math.max(Math.min(Math.floor(process.servercmdcooldown[serverID].date - Math.floor(performance.now())) / 1000, 300), 0));
-	}
-	return 0;
 }
 
 // Syncs commands for server, with disabled options removing their
@@ -4107,16 +3988,6 @@ async function setGlobalCommands(client) {
 				console.log(err);
 			});
 	}
-}
-
-function knownServer(serverID) {
-	if (process.configs == undefined) {
-		process.configs = {};
-	}
-	if (process.configs.servers == undefined) {
-		process.configs.servers = {};
-	}
-	return process.configs.servers[serverID] != undefined;
 }
 
 // Tries to find a webhook by the name "Gagbot" to use it, or creates a new one
@@ -4326,18 +4197,10 @@ exports.generateConfigModal = generateConfigModal;
 exports.generateTextEntryModal = generateTextEntryModal;
 exports.generateUserEntryModal = generateUserEntryModal;
 exports.configoptions = configoptions;
-exports.getOption = getOption;
 exports.setOption = setOption;
 
-exports.getUsersWithOption = getUsersWithOption;
-exports.getAllSelectedOption = getAllSelectedOption;
-
-exports.getUserTags = getUserTags;
-
-exports.getServerOption = getServerOption;
 exports.setServerOption = setServerOption;
 
-exports.getBotOption = getBotOption;
 exports.setBotOption = setBotOption;
 
 exports.initializeServerOptions = initializeServerOptions;
@@ -4346,14 +4209,12 @@ exports.removeAllCommands = removeAllCommands;
 exports.setCommands = setCommands;
 exports.setGlobalCommands = setGlobalCommands;
 
-exports.knownServer = knownServer;
 exports.leaveServerOptions = leaveServerOptions;
 
 exports.createWebhook = createWebhook;
 exports.deleteWebhook = deleteWebhook;
 exports.loadWebhooks = loadWebhooks;
 
-exports.getAllJoinedGuilds = getAllJoinedGuilds;
 exports.initializeOptions = initializeOptions;
 exports.initializeBotOptions = initializeBotOptions;
 exports.configoptions = configoptions;

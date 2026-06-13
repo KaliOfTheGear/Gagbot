@@ -217,13 +217,6 @@ const assignChastity = (user, keyholder, namedchastity, force = false) => {
 	return true;
 };
 
-const getChastity = (user) => {
-	if (process.chastity == undefined) {
-		process.chastity = {};
-	}
-	return process.chastity[user];
-};
-
 const removeChastity = (user, keyholder, force = false) => {
 	if (process.chastity == undefined) {
 		process.chastity = {};
@@ -279,13 +272,6 @@ const assignChastityBra = (user, keyholder, namedchastity, force = false) => {
 	}
 	process.readytosave.chastitybra = true;
 	return true;
-};
-
-const getChastityBra = (user) => {
-	if (process.chastitybra == undefined) {
-		process.chastitybra = {};
-	}
-	return process.chastitybra[user];
 };
 
 const removeChastityBra = (user, keyholder, force = false) => {
@@ -351,6 +337,7 @@ function swapChastityBra(user, keyholder, namedchastity) {
 	return true;
 }
 
+// old code
 const assignVibe = (user, intensity, vibetype = "bullet vibe", origbinder) => {
 	if (config.getDisableVibes(user)) return;
 	if (process.vibe == undefined) {
@@ -374,6 +361,7 @@ const assignVibe = (user, intensity, vibetype = "bullet vibe", origbinder) => {
 	process.readytosave.vibe = true;
 };
 
+// old code
 const getVibe = (user) => {
 	if (process.vibe == undefined) {
 		process.vibe = {};
@@ -381,6 +369,7 @@ const getVibe = (user) => {
 	return process.vibe[user];
 };
 
+// old code
 const removeVibe = (user, vibetype) => {
 	if (process.vibe == undefined) {
 		process.vibe = {};
@@ -397,362 +386,6 @@ const removeVibe = (user, vibetype) => {
 		process.readytosave = {};
 	}
 	process.readytosave.vibe = true;
-};
-
-const getChastityKeys = (user) => {
-	if (process.chastity == undefined) {
-		process.chastity = {};
-	}
-	let keysheld = [];
-	Object.keys(process.chastity).forEach((k) => {
-		if ((process.chastity[k].keyholder == user) && (!process.chastity[k]?.fumbled)) {
-			keysheld.push(k);
-		}
-	});
-	return keysheld;
-};
-
-const getChastityName = (userID, chastityname) => {
-	if (process.chastity == undefined) {
-		process.chastity = {};
-	}
-	let convertchastityarr = {};
-	for (let i = 0; i < process.autocompletes.chastitybelt.length; i++) {
-		convertchastityarr[process.autocompletes.chastitybelt[i].value] = process.autocompletes.chastitybelt[i].name;
-	}
-	if (chastityname) {
-		return convertchastityarr[chastityname];
-	} else if (process.chastity[userID]?.chastitytype) {
-		return convertchastityarr[process.chastity[userID]?.chastitytype];
-	} else {
-		return undefined;
-	}
-};
-
-const getChastityBraKeys = (user) => {
-	if (process.chastitybra == undefined) {
-		process.chastitybra = {};
-	}
-	let keysheld = [];
-	Object.keys(process.chastitybra).forEach((k) => {
-		if ((process.chastitybra[k].keyholder == user) && (!process.chastitybra[k]?.fumbled)) {
-			keysheld.push(k);
-		}
-	});
-	return keysheld;
-};
-
-const getChastityBraName = (userID, chastityname) => {
-	if (process.chastitybra == undefined) {
-		process.chastitybra = {};
-	}
-	let convertchastityarr = {};
-	for (let i = 0; i < process.autocompletes.chastitybra.length; i++) {
-		convertchastityarr[process.autocompletes.chastitybra[i].value] = process.autocompletes.chastitybra[i].name;
-	}
-	if (chastityname) {
-		return convertchastityarr[chastityname];
-	} else if (process.chastitybra[userID]?.chastitytype) {
-		return convertchastityarr[process.chastitybra[userID]?.chastitytype];
-	} else {
-		return undefined;
-	}
-};
-
-// Returns UNIX timestring of the wearer's unlock time.
-// second flag to true to return a Discord UNIX timestring instead.
-const getChastityTimelock = (user, UNIXTimestring) => {
-	if (process.chastity == undefined) {
-		process.chastity = {};
-	}
-	if (!UNIXTimestring) {
-		return process.chastity[user]?.unlockTime;
-	} else {
-		if (process.chastity[user]?.unlockTime) {
-			return `<t:${Math.floor(process.chastity[user]?.unlockTime / 1000)}:f>`;
-		} else {
-			return null;
-		}
-	}
-};
-
-// Returns UNIX timestring of the wearer's unlock time.
-// second flag to true to return a Discord UNIX timestring instead.
-const getChastityBraTimelock = (user, UNIXTimestring) => {
-	if (process.chastitybra == undefined) {
-		process.chastitybra = {};
-	}
-	if (!UNIXTimestring) {
-		return process.chastitybra[user]?.unlockTime;
-	} else {
-		if (process.chastitybra[user]?.unlockTime) {
-			return `<t:${Math.floor(process.chastitybra[user]?.unlockTime / 1000)}:f>`;
-		} else {
-			return null;
-		}
-	}
-};
-
-const getChastityKeyholder = (user) => {
-	if (process.chastity == undefined) {
-		process.chastity = {};
-	}
-	return process.chastity[user]?.keyholder;
-};
-
-const getChastityBraKeyholder = (user) => {
-	if (process.chastitybra == undefined) {
-		process.chastitybra = {};
-	}
-	return process.chastitybra[user]?.keyholder;
-};
-
-function getCombinedTraits(user) {
-    // Build an object which references the combined properties
-    // Any FUNCTIONS will be called from both when their respective unlock is called.
-    const beltbase = getChastity(user) ? getBaseChastity(getChastity(user).chastitytype ?? "belt_silver") : undefined;
-    const brabase = getChastityBra(user) ? getBaseChastity(getChastityBra(user).chastitytype ?? "bra_silver") : undefined;
-	if (!beltbase && !brabase) return NO_CHASTITY;
-    let datatopass = {
-        userID: user
-    }
-    // Because the usual stuff found in return object are typically referenced NOT as functions, we're gonna
-    // parse them here. I don't think this is the best solution, admittedly, but it should suffice.
-    let singlebase;
-	if (!brabase) singlebase = Object.assign({}, beltbase);
-	if (!beltbase) singlebase = Object.assign({}, brabase);
-    if (singlebase) {
-        let props = ["growthCoefficient", "decayCoefficient", "denialCoefficient",
-                    "timescale", "minVibe", "maxVibe",
-                    "minArousal", "maxArousal", "minGrowth",
-                    "maxGrowth", "minDecay", "maxDecay",
-                    "orgasmCooldown", "orgasmArousalLeft"]
-        props.forEach((p) => {
-            singlebase[p] = singlebase[p](datatopass)
-        })
-        return singlebase;
-    }
-    let returnobject = {
-        growthCoefficient: beltbase.growthCoefficient(datatopass) * brabase.growthCoefficient(datatopass),
-		decayCoefficient: beltbase.decayCoefficient(datatopass) * brabase.decayCoefficient(datatopass),
-		denialCoefficient: beltbase.denialCoefficient(datatopass) + brabase.denialCoefficient(datatopass),
-		timescale: beltbase.timescale(datatopass) * brabase.timescale(datatopass),
-		minVibe: max(beltbase.minVibe(datatopass), brabase.minVibe(datatopass)),
-		maxVibe: min(beltbase.maxVibe(datatopass), brabase.maxVibe(datatopass)),
-		minArousal: max(beltbase.minArousal(datatopass), brabase.minArousal(datatopass)),
-		maxArousal: min(beltbase.maxArousal(datatopass), brabase.maxArousal(datatopass)),
-		minGrowth: max(beltbase.minGrowth(datatopass), brabase.minGrowth(datatopass)),
-		maxGrowth: min(beltbase.maxGrowth(datatopass), brabase.maxGrowth(datatopass)),
-		minDecay: max(beltbase.minDecay(datatopass), brabase.minDecay(datatopass)),
-		maxDecay: min(beltbase.maxDecay(datatopass), brabase.maxDecay(datatopass)),
-		orgasmCooldown: beltbase.orgasmCooldown(datatopass) * brabase.orgasmCooldown(datatopass),
-		orgasmArousalLeft: beltbase.orgasmArousalLeft(datatopass) + brabase.orgasmArousalLeft(datatopass),
-    }
-    // Add each function defined on the base object! (defaultchastity.js)
-    let props = Object.getOwnPropertyNames(beltbase)
-    props.forEach((f) => {
-        if ((typeof beltbase[f] === "function") && (f.startsWith("on"))) {
-            returnobject[f] = function (data) {
-                beltbase[f](data);
-                brabase[f](data);
-            }
-        }
-        // canEquip and canUnlock, maybe eventually add other stuff like canOrgasm :D
-        if ((typeof beltbase[f] === "function") && (f.startsWith("can"))) {
-            returnobject[f] = function (data) {
-                return beltbase[f](data) && brabase[f](data)
-            }
-        }
-    })
-    // Extra props that aren't listed
-    // Note, fumbles are NOT listed here, but we can add them later if needed. 
-    returnobject.afterArousalChange = function (data) {
-        beltbase.afterArousalChange(data);
-        brabase.afterArousalChange(data);
-    }
-    // Arousal gain as if wearer is wearing vibes - used for featherlight
-    returnobject.calcVibeEffect = function (data) {
-        let sum = 0;
-        sum = sum + beltbase.calcVibeEffect(data)
-        sum = sum + brabase.calcVibeEffect(data)
-        return sum;
-    }
-	return returnobject;
-}
-
-// Returns an object you can check the .access prop of.
-// Unlock actions should set the third param true to ensure
-// that users are not unlocking public access.
-const canAccessChastity = (chastityuser, keyholder, unlock, cloning) => {
-	// As a reference for access in timelocks:
-	// 0: "Everyone Else"
-	// 1: "Keyholder Only"
-	// 2: "Nobody"
-
-	let accessval = { access: false, public: false, hasbelt: true };
-	// no belt, no need
-	if (!getChastity(chastityuser)) {
-		accessval.hasbelt = false;
-		return accessval;
-	}
-	// Sealed Belt - nobody gets in!
-	if (getChastity(chastityuser)?.access == 2) {
-		return accessval;
-	}
-	// If unlock is set, only allow access to unlock if the keyholder is the correct one.
-	if (unlock) {
-		// Allow unlocks by a non-self keyholder at all times, assuming its not sealed.
-		if (getChastity(chastityuser)?.access != 2 && getChastity(chastityuser)?.keyholder == keyholder && keyholder != chastityuser && !getChastity(chastityuser)?.fumbled) {
-			accessval.access = true;
-		}
-		// Allow unlocks by any keyholder if no timelock if the key isn't fumbled!
-		if (getChastity(chastityuser)?.access == undefined && getChastity(chastityuser)?.keyholder == keyholder && !getChastity(chastityuser)?.fumbled) {
-            accessval.access = true;
-        }
-		// Allow unlocks by secondary keyholder if no timelock
-		let clonedkeys = getChastity(chastityuser)?.clonedKeyholders ?? [];
-		if (getChastity(chastityuser)?.access == undefined && clonedkeys.includes(keyholder)) {
-			accessval.access = true;
-		}
-		// Else, return false.
-
-		return accessval;
-	}
-	// If Cloning is set, parse specific instructions for that.
-	if (cloning) {
-		// Primary Keyholder access only if set to 0.
-		if (getChastity(chastityuser)?.access == 0 && keyholder != chastityuser) {
-			accessval.access = true;
-			accessval.public = true;
-		}
-		// Keyholder access if access is unset (no timelocks) and the key isnt fumbled
-		if (getChastity(chastityuser)?.access == undefined && getChastity(chastityuser)?.keyholder == keyholder && !getChastity(chastityuser)?.fumbled) {
-			accessval.access = true;
-		}
-		// Keyholder access if timelock is 1 (keyholder only) but only if not self and if key isnt fumbled.
-		if (getChastity(chastityuser)?.access == 1 && getChastity(chastityuser)?.keyholder == keyholder && chastityuser != keyholder  && !getChastity(chastityuser)?.fumbled) {
-			accessval.access = true;
-		}
-
-		return accessval;
-	}
-	// Others access only when access is set to 0.
-	if (getChastity(chastityuser)?.access == 0 && keyholder != chastityuser) {
-		accessval.access = true;
-		accessval.public = true;
-	}
-	// Keyholder access if access is unset (no timelocks) and not fumbled
-	if (getChastity(chastityuser)?.access == undefined && getChastity(chastityuser)?.keyholder == keyholder && !getChastity(chastityuser)?.fumbled) {
-		accessval.access = true;
-	}
-	// Secondary Keyholder access (cloned key), but only if cloning is NOT true and no timelocks
-	let clonedkeys = getChastity(chastityuser)?.clonedKeyholders ?? [];
-	if (clonedkeys.includes(keyholder) && getChastity(chastityuser)?.access == undefined) {
-		accessval.access = true;
-	}
-	// Keyholder access if timelock is 1 (keyholder only) but only if not self and not fumbled
-	if (getChastity(chastityuser)?.access == 1 && getChastity(chastityuser)?.keyholder == keyholder && chastityuser != keyholder  && !getChastity(chastityuser)?.fumbled) {
-		accessval.access = true;
-	}
-	// Secondary Keyholder access (cloned key) if access is 1, but only if not self.
-	if (clonedkeys.includes(keyholder) && getChastity(chastityuser)?.access == 1 && chastityuser != keyholder) {
-		accessval.access = true;
-	}
-    // Secondary Keyholder access if temporary keyholder. 
-    if (getChastity(chastityuser)?.temporarykeyholder && (getChastity(chastityuser)?.temporarykeyholder == keyholder) && (getChastity(chastityuser)?.temporarykeyholdertime > Date.now())) {
-        accessval.access = true;
-    }
-
-	// Else, return false.
-
-	return accessval;
-};
-
-// Returns an object you can check the .access prop of.
-// Unlock actions should set the third param true to ensure
-// that users are not unlocking public access.
-const canAccessChastityBra = (chastityuser, keyholder, unlock, cloning) => {
-	// As a reference for access in timelocks:
-	// 0: "Everyone Else"
-	// 1: "Keyholder Only"
-	// 2: "Nobody"
-
-	let accessval = { access: false, public: false, hasbelt: true };
-	// no belt, no need
-	if (!getChastityBra(chastityuser)) {
-		accessval.hasbelt = false;
-		return accessval;
-	}
-	// Sealed Belt - nobody gets in!
-	if (getChastityBra(chastityuser)?.access == 2) {
-		return accessval;
-	}
-	// If unlock is set, only allow access to unlock if the keyholder is the correct one.
-	if (unlock) {
-		// Allow unlocks by a non-self keyholder at all times, assuming its not sealed.
-		if (getChastityBra(chastityuser)?.access != 2 && getChastityBra(chastityuser)?.keyholder == keyholder && keyholder != chastityuser && !getChastityBra(chastityuser)?.fumbled) {
-			accessval.access = true;
-		}
-		// Allow unlocks by any keyholder if no timelock and not fumbled.
-		if (getChastityBra(chastityuser)?.access == undefined && getChastityBra(chastityuser)?.keyholder == keyholder && !getChastityBra(chastityuser)?.fumbled) {
-			accessval.access = true;
-		}
-		// Allow unlocks by secondary keyholder if no timelock
-		let clonedkeys = getChastityBra(chastityuser)?.clonedKeyholders ?? [];
-		if (getChastityBra(chastityuser)?.access == undefined && clonedkeys.includes(keyholder)) {
-			accessval.access = true;
-		}
-		// Else, return false.
-
-		return accessval;
-	}
-	// If Cloning is set, parse specific instructions for that.
-	if (cloning) {
-		// Primary Keyholder access only if set to 0.
-		if (getChastityBra(chastityuser)?.access == 0 && keyholder != chastityuser) {
-			accessval.access = true;
-			accessval.public = true;
-		}
-		// Keyholder access if access is unset (no timelocks)
-		if (getChastityBra(chastityuser)?.access == undefined && getChastityBra(chastityuser)?.keyholder == keyholder && !getChastityBra(chastityuser)?.fumbled) {
-			accessval.access = true;
-		}
-		// Keyholder access if timelock is 1 (keyholder only) but only if not self.
-		if (getChastityBra(chastityuser)?.access == 1 && getChastityBra(chastityuser)?.keyholder == keyholder && chastityuser != keyholder && !getChastityBra(chastityuser)?.fumbled) {
-			accessval.access = true;
-		}
-
-		return accessval;
-	}
-	// Others access only when access is set to 0.
-	if (getChastityBra(chastityuser)?.access == 0 && keyholder != chastityuser) {
-		accessval.access = true;
-		accessval.public = true;
-	}
-	// Keyholder access if access is unset (no timelocks)
-	if (getChastityBra(chastityuser)?.access == undefined && getChastityBra(chastityuser)?.keyholder == keyholder && !getChastityBra(chastityuser)?.fumbled) {
-		accessval.access = true;
-	}
-	// Secondary Keyholder access (cloned key), but only if cloning is NOT true and no timelocks
-	let clonedkeys = getChastityBra(chastityuser)?.clonedKeyholders ?? [];
-	if (clonedkeys.includes(keyholder) && getChastityBra(chastityuser)?.access == undefined) {
-		accessval.access = true;
-	}
-	// Keyholder access if timelock is 1 (keyholder only) but only if not self.
-	if (getChastityBra(chastityuser)?.access == 1 && getChastityBra(chastityuser)?.keyholder == keyholder && chastityuser != keyholder && !getChastityBra(chastityuser)?.fumbled) {
-		accessval.access = true;
-	}
-	// Secondary Keyholder access (cloned key) if access is 1, but only if not self.
-	if (clonedkeys.includes(keyholder) && getChastityBra(chastityuser)?.access == 1 && chastityuser != keyholder) {
-		accessval.access = true;
-	}
-    // Keyholder access if temporary keyholder. 
-    if (getChastityBra(chastityuser)?.temporarykeyholder && (getChastityBra(chastityuser)?.temporarykeyholder == keyholder) && (getChastityBra(chastityuser)?.temporarykeyholdertime > Date.now())) {
-        accessval.access = true;
-    }
-	// Else, return false.
-
-	return accessval;
 };
 
 // Called to prompt the wearer if it is okay to clone a key.
@@ -984,96 +617,6 @@ const revokeChastityBraKey = (chastityuser, newKeyholder) => {
 	process.readytosave.chastity = true;
 };
 
-// Called to get cloned keys on a restraint
-const getClonedChastityKey = (userID) => {
-	if (process.chastity == undefined) {
-		process.chastity = {};
-	}
-	let returnval = process.chastity[userID]?.clonedKeyholders ?? [];
-	return returnval;
-};
-
-// Called to get cloned keys on a restraint
-const getClonedChastityBraKey = (userID) => {
-	if (process.chastitybra == undefined) {
-		process.chastitybra = {};
-	}
-	let returnval = process.chastitybra[userID]?.clonedKeyholders ?? [];
-	return returnval;
-};
-
-// Called to get cloned keys held by userID
-// Returns a list in format: [USERID_type]
-const getClonedChastityKeysOwned = (userID) => {
-	if (process.chastity == undefined) {
-		process.chastity = {};
-	}
-	let ownedkeys = [];
-	Object.keys(process.chastity).forEach((k) => {
-		if (process.chastity[k].clonedKeyholders) {
-			if (process.chastity[k].clonedKeyholders.includes(userID)) {
-				ownedkeys.push(`${k}_chastitybelt`);
-			}
-		}
-	});
-	return ownedkeys;
-};
-
-// Called to get cloned keys held by userID
-// Returns a list in format: [USERID_type]
-const getClonedChastityBraKeysOwned = (userID) => {
-	if (process.chastitybra == undefined) {
-		process.chastitybra = {};
-	}
-	let ownedkeys = [];
-	Object.keys(process.chastitybra).forEach((k) => {
-		if (process.chastitybra[k].clonedKeyholders) {
-			if (process.chastitybra[k].clonedKeyholders.includes(userID)) {
-				ownedkeys.push(`${k}_chastitybra`);
-			}
-		}
-	});
-	return ownedkeys;
-};
-
-// Called to get cloned keys from restraints the keyholder is primary for
-// Returns a list in format: [wearerID_clonedKeyholderID]
-const getOtherKeysChastity = (userID) => {
-	if (process.chastity == undefined) {
-		process.chastity = {};
-	}
-	let ownedkeys = [];
-	Object.keys(process.chastity).forEach((k) => {
-		if (process.chastity[k].keyholder == userID) {
-			if (process.chastity[k].clonedKeyholders) {
-				process.chastity[k].clonedKeyholders.forEach((c) => {
-					ownedkeys.push(`${k}_${c}`);
-				});
-			}
-		}
-	});
-	return ownedkeys;
-};
-
-// Called to get cloned keys from restraints the keyholder is primary for
-// Returns a list in format: [wearerID_clonedKeyholderID]
-const getOtherKeysChastityBra = (userID) => {
-	if (process.chastitybra == undefined) {
-		process.chastitybra = {};
-	}
-	let ownedkeys = [];
-	Object.keys(process.chastitybra).forEach((k) => {
-		if (process.chastitybra[k].keyholder == userID) {
-			if (process.chastitybra[k].clonedKeyholders) {
-				process.chastitybra[k].clonedKeyholders.forEach((c) => {
-					ownedkeys.push(`${k}_${c}`);
-				});
-			}
-		}
-	});
-	return ownedkeys;
-};
-
 // transfer keys and returns whether the transfer was successful
 const transferChastityKey = (lockedUser, newKeyholder) => {
 	if (process.chastity == undefined) {
@@ -1221,27 +764,6 @@ const findChastityBraKey = (index, newKeyholder) => {
 	}
 	return false;
 };
-
-function getArousedTexts(user) {
-	const texts = [];
-
-	if (config.getDynamicArousal(user)) {
-		const arousal = process.arousal[user];
-		const current = arousal.arousal;
-		const change = arousal.arousal - arousal.prev;
-		for (const [min, max, minChange, maxChange, text] of arousedtexts) {
-			if ((min < 0 || min <= current) && (max < 0 || max >= current) && (minChange < 0 || minChange <= change) && (maxChange < 0 || maxChange >= change)) texts.push(text);
-		}
-	} else {
-		const arousal = calcStaticVibeIntensity(user);
-
-		for (const [min, max, _0, _1, text] of arousedtexts) {
-			if ((min < 0 || min <= arousal) && (max < 0 || max >= arousal)) texts.push(text);
-		}
-	}
-
-	return texts;
-}
 
 // Given a string, randomly provides a stutter and rarely provides an arousal text per word.
 // Doll Edit - Uses  characters to prevent triggering doll protocol on stutters.
@@ -1484,50 +1006,6 @@ function updateSharedBreath() {
     }
 }
 
-function getVibeEquivalent(user) {
-	if (!config.getDynamicArousal(user)) return calcStaticVibeIntensity(user) * 2;
-
-	let intensity = getArousal(user);
-	if (intensity >= STUTTER_LIMIT) intensity += calcFrustration(user) / 20;
-	return intensity;
-}
-
-function getArousalDescription(user) {
-	if (getOption(user, "arousalsystem") === 0) return null; // Disabled Arousal system
-
-	const arousal = getArousal(user);
-	const denialCoefficient = calcDenialCoefficient(user);
-	const orgasmLimit = ORGASM_LIMIT * denialCoefficient;
-	const orgasmProgress = arousal / orgasmLimit;
-	// these numbers are mostly arbitrary
-	if (orgasmProgress > 1.4) return "Overstimulated";
-	if (orgasmProgress > 0.9) return "On edge";
-	if (arousal < RESET_LIMIT) return "Not aroused";
-	if (arousal < ORGASM_LIMIT * 0.3) return "A bit aroused";
-	if (arousal < ORGASM_LIMIT * 0.8) return "Moderately aroused";
-	if (arousal < ORGASM_LIMIT * 1.5) return "Very aroused";
-	return "Extremely aroused";
-}
-
-function getArousalChangeDescription(user) {
-	if (!config.getDynamicArousal(user)) return null;
-
-	const arousal = process.arousal[user];
-	if (!arousal) return null;
-	const lastChange = (arousal.arousal - arousal.prev) / (getBotOption("bot-timetickrate") / 60000);
-	if (Math.abs(lastChange) < 0.01) return null;
-	// these numbers are mostly arbitrary
-	if (lastChange < -2) return "and cooling off rapidly";
-	if (lastChange < 0) return "and cooling off";
-	if (lastChange < 2) return "and getting a little turned on";
-	if (lastChange < ORGASM_LIMIT * 5) return "and getting very hot";
-	return "and rushing to the peaks";
-}
-
-function getArousal(user) {
-	return process.arousal[user]?.arousal ?? 0;
-}
-
 function addArousal(user, change) {
 	if (!process.arousal[user]) process.arousal[user] = { arousal: 0, prev: 0, timestamp: Date.now() };
     if (isNaN(change)) {
@@ -1678,33 +1156,6 @@ function calcFrustration(user) {
 	return baseFrustration + Math.pow(PENALTY_MULTIPLIER, penalties.length - 1) * penalties.reduce((acc, [_, remaining]) => acc + remaining, 0);
 }
 
-// Provides a text string indicating arousal progress
-// Will present the bar as a % of the target orgasm rate
-function getArousalBar(userID) {
-	const arousal = getArousal(userID);
-	const denialCoefficient = calcDenialCoefficient(userID);
-	const orgasmLimit = ORGASM_LIMIT;
-	const filledbar = "■";
-	const unfilled = "□";
-
-	let targetorgasmthresh = orgasmLimit * denialCoefficient;
-	let percentagefilled = arousal / targetorgasmthresh;
-
-	// Present this bar as a 20 segment string
-	let stringout = ``;
-	let currprog = 0.0;
-	for (let i = 0; i < 10; i++) {
-		currprog += 1 / 10;
-		if (currprog < percentagefilled) {
-			stringout = `${stringout}${filledbar}`;
-		} else {
-			stringout = `${stringout}${unfilled}`;
-		}
-	}
-
-	return { bar: stringout, percentage: Math.round(percentagefilled * 100) };
-}
-
 function min(a, b) {
 	if (!a && a !== 0) return b;
 	if (!b && b !== 0) return a;
@@ -1729,69 +1180,47 @@ function bounded(min, val, max) {
 	return val;
 }
 
-exports.getVibeEquivalent = getVibeEquivalent;
-exports.getArousalDescription = getArousalDescription;
-exports.getArousalChangeDescription = getArousalChangeDescription;
-exports.getArousalBar = getArousalBar;
 exports.calcDenialCoefficient = calcDenialCoefficient;
 exports.calcFrustration = calcFrustration;
-exports.getArousal = getArousal;
 exports.addArousal = addArousal;
 exports.clearArousal = clearArousal;
 exports.tryOrgasm = tryOrgasm;
 exports.setArousalCooldown = setArousalCooldown;
 exports.updateArousalValues = updateArousalValues;
 exports.frustrationPenalties = frustrationPenalties;
-exports.getCombinedTraits = getCombinedTraits;
 
 exports.assignChastity = assignChastity;
-exports.getChastity = getChastity;
 exports.removeChastity = removeChastity;
 exports.assignVibe = assignVibe;
 exports.getVibe = getVibe;
 exports.removeVibe = removeVibe;
 exports.getArousedTexts = getArousedTexts;
 exports.stutterText = stutterText;
-exports.getChastityTimelock = getChastityTimelock;
 
-exports.getChastityKeys = getChastityKeys;
-exports.getChastityKeyholder = getChastityKeyholder;
 exports.transferChastityKey = transferChastityKey;
 exports.discardChastityKey = discardChastityKey;
 exports.findChastityKey = findChastityKey;
 
-exports.getChastityName = getChastityName;
 exports.canAccessChastity = canAccessChastity;
 
 exports.promptCloneChastityKey = promptCloneChastityKey;
 exports.promptTransferChastityKey = promptTransferChastityKey;
 exports.cloneChastityKey = cloneChastityKey;
 exports.revokeChastityKey = revokeChastityKey;
-exports.getClonedChastityKey = getClonedChastityKey;
-exports.getClonedChastityKeysOwned = getClonedChastityKeysOwned;
-exports.getOtherKeysChastity = getOtherKeysChastity;
 
 exports.assignChastityBra = assignChastityBra;
-exports.getChastityBra = getChastityBra;
 exports.removeChastityBra = removeChastityBra;
 
-exports.getChastityBraKeys = getChastityBraKeys;
-exports.getChastityBraKeyholder = getChastityBraKeyholder;
 exports.transferChastityBraKey = transferChastityBraKey;
 exports.discardChastityBraKey = discardChastityBraKey;
 exports.findChastityBraKey = findChastityBraKey;
 
-exports.getChastityBraName = getChastityBraName;
 exports.canAccessChastityBra = canAccessChastityBra;
 
 exports.promptCloneChastityBraKey = promptCloneChastityBraKey;
 exports.promptTransferChastityBraKey = promptTransferChastityBraKey;
 exports.cloneChastityBraKey = cloneChastityBraKey;
 exports.revokeChastityBraKey = revokeChastityBraKey;
-exports.getClonedChastityBraKey = getClonedChastityBraKey;
-exports.getClonedChastityBraKeysOwned = getClonedChastityBraKeysOwned;
-exports.getOtherKeysChastityBra = getOtherKeysChastityBra;
-exports.getChastityBraTimelock = getChastityBraTimelock;
 
 exports.swapChastity = swapChastity;
 exports.swapChastityBra = swapChastityBra

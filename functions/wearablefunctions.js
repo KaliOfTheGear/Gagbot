@@ -443,20 +443,6 @@ const assignWearable = (userID, wearable) => {
 	process.readytosave.wearable = true;
 };
 
-const getWearable = (userID) => {
-	if (process.wearable == undefined) {
-		process.wearable = {};
-	}
-	return process.wearable[userID]?.wornwearable ? process.wearable[userID]?.wornwearable : [];
-};
-
-const getLockedWearable = (userID) => {
-	if (process.wearable == undefined) {
-		process.wearable = {};
-	}
-	return process.wearable[userID]?.locked ? process.wearable[userID]?.locked : [];
-};
-
 const addLockedWearable = (userID, wearable) => {
 	if (process.wearable == undefined) {
 		process.wearable = {};
@@ -527,45 +513,12 @@ const deleteWearable = (userID, wearable) => {
 	process.readytosave.wearable = true;
 };
 
-const getWearableName = (userID, wearablename) => {
-	if (process.wearable == undefined) {
-		process.wearable = {};
-	}
-	let convertmittenarr = {};
-	for (let i = 0; i < process.wearabletypes.length; i++) {
-		convertmittenarr[process.wearabletypes[i].value] = process.wearabletypes[i].name;
-	}
-	if (wearablename) {
-		return convertmittenarr[wearablename];
-	} else {
-		return undefined;
-	}
-};
-
-const getBaseWearable = (type) => {
-    try {
-        let returnval = wearabletypes.find((w) => w.value == type)
-        if (!returnval) {
-            let colortosearch = type.split("_").slice(0,-1).join("_"); // remove the last element which should only be the color
-            returnval = wearabletypes.find((w) => w.value == colortosearch)
-        }
-        return returnval;
-    }
-    catch (err) {
-        console.log(err);
-    }
-};
-
 exports.wearabletypes = wearabletypes;
 exports.loadWearables = loadWearables;
 exports.wearablecolors = colors;
 
 exports.assignWearable = assignWearable;
-exports.getWearable = getWearable;
 exports.deleteWearable = deleteWearable;
-exports.getWearableName = getWearableName;
-exports.getBaseWearable = getBaseWearable;
 
 exports.addLockedWearable = addLockedWearable;
-exports.getLockedWearable = getLockedWearable;
 exports.removeLockedWearable = removeLockedWearable;

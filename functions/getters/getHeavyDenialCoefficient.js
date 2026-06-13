@@ -12,3 +12,4 @@ function getHeavyDenialCoefficient(type) {
 }
 
 exports.getHeavyDenialCoefficient = getHeavyDenialCoefficient;
+exports.heavyDenialCoefficient = getHeavyDenialCoefficient;
