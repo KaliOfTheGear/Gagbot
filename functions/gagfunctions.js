@@ -71,114 +71,6 @@ function loadMittenTypes() {
     })
 }
 
-const assignGag = (userID, gagtype = "ball", intensity = 5, origbinder) => {
-	if (process.gags == undefined) {
-		process.gags = {};
-	}
-	if (process.gags[userID] == undefined) {
-		process.gags[userID] = [];
-	}
-	// Retrieve the index if it is already on the wearer.
-	let foundgag = process.gags[userID].findIndex((s) => s.gagtype == gagtype);
-	let originalbinder = origbinder;
-	if (foundgag > -1) {
-		originalbinder = process.gags[userID][foundgag].origbinder;
-		process.gags[userID].splice(foundgag, 1);
-	}
-	process.gags[userID].push({ gagtype: gagtype, intensity: intensity, origbinder: originalbinder });
-    // Increment the worn corset counter
-    if (process.userstats == undefined) { process.userstats = {} }
-    if (process.userstats[userID] == undefined) { process.userstats[userID] = {} }
-
-    process.userstats[userID].worngags = (process.userstats[userID].worngags ?? 0) + 1;
-    
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.gags = true;
-    process.readytosave.userstats = true;
-};
-
-const deleteGag = (userID, specificgag, force = false) => {
-	if (process.gags == undefined) {
-		process.gags = {};
-	}
-	// Remove all gags if none is specified.
-	if (!specificgag && process.gags[userID]) {
-        let lockedheadgears = [];
-        if (process.headwear[userID]) { lockedheadgears = Object.keys(process.headwear[userID]) }
-        if ((lockedheadgears.length <= 1) || force) {
-            // They dont have anything locked on their head, business as usual. 
-            process.gags[userID].forEach((g) => {
-                if (process.gagtypes[g.gagtype] && process.gagtypes[g.gagtype].onUnlock) {
-                    process.gagtypes[g.gagtype].onUnlock(userID);
-                }
-            })
-            delete process.gags[userID];
-        }
-        else {
-            process.gags[userID].forEach((g) => {
-                if (process.gagtypes[g.gagtype] && process.gagtypes[g.gagtype].onUnlock) {
-                    process.gagtypes[g.gagtype].onUnlock(userID);
-                }
-                if (!process.headwear[userID][`gagharness_${g.gagtype}`]) {
-                    // Splice out any gags that are eligible to be removed. 
-                    let loc = process.gags[userID].findIndex((f) => f.gagtype == g.gagtype);
-                    process.gags[userID].splice(loc, 1);
-                }
-            })
-        }
-	} else if (process.gags[userID]) {
-		let loc = process.gags[userID].findIndex((f) => f.gagtype == specificgag);
-		if (loc > -1) {
-            if (process.gagtypes[process.gags[userID][loc].gagtype] && process.gagtypes[process.gags[userID][loc].gagtype].onUnlock) {
-                process.gagtypes[process.gags[userID][loc].gagtype].onUnlock({ userID: userID });
-            }
-			process.gags[userID].splice(loc, 1);
-		}
-		if (process.gags[userID].length == 0) {
-			delete process.gags[userID];
-		}
-	}
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.gags = true;
-};
-
-const assignMitten = (userID, mittentype, origbinder) => {
-	if (process.mitten == undefined) {
-		process.mitten = {};
-	}
-	let originalbinder = process.mitten[userID]?.origbinder;
-	process.mitten[userID] = {
-		mittenname: mittentype,
-		origbinder: originalbinder ?? origbinder, // Preserve original binder until it is removed.
-	};
-    // Increment the worn corset counter
-    if (process.userstats == undefined) { process.userstats = {} }
-    if (process.userstats[userID] == undefined) { process.userstats[userID] = {} }
-
-    process.userstats[userID].wornmittens = (process.userstats[userID].wornmittens ?? 0) + 1;
-    
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.mitten = true;
-    process.readytosave.userdata = true;
-};
-
-const deleteMitten = (userID) => {
-	if (process.mitten == undefined) {
-		process.mitten = {};
-	}
-	delete process.mitten[userID];
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.mitten = true;
-};
-
 /**********************************************
  * Punishes a doll.
  * @param userID - The user's discord ID number
@@ -804,12 +696,6 @@ async function sendTheMessage(msg, outtext, dollIDDisplay, threadID, dollProtoco
 exports.setUpGags = setUpGags;
 exports.loadMittenTypes = loadMittenTypes;
 
-exports.getBaseMitten = getBaseMitten;
-
-exports.assignGag = assignGag;
-exports.deleteGag = deleteGag;
-exports.assignMitten = assignMitten;
-exports.deleteMitten = deleteMitten;
 exports.modifymessage = modifymessage;
 exports.mittentypes = mittentypes;
 exports.gagtypes = gagtypesout;

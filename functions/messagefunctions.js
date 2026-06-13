@@ -37,29 +37,6 @@ const loadEmoji = async (client) => {
 		process.emojis[emojisbot.get(emoji).name] = `${emojisbot.get(emoji)}`;
 	}
 };
-/**********
- * Records a message into process.recordedmessages.
- * This will generate a map of IDs to reference against, where searching the modifiedmsg's ID will provide the content, user ID and timestamp of the message
- **********/
-function recordMessage (msg, modifiedmsg, reply) {
-    if (getOption(msg?.author?.id, "recordmessages") == "disabled") { return }
-    if (process.recordedmessages == undefined) { process.recordedmessages = {} }
-    if (modifiedmsg?.id && msg?.content && msg?.author?.id && msg?.createdTimestamp) {
-        process.recordedmessages[modifiedmsg.id] = {
-            content: msg.content,
-            timestamp: msg.createdTimestamp,
-            authorid: msg.author.id
-        }
-        if (reply) {
-            process.recordedmessages[modifiedmsg.id].replyauthor = reply.replyauthor
-            process.recordedmessages[modifiedmsg.id].replymessageid = reply.replymessageid
-        }
-    } 
-    if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.recordedmessages = true;
-}
 
 const messageSend = async (msg, str, avatarURL, username, threadId, botemoji, isreply, replyobject) => {
     try {
@@ -300,7 +277,6 @@ exports.splitMessage = splitMessage;
 
 exports.messageSend = messageSend;
 exports.messageSendImg = messageSendImg;
-exports.recordMessage = recordMessage;
 
 exports.loadEmoji = loadEmoji;
 

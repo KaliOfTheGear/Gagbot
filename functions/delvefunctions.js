@@ -422,53 +422,6 @@ const delveroomchoices = {
     },
 }
 
-/*********
- * Sets the next Delve room by choice. If choice is not specified, the user is starting a new delve. This will always default to the delveentrance room.
- * 
- * - (user ID) user - The user ID doing the delve
- * - (string) choice - The prop name in delveroomchoices
- *********/
-function setNextDelveRoom(user, choice) {
-    if ((getCurrentFloor(user) == undefined)) {
-        process.delveuserdata[user] = {
-            floorarr: ["delveentrance"],
-            floorscompleted: -1,
-            floor: 0,
-            tempbuffs: [],
-            resolve: 10 + Math.round(getDelvePlayerStats(user).stamina / 2)
-        }
-        if (process.readytosave == undefined) {
-            process.readytosave = {};
-        }
-        process.readytosave.delveuserdata = true;
-    }
-    else {
-        process.delveuserdata[user].floorarr.push(choice);
-    }
-}
-
-/*******
- * Set a floor prop on the floordata array. This is data only used by the floor itself. 
- * 
- * - (user ID) user - The user ID doing the delve
- * - (integer) floor - Floor number they are on
- * - (string) prop - Name of the property to save
- * - (any) value - Value to store in the prop key
- *******/
-function setDelveFloorState(user, floor, prop, value) {
-    if (process.delveuserdata == undefined) { process.delveuserdata = {} }
-    if (process.delveuserdata[user]) {
-        // They started a delve, now check what floor they're on
-        if (process.delveuserdata[user].floordata == undefined) { process.delveuserdata[user].floordata = [] }
-        if (process.delveuserdata[user].floordata[floor] == undefined) { process.delveuserdata[user].floordata[floor] = {} }
-        process.delveuserdata[user].floordata[floor][prop] = value;
-        if (process.readytosave == undefined) {
-            process.readytosave = {};
-        }
-        process.readytosave.delveuserdata = true;
-    }
-}
-
 /*******
  * Generates the output modal and returns it. This should be an output for a message.send function. 
  * 
@@ -682,19 +635,6 @@ function arrayShuffle(arr) {
         [arr[i], arr[j]] = [arr[j], arr[i]];
     }
     return arr; 
-}
-
-/*******
- * Modifies the user's current Resolve, reducing it to 0 at minimum if it goes past that. 
- * 
- * - (user id) user - User ID doing the Delve
- * - (integer) resolveamt - Amount of resolve to add or remove
- *******/
-function modifyResolve(user, resolveamt) {
-    if (process.delveuserdata == undefined) { process.delveuserdata = {} }
-    if (process.delveuserdata[user]) {
-        process.delveuserdata[user].resolve = Math.max(parseInt(process.delveuserdata[user].resolve) + resolveamt, 0);
-    }
 }
 
 /*******

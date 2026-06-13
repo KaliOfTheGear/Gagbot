@@ -15,38 +15,6 @@ const pronounsMap = new Map([
 	["it/its", { subject: "it", object: "it", possessive: "its", possessiveDeterminer: "its", reflexive: "itself", subjectIs: "it's", subjectWill: "it'll" }],
 ]);
 
-//console.log(...pronounsMap.keys())
-
-/***************************************************************
- * process.pronouns File Structure
- *
- * JSON Object of JSON Objects with the following format:
- *
- *  process.pronouns = {
- *      125093095405518850 : {
- *          subject: "she",
- *          object: "her",
- *          possessive: "hers",
- *          possessiveDeterminer: "her",
- *          reflexive: "herself"
- *      }
- *  }
- ***************************************************************/
-
-const setPronouns = (user, pronouns) => {
-	if (process.pronouns == undefined) {
-		process.pronouns = {};
-	}
-
-	process.pronouns[user] = pronounsMap.get(pronouns);
-    setOption(user, "pronouns", (pronouns.split("/")[0]))
-
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.pronouns = true;
-};
-
 // -----------------------------------------------------------------
 // convertPronounsText()
 // Takes a string and a data object, which should include user and target
@@ -285,6 +253,5 @@ exports.themself = (user, capitalise = false) => getPronouns(user, "reflexive", 
 exports.theyre = (user, capitalise = false) => getPronouns(user, "subjectIs", capitalise);
 exports.theyll = (user, capitalise = false) => getPronouns(user, "subjectWill", capitalise);
 
-exports.setPronouns = setPronouns;
 exports.pronounsMap = pronounsMap;
 exports.convertPronounsText = convertPronounsText;

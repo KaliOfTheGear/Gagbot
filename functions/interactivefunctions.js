@@ -45,27 +45,6 @@ Finally, you should review settings found in **/config** concerning effects from
 	return { content: outtext, components: [row], withResponse: true };
 };
 
-const assignConsent = (user) => {
-	if (process.consented == undefined) {
-		process.consented = {};
-	}
-	process.consented[user] = { mainconsent: true };
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.consented = true;
-};
-
-const getConsent = (user) => {
-	if (process.consented == undefined) {
-		process.consented = {};
-	}
-	if (user === process.client.user.id) {
-		return { mainconsent: true }; // Lol, trying to gag us.
-	}
-	return process.consented[user];
-};
-
 // check with getConsent, then pipe to await handleConsent and return.
 const handleConsent = async (interaction, user) => {
 	let testusertarget = user;
@@ -1407,7 +1386,6 @@ async function generateExtraConfig(interaction, userid, itemname, force) {
 }
 
 exports.consentMessage = consentMessage;
-exports.getConsent = getConsent;
 exports.handleConsent = handleConsent;
 exports.collarPermModal = collarPermModal;
 exports.timelockChastityModal = timelockChastityModal;

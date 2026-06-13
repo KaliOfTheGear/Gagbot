@@ -41,17 +41,6 @@ function loadCollarTypes() {
     process.collartypes = collartypes;
 }
 
-const removeCollar = (user) => {
-	if (process.collar == undefined) {
-		process.collar = {};
-	}
-	delete process.collar[user];
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.collar = true;
-};
-
 // Called to prompt the wearer if it is okay to clone a key.
 async function promptCloneCollarKey(user, target, clonekeyholder) {
 	return new Promise(async (res, rej) => {
@@ -133,59 +122,6 @@ async function promptTransferCollarKey(user, target, newKeyholder) {
 	});
 }
 
-// Called once we confirm the user is okay with it!
-// For cloned keys, we want to allow a cloned key to do everything except
-// giving the key or cloning the key. These actions should check the
-// fourth param of the canAccessCollar function and set it to true
-// when the action needs to REJECT cloned keys.
-const cloneCollarKey = (collarUser, newKeyholder) => {
-	let collar = getCollar(collarUser);
-	if (!collar.clonedKeyholders) {
-		collar.clonedKeyholders = [];
-	}
-	collar.clonedKeyholders.push(newKeyholder);
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.collar = true;
-};
-
-// Called to remove a single cloned keyholder from the list.
-const revokeCollarKey = (collarUser, newKeyholder) => {
-	let collar = getCollar(collarUser);
-	if (!collar.clonedKeyholders) {
-		collar.clonedKeyholders = [];
-	}
-	if (collar.clonedKeyholders.includes(newKeyholder)) {
-		collar.clonedKeyholders.splice(collar.clonedKeyholders.indexOf(newKeyholder), 1);
-	}
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.collar = true;
-};
-
-// transfer keys and returns whether the transfer was successful
-const transferCollarKey = (lockedUser, newKeyholder) => {
-	if (process.collar == undefined) {
-		process.collar = {};
-	}
-	if (process.collar[lockedUser]) {
-		if (process.collar[lockedUser].keyholder != newKeyholder) {
-			process.collar[lockedUser].keyholder = newKeyholder;
-			// Erase cloned keys in this process!
-			process.collar[lockedUser].clonedKeyholders = [];
-			if (process.readytosave == undefined) {
-				process.readytosave = {};
-			}
-			process.readytosave.collar = true;
-			return true;
-		}
-	}
-
-	return false;
-};
-
 //////// OLD CODE
 const discardCollarKey = (user) => {
 	if (process.collar == undefined) {
@@ -233,66 +169,10 @@ const findCollarKey = (index, newKeyholder) => {
 	return false;
 };
 
-/*******
- * Adds an additional Collar effect to the user's collar, if they are wearing a collar. 
- * 
- * - (user id) user - The user wearing the collar.
- * - (string) type - The collar effect to add
- *******/
-const addAdditionalCollarEffect = (user, type) => {
-    try {
-        if (getCollar(user)) {
-            if (!process.collar[user].additionalcollars) { process.collar[user].additionalcollars = [] }
-            process.collar[user].additionalcollars.push(type)
-            if (process.readytosave == undefined) {
-                process.readytosave = {};
-            }
-            process.readytosave.collar = true;
-        }
-    }
-    catch (err) {
-        console.log(err);
-    }
-}
-
-/*******
- * Removes an additional Collar effect from the user's collar, if they are wearing a collar. 
- * 
- * - (user id) user - The user wearing the collar.
- * - (string) type - The collar effect to remove
- *******/
-const removeAdditionalCollarEffect = (user, type) => {
-    try {
-        if (getCollar(user)) {
-            if (process.collar[user].additionalcollars && process.collar[user].additionalcollars.includes(type)) {
-                process.collar[user].additionalcollars.splice(process.collar[user].additionalcollars.indexOf(type), 1);
-            }
-            if (process.collar[user].additionalcollars && process.collar[user].additionalcollars.length == 0) {
-                delete process.collar[user].additionalcollars;
-            }
-            if (process.readytosave == undefined) {
-                process.readytosave = {};
-            }
-            process.readytosave.collar = true;
-        }
-    }
-    catch (err) {
-        console.log(err)
-    }
-}
-
-exports.assignCollar = assignCollar;
-exports.removeCollar = removeCollar;
-exports.transferCollarKey = transferCollarKey;
 exports.discardCollarKey = discardCollarKey;
 exports.findCollarKey = findCollarKey;
 exports.collartypes = collartypes;
 exports.promptCloneCollarKey = promptCloneCollarKey;
 exports.promptTransferCollarKey = promptTransferCollarKey;
-exports.cloneCollarKey = cloneCollarKey;
-exports.revokeCollarKey = revokeCollarKey;
 
 exports.loadCollarTypes = loadCollarTypes;
-
-exports.addAdditionalCollarEffect = addAdditionalCollarEffect;
-exports.removeAdditionalCollarEffect = removeAdditionalCollarEffect;

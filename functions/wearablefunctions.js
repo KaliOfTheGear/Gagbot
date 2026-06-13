@@ -428,60 +428,6 @@ const loadWearables = async () => {
 	console.log(`Wearables list is ${process.autocompletes.wearables.length} entries long.`);
 };
 
-const assignWearable = (userID, wearable) => {
-	if (process.wearable == undefined) {
-		process.wearable = {};
-	}
-	if (process.wearable[userID]) {
-		process.wearable[userID].wornwearable.push(wearable);
-	} else {
-		process.wearable[userID] = { wornwearable: [wearable] };
-	}
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.wearable = true;
-};
-
-const addLockedWearable = (userID, wearable) => {
-	if (process.wearable == undefined) {
-		process.wearable = {};
-	}
-	if (process.wearable[userID]) {
-		if (process.wearable[userID].locked == undefined) {
-			process.wearable[userID].locked = [wearable];
-		} else {
-			process.wearable[userID].locked.push(wearable);
-		}
-	}
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.wearable = true;
-};
-
-const removeLockedWearable = (userID, wearable) => {
-	if (process.wearable == undefined) {
-		process.wearable = {};
-	}
-	if (process.wearable[userID]) {
-		if (process.wearable[userID].locked == undefined) {
-			return;
-		} else {
-			if (process.wearable[userID].locked.includes(wearable)) {
-				process.wearable[userID].locked.splice(process.wearable[userID].locked.indexOf(wearable), 1);
-			}
-			if (process.wearable[userID].locked.length == 0) {
-				delete process.wearable[userID].locked;
-			}
-		}
-	}
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.wearable = true;
-};
-
 const deleteWearable = (userID, wearable) => {
 	if (process.wearable == undefined) {
 		process.wearable = {};
@@ -516,9 +462,3 @@ const deleteWearable = (userID, wearable) => {
 exports.wearabletypes = wearabletypes;
 exports.loadWearables = loadWearables;
 exports.wearablecolors = colors;
-
-exports.assignWearable = assignWearable;
-exports.deleteWearable = deleteWearable;
-
-exports.addLockedWearable = addLockedWearable;
-exports.removeLockedWearable = removeLockedWearable;

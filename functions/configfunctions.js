@@ -3693,23 +3693,6 @@ function generateConfigModal(interaction, menuset = "General", page, statustext)
 	});
 }
 
-function setOption(userID, option, choice) {
-	if (process.configs == undefined) {
-		process.configs = {};
-	}
-	if (process.configs.users == undefined) {
-		process.configs.users = {};
-	}
-	if (process.configs.users[userID] == undefined) {
-		process.configs.users[userID] = {};
-	}
-	process.configs.users[userID][option] = choice;
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.configs = true;
-}
-
 function initializeOptions(userID) {
 	let pages = ["Me", "Arousal", "General", "Restraint Options", "Extreme", "Content"];
 	pages.forEach((p) => {
@@ -3722,23 +3705,6 @@ function initializeOptions(userID) {
 			}
 		});
 	});
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.configs = true;
-}
-
-function setServerOption(serverID, option, choice) {
-	if (process.configs == undefined) {
-		process.configs = {};
-	}
-	if (process.configs.servers == undefined) {
-		process.configs.servers = {};
-	}
-	if (process.configs.servers[serverID] == undefined) {
-		process.configs.servers[serverID] = {};
-	}
-	process.configs.servers[serverID][option] = choice;
 	if (process.readytosave == undefined) {
 		process.readytosave = {};
 	}
@@ -3764,20 +3730,6 @@ function initializeServerOptions(serverID) {
 	process.readytosave.configs = true;
 }
 
-function setBotOption(option, choice) {
-	if (process.configs == undefined) {
-		process.configs = {};
-	}
-	if (process.configs.botglobal == undefined) {
-		process.configs.botglobal = {};
-	}
-	process.configs.botglobal[option] = choice;
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.configs = true;
-}
-
 function initializeBotOptions() {
 	if (process.configs == undefined) {
 		process.configs = {};
@@ -3788,21 +3740,6 @@ function initializeBotOptions() {
 	Object.keys(configoptions["Bot"]).forEach((k) => {
 		process.configs.botglobal[k] = configoptions["Bot"][k].default;
 	});
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.configs = true;
-}
-
-// Leave from the guild as if we never existed... which is just delete the properties here.
-function leaveServerOptions(serverID) {
-	if (process.configs == undefined) {
-		process.configs = {};
-	}
-	if (process.configs.servers == undefined) {
-		process.configs.servers = {};
-	}
-	delete process.configs.servers[serverID];
 	if (process.readytosave == undefined) {
 		process.readytosave = {};
 	}
@@ -3990,89 +3927,6 @@ async function setGlobalCommands(client) {
 	}
 }
 
-// Tries to find a webhook by the name "Gagbot" to use it, or creates a new one
-// Returns an object with webhook info or none if it cannot be made.
-async function createWebhook(interaction, channel) {
-	try {
-		// First, check if we can manage webhooks. If we can't, vamos.
-		if (!channel.permissionsFor(channel.guild.members.me).has(PermissionsBitField.Flags.ManageWebhooks)) {
-			return false;
-		}
-
-		// We're now reasonably sure we can make webhooks.
-		// Check if a Gagbot webhook already exists. This is used for human emoji.
-		let existingwebhooks = await channel.fetchWebhooks();
-		let webhook;
-		let botwebhook;
-		let humanwebhook;
-		// Use a user-made webhook first if available
-		existingwebhooks.forEach((w) => {
-			console.log(existingwebhooks);
-			console.log(`ISBOT: ${w.applicationId != interaction.client.user.id}, ISNAME: ${w.name == "Gagbot"}`);
-			if (w.applicationId != interaction.client.user.id && w.name == "Gagbot") {
-				webhook = w;
-				humanwebhook = true;
-			}
-		});
-		// Create a webhook for ourselves. This is used for bot emoji.
-		existingwebhooks.forEach((w) => {
-			if (w.applicationId == interaction.client.user.id) {
-				botwebhook = w;
-				humanwebhook = false;
-			}
-		});
-		// A gagbot webhook does not exist. Create one.
-		if (!botwebhook) {
-			botwebhook = await channel.createWebhook({ name: "Gagbot Webhook (Bot)", reason: "Auto-generated Webhook for Bot Emoji" });
-		}
-        // If the personal created webhook doesn't exist, assign the webhook the same id
-        // This will look weird, but it won't crash. 
-        if (!webhook) { webhook = botwebhook }
-		if (process.webhook == undefined) {
-			process.webhook = {};
-		}
-		if (process.webhookstoload == undefined) {
-			process.webhookstoload = {};
-		}
-		process.webhook[channel.id] = { human: webhook, bot: botwebhook };
-		process.webhookstoload[channel.id] = { human: webhook.id, bot: botwebhook.id };
-		if (process.readytosave == undefined) {
-			process.readytosave = {};
-		}
-		process.readytosave.webhooks = true;
-		console.log(process.webhookstoload);
-		return { humanwebhook: humanwebhook };
-	} catch (err) {
-		console.log(err);
-		return false;
-	}
-}
-
-async function deleteWebhook(interaction, channel) {
-	// First, check if we can manage webhooks. If we can't, vamos.
-	if (!channel.permissionsFor(channel.guild.members.me).has(PermissionsBitField.Flags.ManageWebhooks)) {
-		return false;
-	}
-	let webhook;
-	let existingwebhooks = await channel.fetchWebhooks();
-	existingwebhooks.forEach((w) => {
-		if (w.id == process.webhook[channel.id]) {
-			webhook = w;
-		}
-	});
-	delete process.webhook[channel.id];
-	delete process.webhookstoload[channel.id];
-	if (webhook) {
-		if (webhook.w.applicationId == interaction.client.user.id) {
-			await interaction.client.deleteWebhook(webhook.id);
-			return "bot";
-		} else {
-			return "notbot";
-		}
-	}
-	return false;
-}
-
 // Load all known webhooks into the list
 function loadWebhooks(client) {
 	Object.keys(process.webhookstoload).forEach(async (w) => {
@@ -4197,11 +4051,6 @@ exports.generateConfigModal = generateConfigModal;
 exports.generateTextEntryModal = generateTextEntryModal;
 exports.generateUserEntryModal = generateUserEntryModal;
 exports.configoptions = configoptions;
-exports.setOption = setOption;
-
-exports.setServerOption = setServerOption;
-
-exports.setBotOption = setBotOption;
 
 exports.initializeServerOptions = initializeServerOptions;
 
@@ -4209,10 +4058,6 @@ exports.removeAllCommands = removeAllCommands;
 exports.setCommands = setCommands;
 exports.setGlobalCommands = setGlobalCommands;
 
-exports.leaveServerOptions = leaveServerOptions;
-
-exports.createWebhook = createWebhook;
-exports.deleteWebhook = deleteWebhook;
 exports.loadWebhooks = loadWebhooks;
 
 exports.initializeOptions = initializeOptions;
