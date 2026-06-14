@@ -1,5 +1,6 @@
 const { ContextMenuCommandBuilder, ApplicationCommandType } = require('discord.js');
 const { generateKeyGivingModal } = require('../../functions/interactivefunctions');
+const { getAllSelectedOption } = require('../../functions/getters/config/getAllSelectedOption');
 
 module.exports = {
     data: new ContextMenuCommandBuilder()

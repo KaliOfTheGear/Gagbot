@@ -2,6 +2,9 @@ const { ContextMenuCommandBuilder, ApplicationCommandType, MessageFlags } = requ
 const { handleConsent } = require('../../functions/interactivefunctions');
 const { handleTouchEvent, rollPatChance } = require('../../functions/touchfunctions');
 const { getText } = require('../../functions/textfunctions');
+const { getAllSelectedOption } = require('../../functions/getters/config/getAllSelectedOption');
+const { getConsent } = require('../../functions/getters/config/getConsent');
+const { getPronouns } = require('../../functions/getters/config/getPronouns');
 
 module.exports = {
     data: new ContextMenuCommandBuilder()

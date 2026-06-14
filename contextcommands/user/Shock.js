@@ -1,6 +1,14 @@
 const { ContextMenuCommandBuilder, ApplicationCommandType, MessageFlags } = require('discord.js');
 const { getTextGeneric } = require('../../functions/textfunctions');
 const { handleTouchEvent, shockUser } = require('../../functions/touchfunctions');
+const { getCollarName } = require('../../functions/getters/collar/getCollarName');
+const { handleConsent } = require('../../functions/interactivefunctions');
+const { getConsent } = require('../../functions/getters/config/getConsent');
+const { getCollar } = require('../../functions/getters/collar/getCollar');
+const { addArousal } = require('../../functions/setters/arousal/addArousal');
+const { statsAddCounter } = require('../../functions/setters/config/statsAddCounter');
+const { canAccessCollar } = require('../../functions/getters/collar/canAccessCollar');
+const { getOption } = require('../../functions/getters/config/getOption');
 
 module.exports = {
     data: new ContextMenuCommandBuilder()

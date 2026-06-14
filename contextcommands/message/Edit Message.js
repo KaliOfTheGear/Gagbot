@@ -3,6 +3,7 @@ const { ContextMenuCommandBuilder, ApplicationCommandType, MessageFlags } = requ
 const { generateEditMessageModal } = require('../../functions/interactivefunctions');
 const { modalexecute } = require('../../commands/config');
 const { modifymessage } = require('../../functions/gagfunctions');
+const { getAllSelectedOption } = require('../../functions/getters/config/getAllSelectedOption');
 
 module.exports = {
     data: new ContextMenuCommandBuilder()
