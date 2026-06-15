@@ -115,7 +115,7 @@ module.exports = {
 				data.nomitten = true;
                 if (interaction.user.id == targetuser.id) {
                     data.self = true;
-					if (getGag(interaction.user.id)) {
+					if (getGag(interaction.guildId, interaction.user.id)) {
 						// Wearing a gag already.
 						data.gag = true;
 						interaction.reply(getText(data));
@@ -133,7 +133,7 @@ module.exports = {
                     await handleMajorRestraint(interaction.user, targetuser, "mitten", chosenmittens).then(async () => {
                         await handleExtremeRestraint(interaction.user, targetuser, "mitten", chosenmittens).then(
                             async (success) => {
-                                if (getGag(targetuser.id)) {
+                                if (getGag(interaction.guildId, targetuser.id)) {
                                     data.gag = true;
                                 }
                                 else {

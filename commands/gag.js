@@ -74,9 +74,9 @@ module.exports = {
 			let interactionuser = interaction.user;
 			let gagtype = interaction.options.getString("gag") ? interaction.options.getString("gag") : "ball";
 			let gagintensity = interaction.options.getNumber("intensity") ? interaction.options.getNumber("intensity") : 5;
-			let currentgag = getGag(gaggeduser.id, gagtype);
+			let currentgag = getGag(interaction.guildId, gaggeduser.id, gagtype);
 			let gagname = process.gagtypes[gagtype]?.choicename;
-			let oldgagname = process.gagtypes[getGagLast(gaggeduser.id)]?.choicename;
+			let oldgagname = process.gagtypes[getGagLast(interaction.guildId, gaggeduser.id)]?.choicename;
 			let intensitytext = "loosely";
 			if (intensitytext == "loosely") {
 				if (gagintensity > 2) {
@@ -137,7 +137,7 @@ module.exports = {
 				if (interactionuser == gaggeduser) {
 					// gagging self
 					data.self = true;
-					if (getGag(interactionuser.id)) {
+					if (getGag(interaction.guildId, interactionuser.id)) {
 						// has a gag already
 						data.gag = true;
 						interaction.reply(getText(data));
@@ -149,7 +149,7 @@ module.exports = {
 				} else {
 					// gagging another
 					data.other = true;
-					if (getGag(gaggeduser.id)) {
+					if (getGag(interaction.guildId, gaggeduser.id)) {
 						// has a gag already
 						data.gag = true;
 						interaction.reply(getText(data));
@@ -165,7 +165,7 @@ module.exports = {
 				data.mitten = true;
 				if (interactionuser.id != gaggeduser.id) {
 					data.other = true; // yes, this is backwards, sorry.
-					if (getGag(gaggeduser.id)) {
+					if (getGag(interaction.guildId, gaggeduser.id)) {
 						data.gag = true;
 						interaction.reply(getText(data));
 					} else {
@@ -183,7 +183,7 @@ module.exports = {
 				if (interactionuser.id == gaggeduser.id) {
 					// Gagging ourself
 					data.self = true;
-					if (getGag(gaggeduser.id)) {
+					if (getGag(interaction.guildId, gaggeduser.id)) {
 						// We are already gagged!
 						data.gag = true;
 						if (currentgag) {
@@ -244,7 +244,7 @@ module.exports = {
 				} else {
 					// Gagging others
 					data.other = true;
-					if (getGag(gaggeduser.id)) {
+					if (getGag(interaction.guildId, gaggeduser.id)) {
 						// They are already gagged, so we want to change gags
 						// Note, we should check if we're allowed in this case, since it may interfere.
 						data.gag = true;

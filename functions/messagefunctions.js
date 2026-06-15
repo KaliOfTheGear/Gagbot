@@ -209,12 +209,14 @@ const splitMessage = (text, inputRegex = null) => {
 function runMessageEvents(data) {
 	// Gags
 	if (process.gags) {
-		Object.keys(process.gags).forEach((userid) => {
-			getGags(userid).forEach((g) => {
-				if (process.msgfunctions.gags && process.msgfunctions.gags[g.gagtype]) {
-					process.msgfunctions.gags[g.gagtype](userid, data);
-				}
-			});
+		Object.keys(process.gags).forEach((serverid) => {
+            Object.keys(process.gags[serverid]).forEach((userid) => {
+                getGags(serverid, userid).forEach((g) => {
+                    if (process.msgfunctions.gags && process.msgfunctions.gags[g.gagtype]) {
+                        process.msgfunctions.gags[g.gagtype](userid, data);
+                    }
+                });
+            })
 		});
 	}
 	// Headwear

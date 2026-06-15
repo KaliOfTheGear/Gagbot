@@ -50,7 +50,7 @@ function shuffleWearables(inputArray) {
 // Then it will slowly apply a random outfit and set of restraints!
 // Then it will spit them out and apply a new heavy item at the end!
 
-let tick = async (userID, datain) => {
+let tick = async (serverID, userID, datain) => {
     if (process.userevents == undefined) { process.userevents = {} }
     if (process.userevents[userID] == undefined) { process.userevents[userID] = {} }
     if (process.userevents[userID].costumermimic == undefined) { process.userevents[userID].costumermimic = { stage: 0 } }
@@ -436,7 +436,7 @@ let tick = async (userID, datain) => {
                 break;
 
             case "gag":
-                if (!getGag(userID) || (getGag(userID) && (getGag(userID).getGagName != nextitem.itemtowear))) {
+                if (!getGag(serverID, userID) || (getGag(serverID, userID) && (getGag(userID).getGagName != nextitem.itemtowear))) {
                     data.gag = true;
                     data.textdata.c1 = convertGagText(nextitem.itemtowear), // gag name
                         // Apply the gag    

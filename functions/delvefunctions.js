@@ -229,17 +229,17 @@ const delveroomchoices = {
                 longoutcome_failure: "Despite a 100% success rate, you somehow failed. (This is a bug, please report!)",
                 statweight: {},
                 statspecial: (userID, delvedata, resolve) => { return delvedata.stats },
-                successfunction: (userID, delvedata, resolve) => { 
+                successfunction: (serverID, userID, delvedata, resolve) => { 
                     let extratextt = "You take 3 damage!"
                     // Decide on a restraint to equip on the player
                     let eligiblerestraints = [];
-                    if (!getGag(userID, "ball")) {
+                    if (!getGag(serverID, userID, "ball")) {
                         eligiblerestraints.push("ball")
                     }
-                    if (!getGag(userID, "stuff")) {
+                    if (!getGag(serverID, userID, "stuff")) {
                         eligiblerestraints.push("stuff")
                     }
-                    if (!getGag(userID, "tape")) {
+                    if (!getGag(serverID, userID, "tape")) {
                         eligiblerestraints.push("tape")
                     }
                     if (!getChastity(userID) && !getUserTags(userID).includes("chastity")) {

@@ -17,12 +17,13 @@ const { markForSave } = require("../../other/markForSave");
  * Retrieves an outfit and attempts to apply it to the user. 
  * Application will follow the same constraints as applying the bondage pieces from their other standard commands.
  * 
+ * - (server id) serverID - The server this is running on
  * - (user id) userID - The user whose outfit to restore
  * - (object) storedobject - An object of restraint objects to restore to the user
  * ---
  * ##### *No return value*
  *********/
-function restoreOutfit(userID, storedobject) {
+function restoreOutfit(serverID, userID, storedobject) {
 	Object.keys(storedobject).forEach((k) => {
 		// I could use a switch statement here but I feel like using if conditionals.
 		if (k == "wearable") {

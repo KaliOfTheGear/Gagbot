@@ -22,7 +22,7 @@ const { getText } = require("../../functions/textfunctions")
 // Inputs a capture strength and params, outputs an array of 3 values depending on catch. 
 // This heavy is all calculated in one go at the beginning of the function
 // Implements catch formula described here: https://bulbapedia.bulbagarden.net/wiki/Catch_rate#Capture_method_(Generation_V)
-function calculatecapture(userid, ballbonusnum = 1.0) {
+function calculatecapture(serverID, userid, ballbonusnum = 1.0) {
     // The user's "health" will be based off of 50 arousal.
     let maxhealth = 50
     let currhealth = Math.max(50 - getArousal(userid), 0.5) // Always clamp to 0.5 hp left - false swipe range if you will. 
@@ -41,7 +41,7 @@ function calculatecapture(userid, ballbonusnum = 1.0) {
     if (getMitten(userid) || !getHeadwearRestrictions(userid).canInspect || getCorset(userid)) {
         statusbonus = 2.5;
     }
-    else if (getGag(userid) || getChastity(userid) || getChastityBra(userid) || getCollar(userid)) {
+    else if (getGag(serverID, userid) || getChastity(userid) || getChastityBra(userid) || getCollar(userid)) {
         statusbonus = 1.5;
     }
     console.log(`Status Multiplier: ${statusbonus}`)

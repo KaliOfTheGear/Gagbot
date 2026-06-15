@@ -45,7 +45,7 @@ module.exports = {
 				data.noheavy = true;
 				if (mitteneduser != interaction.user) {
 					data.other = true;
-					if (getGag(mitteneduser.id)) {
+					if (getGag(interaction.guildId, mitteneduser.id)) {
 						data.gag = true;
 						// Now lets make sure the wearer wants that.
 						if (checkBondageRemoval(interaction.user.id, mitteneduser.id, "mitten") == true) {

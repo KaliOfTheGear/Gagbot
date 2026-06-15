@@ -16,14 +16,14 @@ const { messageSendChannel } = require("../../functions/messagefunctions");
 const { setUserVar } = require("../../functions/setters/config/setUserVar");
 const { getText } = require("../../functions/textfunctions");
 
-exports.tick = async (userID, data) => {
+exports.tick = async (serverID, userID, data) => {
     try {
         // Cancel until the user has said AT LEAST three things or has waited long enough. 
         if (getUserVar(userID, "struggleCollarMsgs") < 5) { return }
         if (getUserVar(userID, "struggleCollarDelay") >= Date.now()) { return }
 
         let heavybondage = getHeavy(userID)?.displayname;
-        let gagbondage = getGagLast(userID);
+        let gagbondage = getGagLast(serverID, userID);
         let mittenbondage = getMitten(userID);
         let chastitybondage = getChastity(userID);
         let chastitybrabondage = getChastityBra(userID)
@@ -48,7 +48,7 @@ exports.tick = async (userID, data) => {
                 interactionuser: { id: userID },
                 targetuser: { id: userID }, // Doesn't really matter but we're adding to avoid a crash
                 c1: getHeavy(userID)?.displayname, // heavy bondage type
-                c2: convertGagText(getGagLast(userID)),
+                c2: convertGagText(getGagLast(interaction.guildId, userID)),
                 c3: getMittenName(userID) ?? "mittens",
                 c4: getChastityName(userID) ?? "chastity belt",
                 c5: getCollarName(userID) ?? "collar",

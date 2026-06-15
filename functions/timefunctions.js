@@ -317,13 +317,15 @@ function runTickEvents() {
     if (process.eventfunctions == undefined) { return }
 	// Gags
 	if (process.gags) {
-		Object.keys(process.gags).forEach((userid) => {
-			getGags(userid).forEach((g) => {
-				if (process.eventfunctions.gags && process.eventfunctions.gags[g.gagtype] && process.eventfunctions.gags[g.gagtype].tick) {
-					process.eventfunctions.gags[g.gagtype].tick(userid);
-				}
-			});
-		});
+		Object.keys(process.gags).forEach((serverid) => {
+			Object.keys(process.gags[serverid]).forEach((userid) => {
+				getGags(serverid, userid).forEach((g) => {
+					if (process.eventfunctions.gags && process.eventfunctions.gags[g.gagtype] && process.eventfunctions.gags[g.gagtype].tick) {
+						process.eventfunctions.gags[g.gagtype].tick(serverid, userid);
+					}
+				});
+		    });
+        });
 	}
 	// Headwear
 	if (process.headwear) {

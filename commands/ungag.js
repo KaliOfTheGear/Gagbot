@@ -21,7 +21,7 @@ module.exports = {
 		try {
             const focusedValue = interaction.options.getFocused();
             let chosenuserid = interaction.options.get("user")?.value ?? interaction.user.id; // Note we can only retrieve the user ID here!
-            let worngags = getGags(chosenuserid).map((g) => {
+            let worngags = getGags(interaction.guildId, chosenuserid).map((g) => {
                 if (process.autocompletes.gag.find((t) => t.value == g.gagtype)) {
                     return { name: process.autocompletes.gag.find((t) => t.value == g.gagtype).name, value: g.gagtype };
                 }
@@ -56,8 +56,8 @@ module.exports = {
 		try {
 			let gaggeduser = interaction.options.getUser("user") ? interaction.options.getUser("user") : interaction.user;
 			let gagtoremove = interaction.options.getString("gag");
-			if (getGags(gaggeduser.id).length == 1) {
-				gagtoremove = getGags(gaggeduser.id)[0].gagtype;
+			if (getGags(interaction.guildId, gaggeduser.id).length == 1) {
+				gagtoremove = getGags(interaction.guildId, gaggeduser.id)[0].gagtype;
 			}
 			// CHECK IF THEY CONSENTED! IF NOT, MAKE THEM CONSENT
 			if (!getConsent(interaction.user.id)?.mainconsent) {
@@ -81,7 +81,7 @@ module.exports = {
 				if (gaggeduser == interaction.user) {
 					// Trying to ungag ourselves.
 					data.self = true;
-					if (getGag(gaggeduser.id)) {
+					if (getGag(interaction.guildId, gaggeduser.id)) {
 						// We are wearing a gag
 						data.gag = true;
 						interaction.reply(getText(data));
@@ -93,7 +93,7 @@ module.exports = {
 				} else {
 					// We are trying to ungag someone else
 					data.other = true;
-					if (getGag(gaggeduser.id)) {
+					if (getGag(interaction.guildId, gaggeduser.id)) {
 						// They are wearing a gag
 						data.gag = true;
 						interaction.reply(getText(data));
@@ -112,7 +112,7 @@ module.exports = {
 					if (gaggeduser == interaction.user) {
 						// Trying to ungag ourselves.
 						data.self = true;
-						if (getGag(gaggeduser.id)) {
+						if (getGag(interaction.guildId, gaggeduser.id)) {
 							// We are wearing a gag
 							data.gag = true;
 							interaction.reply(getText(data));
@@ -124,7 +124,7 @@ module.exports = {
 					} else {
 						// We are trying to ungag someone else
 						data.other = true;
-						if (getGag(gaggeduser.id)) {
+						if (getGag(interaction.guildId, gaggeduser.id)) {
 							// They are wearing a gag
 							data.gag = true;
 							interaction.reply(getText(data));
@@ -140,7 +140,7 @@ module.exports = {
 					if (gaggeduser == interaction.user) {
 						// Trying to ungag ourselves.
 						data.self = true;
-						if (getGag(gaggeduser.id)) {
+						if (getGag(interaction.guildId, gaggeduser.id)) {
 							// We are wearing a gag
 							data.gag = true;
                             // Now check if we have any gags that are locked on!
@@ -171,7 +171,7 @@ module.exports = {
 					} else {
 						// We are trying to ungag someone else
 						data.other = true;
-						if (getGag(gaggeduser.id)) {
+						if (getGag(interaction.guildId, gaggeduser.id)) {
 							// They are wearing a gag
 							data.gag = true;
                             // Now check if we have any gags that are locked on!

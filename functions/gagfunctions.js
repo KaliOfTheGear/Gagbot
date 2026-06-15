@@ -242,7 +242,7 @@ const modifymessage = async (msg, threadId, messageonly) => {
         if (appendcollar.msgTreeMods) { msgTreeMods = appendcollar.msgTreeMods }
 
         // Iterate through any speech events in process.msgfunctions
-        emitEvent("msgfunction", msg.author.id, { msg: msg, msgcontent: msg.content, outtext: outtext })
+        emitEvent("msgfunction", msg.author.id, msg.guildId, { msg: msg, msgcontent: msg.content, outtext: outtext })
 
         // If we only wanted to edit the message, just return it at this point and do NOT proceed. 
         if (messageonly) { 
@@ -336,9 +336,9 @@ async function textGarbleGag(msg, msgTree, msgTreeMods) {
 	if (process.gags == undefined) {
 		process.gags = {};
 	}
-	if (process.gags[msg.author.id] && process.gags[msg.author.id].length > 0) {
+	if (process.gags[msg.guildId] && process.gags[msg.guildId][msg.author.id] && process.gags[msg.guildId][msg.author.id].length > 0) {
         // Go over each gag and if there's a gag file loaded for it, run the messagebegin, garbletext and messageend functions if they exist.
-		process.gags[msg.author.id].forEach((gag) => {
+		process.gags[msg.guildId][msg.author.id].forEach((gag) => {
             if (process.gagtypes && process.gagtypes[gag.gagtype]) {
                 if (process.gagtypes[gag.gagtype].messagebegin) {
                     let out = process.gagtypes[gag.gagtype].messagebegin(msg, msgTree, msgTreeMods, gag.intensity ?? 5);
@@ -368,10 +368,10 @@ async function processPregarbleGags(msg, msgTree, msgTreeMods) {
 	if (process.gags == undefined) {
 		process.gags = {};
 	}
-    if (process.gags[msg.author.id] && process.gags[msg.author.id].length > 0) {
+    if (process.gags[msg.guildId] && process.gags[msg.guildId][msg.author.id] && process.gags[msg.guildId][msg.author.id].length > 0) {
         let origcontent = msg.content;
         // Go over each gag and if there's a gag file loaded for it, run the messagebegin, garbletext and messageend functions if they exist.
-		process.gags[msg.author.id].forEach(async (gag) => {
+		process.gags[msg.guildId][msg.author.id].forEach(async (gag) => {
             if (process.gagtypes && process.gagtypes[gag.gagtype]) {
                 if (process.gagtypes[gag.gagtype].pregarble) {
                     await msgTree.callFunc(process.gagtypes[gag.gagtype].pregarble,true,"rawText",[gag.intensity ?? 5, msg])		// Run garble on all IC segments.

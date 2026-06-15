@@ -586,7 +586,7 @@ const assignMemeImages = () => {
 // Returns a blocking function which can be awaited
 // Will immediately resolve if the user allows everyone to remove bondage
 // else, will prompt them. Will resolve false if rejected.
-function checkBondageRemoval(userID, targetID, type, item) {
+function checkBondageRemoval(serverID, userID, targetID, type, item) {
 	let useroption = getOption(targetID, "removebondage");
 
 	// Return true immediately if it's accepted without question
@@ -612,7 +612,7 @@ function checkBondageRemoval(userID, targetID, type, item) {
 			restraintobject = getHeavyBinder(targetID, type);
 		}
 		if (type == "gag") {
-			restraintobject = getGagBinder(targetID, item);
+			restraintobject = getGagBinder(serverID, targetID, item);
 		}
 		if (type == "mitten") {
 			restraintobject = getMittenBinder(targetID);
@@ -1273,7 +1273,7 @@ async function generateExtraConfig(interaction, userid, itemname, force) {
         }
         else {
             // Gags
-            getGags(userid).forEach(async (g) => {
+            getGags(interaction.guildId, userid).forEach(async (g) => {
                 if ((g.gagtype == itemname) && process.eventfunctions.gags && process.eventfunctions.gags[g.gagtype] && process.eventfunctions.gags[g.gagtype].extraconfig) {
                     interactionoutput.push(await process.eventfunctions.gags[g.gagtype].extraconfig(interaction, userid, itemname));
                 }
@@ -1333,7 +1333,7 @@ async function generateExtraConfig(interaction, userid, itemname, force) {
     }
     else {
         // Gags
-        getGags(userid).forEach(async (g) => {
+        getGags(interaction.guildId, userid).forEach(async (g) => {
             if ((g.gagtype == itemname) && process.eventfunctions.gags && process.eventfunctions.gags[g.gagtype] && process.eventfunctions.gags[g.gagtype].extraconfig) {
                 interactionoutput.push(await process.eventfunctions.gags[g.gagtype].extraconfig(interaction, userid, itemname));
             }

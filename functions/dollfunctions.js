@@ -261,7 +261,7 @@ async function textGarbleDOLL(msg, modifiedmessage, outtextin) {
     let dollPunishThresh = getOption(msg.author.id, "dollpunishthresh");
     let dollmaker = getHeadwear(msg.member.id).find((headwear) => headwear === "dollmaker_visor");
     // This creates a circular, so, access the variable directly. Oh well. 
-    let eldritchcorrupted = (process.gags && process.gags[msg.member.id] && process.gags[msg.member.id].find((g) => g.gagtype === "eldritch"))
+    let eldritchcorrupted = getGags(msg.guild.id, msg.member.id).find((gag) => gag === "eldritch");
 	let dollProtocolViolations = 0;
 	let dollProtocolVioType = undefined;
 	if (dollified) {

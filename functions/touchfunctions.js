@@ -19,6 +19,7 @@ const { statsAddCounter } = require("./setters/config/statsAddCounter");
 
 /****************
  * Rolls a Pat based on the user's bondage and the target's bondage. If hit is false, then boundmiss will note the reason, if it is due to the user being bound. 
+ * - **(server id) serverID** the server that this is on
  * - **(user id) user** trying to deliver the pat
  * - **(user id) target** to receive the pat
  * 
@@ -27,7 +28,7 @@ const { statsAddCounter } = require("./setters/config/statsAddCounter");
  * - crit: Boolean
  * - boundmiss: string ("arms", "blind", "legs", "container")
 *******************/
-function rollPatChance(user, target) {
+function rollPatChance(serverID, user, target) {
     let returnedobject = {
         hit: false,
         crit: false,
@@ -97,7 +98,7 @@ function rollPatChance(user, target) {
 
     // Do all of the functions for the person receiving the headpats.
     // Note, within the function we need to check if headpat was successful! 
-    emitEvent("headpatfunction", target, { target: target, returnedobject: returnedobject })
+    emitEvent("headpatfunction", target, serverID, { target: target, returnedobject: returnedobject })
 
     if (returnedobject.hit) {
         statsAddCounter(user, "headpatsgiven");

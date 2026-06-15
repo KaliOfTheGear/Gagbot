@@ -49,7 +49,7 @@ const { getClonedChastityKeysOwned } = require("./getters/chastity/getClonedChas
 const { getClonedChastityBraKeysOwned } = require("./getters/chastity/getClonedChastityBraKeysOwned");
 const { getClonedCollarKeysOwned } = require("./getters/collar/getClonedCollarKeysOwned");
 
-async function generateOutfitModal(userID, menu, page, options) {
+async function generateOutfitModal(serverID, userID, menu, page, options) {
 	let pagecomponents = [new TextDisplayBuilder().setContent(`## Outfitter - ${menu.slice(0, 1).toUpperCase()}${menu.slice(1)}`)];
 	let tabbuttons = [
 		// Restore
@@ -203,10 +203,10 @@ async function generateOutfitModal(userID, menu, page, options) {
 
 		// Gag section
 		let texts = `### Gags:\n`;
-		if (!getGag(userID)) {
+		if (!getGag(serverID, userID)) {
 			texts = `${texts}Not worn`;
 		} else {
-			texts = `${texts}${getGags(userID)
+			texts = `${texts}${getGags(serverID, userID)
 				.map((g) => convertGagText(g.gagtype))
 				.join(", ")}`;
 		}
@@ -219,7 +219,7 @@ async function generateOutfitModal(userID, menu, page, options) {
 						.setLabel(options.slice(bitselector, bitselector + 1) == "1" ? `Save` : `Disabled`)
 						.setStyle(options.slice(bitselector, bitselector + 1) == "1" ? ButtonStyle.Success : ButtonStyle.Danger)
 						// Block if element doesn't exist
-						.setDisabled(!getGag(userID)),
+						.setDisabled(!getGag(serverID, userID)),
 				),
 		);
 		bitselector++;
@@ -515,7 +515,7 @@ function outfitEntryModal(interaction, slot) {
 	return modal;
 }
 
-async function inspectModal(userID, inspectuserIDin, menu, page) {
+async function inspectModal(serverID, userID, inspectuserIDin, menu, page) {
     let inspectuserID = inspectuserIDin ?? userID;
     let profilelink = (getOption(inspectuserID, "profilelink") && getOption(inspectuserID, "profilelink").length > 0) ? ` • [Profile](${getOption(inspectuserID, "profilelink")})` : ``
     let kinklistlink = (getOption(inspectuserID, "kinklistlink") && getOption(inspectuserID, "kinklistlink").length > 0) ? ` • [Kink List](${getOption(inspectuserID, "kinklistlink")})` : ``
@@ -570,8 +570,8 @@ async function inspectModal(userID, inspectuserIDin, menu, page) {
         let headwearrestrictions = getHeadwearRestrictions(userID);
         let wearingtext = `## Worn Restraints:`;
         // Gags
-        if (getGag(inspectuserID)) {
-            wearingtext = `${wearingtext}\n${process.emojis.gag} Gags: **${getGags(inspectuserID).map((g) => { return `${convertGagText(g.gagtype)} (${g.intensity})`}).join(", ")}**`
+        if (getGag(serverID, inspectuserID)) {
+            wearingtext = `${wearingtext}\n${process.emojis.gag} Gags: **${getGags(serverID, inspectuserID).map((g) => { return `${convertGagText(g.gagtype)} (${g.intensity})`}).join(", ")}**`
         }
         // Headwear
         if (getHeadwear(inspectuserID).length > 0) {
@@ -761,8 +761,8 @@ async function inspectModal(userID, inspectuserIDin, menu, page) {
         let headwearrestrictions = getHeadwearRestrictions(userID);
         let wearingtext = `## Regular Worn Restraints:`;
         // Gags
-        if (getGag(inspectuserID)) {
-            wearingtext = `${wearingtext}\n${process.emojis.gag} Gags: **${getGags(inspectuserID).map((g) => { return `${convertGagText(g.gagtype)} (${g.intensity})`}).join(", ")}**`
+        if (getGag(serverID, inspectuserID)) {
+            wearingtext = `${wearingtext}\n${process.emojis.gag} Gags: **${getGags(serverID, inspectuserID).map((g) => { return `${convertGagText(g.gagtype)} (${g.intensity})`}).join(", ")}**`
         }
         // Headwear
         if (getHeadwear(inspectuserID).length > 0) {

@@ -27,7 +27,7 @@ module.exports = {
 		const focusedValue = interaction.options.getFocused();
 		try {
 			let heavybondage = getHeavy(interaction.user.id);
-			let gagbondage = getGagLast(interaction.user.id);
+			let gagbondage = getGagLast(interaction.guildId, interaction.user.id);
 			let mittenbondage = getMitten(interaction.user.id);
 			let chastitybondage = getChastity(interaction.user.id);
             let chastitybrabondage = getChastityBra(interaction.user.id)
@@ -40,7 +40,7 @@ module.exports = {
 				outopts.push({ name: `Heavy Bondage: ${getHeavy(interaction.user.id).displayname}`, value: "heavy" });
 			}
 			if (gagbondage) {
-				outopts.push({ name: `Gag: ${convertGagText(getGagLast(interaction.user.id))}`, value: "gag" });
+				outopts.push({ name: `Gag: ${convertGagText(getGagLast(interaction.guildId, interaction.user.id))}`, value: "gag" });
 			}
 			if (mittenbondage) {
 				outopts.push({ name: `Mittens${mittenbondage.mittenname ? `: ${getMittenName(interaction.user.id)}` : ""}`, value: "mitten" });
@@ -79,7 +79,7 @@ module.exports = {
 				return;
 			}
 			let heavybondage = getHeavy(interaction.user.id)?.displayname;
-			let gagbondage = getGagLast(interaction.user.id);
+			let gagbondage = getGagLast(interaction.guildId, interaction.user.id);
 			let mittenbondage = getMitten(interaction.user.id);
 			let chastitybondage = getChastity(interaction.user.id);
             let chastitybrabondage = getChastityBra(interaction.user.id)
@@ -94,7 +94,7 @@ module.exports = {
 					interactionuser: interaction.user,
 					targetuser: interaction.user, // Doesn't really matter but we're adding to avoid a crash
 					c1: getHeavy(interaction.user.id)?.displayname, // heavy bondage type
-					c2: convertGagText(getGagLast(interaction.user.id)),
+					c2: convertGagText(interaction.guildId, getGagLast(interaction.guildId, interaction.user.id)),
 					c3: getMittenName(interaction.user.id) ?? "mittens",
 					c4: getChastityName(interaction.user.id) ?? "chastity belt",
 					c5: getCollarName(interaction.user.id) ?? "collar",

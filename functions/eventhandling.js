@@ -12,10 +12,11 @@ const { getCollar } = require("./getters/collar/getCollar");
  * 
  * - (string) type - The specific eventID being emitted
  * - (user id) userid - The user causing this event
+ * - (server id) server - The server this event is occurring in
  * - (object any) data - Additional details, sufficient to reconstruct the event
  * - (integer) delay? - Delay, if any to run this event.
  *********/
-async function emitEvent(type, userid, data, delay = 0) {
+async function emitEvent(type, userid, serverid, data, delay = 0) {
     // All of this because I had the lack of foresight to see that events would eventually evolve and need a better approach.
     // Note, this access process vars directly due to potential circular dependencies. In the future, these should be resolved. 
     // Notable circulars include the messaging system which lives heavily in gagfunctions.js. 
@@ -24,8 +25,8 @@ async function emitEvent(type, userid, data, delay = 0) {
     if (delay) { await new Promise(res => setTimeout(res, delay)) }
 
     // Gags
-	if (process.gags && process.gags[userid]) {
-        process.gags[userid].forEach((g) => {
+	if (process.gags && process.gags[serverid] && process.gags[serverid][userid]) {
+        process.gags[serverid][userid].forEach((g) => {
             if (process.eventfunctions && process.eventfunctions.gags && process.eventfunctions.gags[g.gagtype] && process.eventfunctions.gags[g.gagtype][type]) {
                 process.eventfunctions.gags[g.gagtype][type](userid, data);
             }

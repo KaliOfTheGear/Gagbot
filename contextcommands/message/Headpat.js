@@ -103,7 +103,7 @@ module.exports = {
                         await handleTouchEvent(interaction.user, targetuser, "headpat").then(
                             async (success) => {
                                 await interaction.followUp({ content: `Headpatting ${targetuser}`, flags: MessageFlags.Ephemeral })
-                                let headpatattempt = rollPatChance(interaction.user.id, targetuser.id)
+                                let headpatattempt = rollPatChance(interaction.user.id, targetuser.id, interaction.guildId)
                                 data.headpat = true;
 
                                 if (interaction.user.id == targetuser.id) {
