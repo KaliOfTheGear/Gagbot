@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { getUserVar } = require("../config/getUserVar");
 const { getBaseHeavy } = require("./getBaseHeavy");
 const { getHeavy } = require("./getHeavy");
@@ -14,6 +15,7 @@ const { getHeavy } = require("./getHeavy");
  * - touchlist?: If specified, an array of users the user can do actions to
  *******/
 function getHeavyRestrictions(user) {
+    traceFirstParam(arguments[0]);
     let returnobject = {
         heavytags: [],
         touchself: true,

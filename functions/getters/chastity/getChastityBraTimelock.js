@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /***********
  * Returns UNIX timestring of the wearer's unlock time for their chastity bra if they are timelocked.
  * 
@@ -7,6 +9,7 @@
  * ##### Returns an integer with the unlockTime or a string with the unlock time for Discord.
  ***********/
 function getChastityBraTimelock(user, UNIXTimestring) {
+    traceFirstParam(arguments[0]);
     if (process.chastitybra == undefined) {
 		process.chastitybra = {};
 	}

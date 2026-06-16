@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { getToys } = require("./getToys");
 
 /**********
@@ -12,6 +13,7 @@ const { getToys } = require("./getToys");
  * - origbinder: The user ID who put the toy on the user
  **********/
 function getSpecificToy(user, toytype) {
+    traceFirstParam(arguments[0]);
     return getToys(user).find((toy) => toy.type == toytype);
 }
 

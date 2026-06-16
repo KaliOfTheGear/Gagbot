@@ -3,6 +3,7 @@ const path = require("path");
 const https = require("https");
 const { SlashCommandBuilder, ComponentType, ButtonBuilder, ActionRowBuilder, ButtonStyle, MessageFlags } = require("discord.js");
 const { getCollarPerm } = require("./getters/collar/getCollarPerm");
+const { traceFirstParam } = require("./other/TESTS/traceFirstParam");
 
 const collartypes = [
 	{ name: "Latex Collar", value: "collar_latex", tags: ["latex"] },
@@ -44,6 +45,7 @@ function loadCollarTypes() {
 
 // Called to prompt the wearer if it is okay to clone a key.
 async function promptCloneCollarKey(user, target, clonekeyholder) {
+    traceFirstParam(arguments[0]);
 	return new Promise(async (res, rej) => {
 		let buttons = [new ButtonBuilder().setCustomId("denyButton").setLabel("Deny").setStyle(ButtonStyle.Danger), new ButtonBuilder().setCustomId("acceptButton").setLabel("Allow").setStyle(ButtonStyle.Success)];
 		let bondageaccess = `${getCollarPerm(target.id, "mitten") ? "mitten you, " : ""}${getCollarPerm(target.id, "chastity") ? "put you in chastity, " : ""}${getCollarPerm(target.id, "chastity") ? "put heavy bondage on you, " : ""}`.slice(0, -2);
@@ -82,6 +84,7 @@ async function promptCloneCollarKey(user, target, clonekeyholder) {
 
 // Called to prompt the wearer if it is okay to give a key.
 async function promptTransferCollarKey(user, target, newKeyholder) {
+    traceFirstParam(arguments[0]);
 	return new Promise(async (res, rej) => {
 		try {
 			let buttons = [new ButtonBuilder().setCustomId("denyButton").setLabel("Deny").setStyle(ButtonStyle.Danger), new ButtonBuilder().setCustomId("acceptButton").setLabel("Allow").setStyle(ButtonStyle.Success)];

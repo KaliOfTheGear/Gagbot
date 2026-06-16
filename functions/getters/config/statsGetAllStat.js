@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /*********
  * Generates an array with users mapped to their count in a stat. 
  * ##### This is not sorted, presented as [userid, stat]. Sort with .sort((a,b) => { return a[1] - b[1]})
@@ -7,6 +9,7 @@
  * ##### Returns an array with array pairs of user IDs and stats, [userid, stat]
  *********/
 function statsGetAllStat(stat) {
+    traceFirstParam(arguments[0]);
     let selectedoption = [];
     if (process.userstats) {
         Object.keys(process.userstats).forEach((user) => {

@@ -12,6 +12,7 @@ const { getMitten } = require("../../getters/mitten/getMitten");
 const { getLockedWearable } = require("../../getters/wearable/getLockedWearable");
 const { getWearable } = require("../../getters/wearable/getWearable");
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /*********
  * Retrieves an outfit and attempts to apply it to the user. 
@@ -24,6 +25,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### *No return value*
  *********/
 function restoreOutfit(serverID, userID, storedobject) {
+    traceFirstParam(arguments[0]);
 	Object.keys(storedobject).forEach((k) => {
 		// I could use a switch statement here but I feel like using if conditionals.
 		if (k == "wearable") {

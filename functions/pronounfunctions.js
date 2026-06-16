@@ -2,6 +2,7 @@ const { ButtonBuilder } = require("@discordjs/builders");
 const { ButtonStyle, ComponentType } = require("discord.js");
 const { ActionRowBuilder } = require("@discordjs/builders");
 const { setPronouns } = require("./setters/config/setPronouns.js");
+const { traceFirstParam } = require("./other/TESTS/traceFirstParam.js");
 
 // Pronoun types
 const pronounsMap = new Map([
@@ -11,7 +12,8 @@ const pronounsMap = new Map([
 	["it/its", { subject: "it", object: "it", possessive: "its", possessiveDeterminer: "its", reflexive: "itself", subjectIs: "it's", subjectWill: "it'll" }],
 ]);
 
-const remindPronouns = async (user) => {
+const remindPronouns = async (serverID, user) => {
+    traceFirstParam(arguments[0]);
     if (process.recentlyremindedpronouns == undefined) {
         process.recentlyremindedpronouns = {}
     }
@@ -23,7 +25,7 @@ const remindPronouns = async (user) => {
             }, 900000)
             let userobject = await process.client.users.fetch(user)
             let buttons = [new ButtonBuilder().setCustomId("sheher").setLabel("She/Her").setStyle(ButtonStyle.Secondary), new ButtonBuilder().setCustomId("hehim").setLabel("He/Him").setStyle(ButtonStyle.Secondary), new ButtonBuilder().setCustomId("theythem").setLabel("They/Them").setStyle(ButtonStyle.Secondary), new ButtonBuilder().setCustomId("itits").setLabel("It/Its").setStyle(ButtonStyle.Secondary)];
-            let pronounremindertext = `This bot uses gendered language for roleplay texts and output to individuals. Your pronouns currently are not set in the bot. Please click an option below to set them:`
+            let pronounremindertext = `This bot uses gendered language for roleplay texts and output to individuals. Your pronouns currently are not set in the bot for this server. Please click an option below to set them:`
             let dmchannel = await userobject.createDM();
             await dmchannel
                 .send({ content: `${pronounremindertext}`, components: [new ActionRowBuilder().addComponents(...buttons)]})

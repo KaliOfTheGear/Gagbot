@@ -1,4 +1,5 @@
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /**********
  * Set the counter for a user by name. Specify Value
@@ -8,6 +9,7 @@ const { markForSave } = require("../../other/markForSave");
  * - (any) value - Value to store in countername
  **********/
 function statsSetCounter(user, countername, value) {
+    traceFirstParam(arguments[0]);
     if (process.userstats == undefined) { process.userstats = {} }
     if (process.userstats[user] == undefined) { process.userstats[user] = {} }
     process.userstats[user][countername] = value;

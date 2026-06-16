@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /********
  * Gets the person who put a piece of headwear on the user
  * 
@@ -7,6 +9,7 @@
  * ##### Returns the user ID who put this headgear on the wearer
  ********/
 function getHeadwearBinder(userID, item) {
+    traceFirstParam(arguments[0]);
     if (process.headwear == undefined) {
 		process.headwear = {};
 	}

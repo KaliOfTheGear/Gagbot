@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { getChastity } = require("./getChastity");
 
 /***********
@@ -9,6 +10,7 @@ const { getChastity } = require("./getChastity");
  * ##### Returns an integer with the unlockTime or a string with the unlock time for Discord.
  ***********/
 function getChastityTimelock(user, UNIXTimestring) {
+    traceFirstParam(arguments[0]);
 	if (!UNIXTimestring) {
 		return getChastity(user)?.unlockTime;
 	} else {

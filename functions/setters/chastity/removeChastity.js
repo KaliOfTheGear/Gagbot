@@ -1,6 +1,7 @@
 const { getBaseChastity } = require("../../getters/chastity/getBaseChastity");
 const { getChastity } = require("../../getters/chastity/getChastity");
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /**********
  * Removes a chastity belt from the user.
@@ -12,6 +13,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### Returns true if successful, false if failed to remove
  **********/
 function removeChastity(user, keyholder, force = false) {
+    traceFirstParam(arguments[0]);
 	if (process.chastity == undefined) {
 		process.chastity = {};
     }

@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /********
  * Gets the last worn (top most) gag for a user.
  * 
@@ -10,6 +12,7 @@
  * - origbinder: Who put the gag on the user
  ********/
 function getGagLast(serverID, userID) {
+    traceFirstParam(arguments[0]);
     if (process.gags == undefined) {
 		process.gags = {};
 	}

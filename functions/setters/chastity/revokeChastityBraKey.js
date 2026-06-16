@@ -1,5 +1,6 @@
 const { getChastityBra } = require("../../getters/chastity/getChastityBra");
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /*******
  * Removes a cloned key from a chastity bra
@@ -10,6 +11,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### *No return value*
  *******/
 function revokeChastityBraKey(chastityuser, newKeyholder) {
+    traceFirstParam(arguments[0]);
     let chastity = getChastityBra(chastityuser);
     if (!chastity.clonedKeyholders) {
         chastity.clonedKeyholders = [];

@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { calcStaticVibeIntensity, calcFrustration } = require("../../vibefunctions");
 const { getArousal } = require("../arousal/getArousal");
 const { getOption } = require("../config/getOption");
@@ -14,6 +15,7 @@ const STUTTER_LIMIT = 1;
  * ##### Returns a value of arousal with their added frustration
  ***********/
 function getVibeEquivalent(serverID, user) {
+    traceFirstParam(arguments[0]);
 	if (getOption(user, "arousalsystem") != 2) return calcStaticVibeIntensity(user) * 2;
 
 	let intensity = getArousal(serverID, user);

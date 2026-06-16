@@ -1,5 +1,6 @@
 const { getChastity } = require("../../getters/chastity/getChastity");
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /********
  * Changes the primary keyholder for a user's chastity belt. Removes cloned keys.
@@ -10,6 +11,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### Returns true if successful, false if lockedUser is not wearing a chastity belt
  ********/
 function transferChastityKey(lockedUser, newKeyholder) {
+    traceFirstParam(arguments[0]);
 	if (getChastity(lockedUser)) {
 		if (getChastity(lockedUser).keyholder != newKeyholder) {
 			getChastity(lockedUser).keyholder = newKeyholder;

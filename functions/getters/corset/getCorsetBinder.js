@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { getCorset } = require("./getCorset");
 
 /**********
@@ -8,6 +9,7 @@ const { getCorset } = require("./getCorset");
  * ##### Returns the user ID of the person who put this corset on the wearer.
  **********/
 function getCorsetBinder(user) {
+    traceFirstParam(arguments[0]);
 	return getCorset(user)?.origbinder;
 }
 

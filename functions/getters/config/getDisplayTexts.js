@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { calcDenialCoefficient } = require("../../vibefunctions");
 const { getArousal } = require("../arousal/getArousal");
 const { getArousalBar } = require("../arousal/getArousalBar");
@@ -18,6 +19,7 @@ const { getUserVar } = require("./getUserVar");
  * ##### Returns a string to append to outfit modal with all of the additional widgets
  ************/
 async function getDisplayTexts(serverID, userID, inspectuserID) {
+    traceFirstParam(arguments[0]);
     let bartext = ``;
 
     // ******************** Arousal Display

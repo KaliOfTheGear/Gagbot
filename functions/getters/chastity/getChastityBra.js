@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /*********
  * Get the chastity bra that the user is wearing.
  * 
@@ -11,6 +13,7 @@
  * ###### Additional properties may be added by other functions
  *********/
 function getChastityBra(user) {
+    traceFirstParam(arguments[0]);
     if (process.chastitybra == undefined) {
 		process.chastitybra = {};
 	}

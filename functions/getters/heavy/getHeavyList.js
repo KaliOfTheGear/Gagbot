@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /*********
  * Get a list of the heavy bondage worn by the user
  * 
@@ -10,6 +12,7 @@
  * - namedcontainerowner?: User ID included in container checks
  *********/
 function getHeavyList(user) {
+    traceFirstParam(arguments[0]);
     if (process.heavy == undefined) {
 		process.heavy = {};
 	}

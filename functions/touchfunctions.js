@@ -16,6 +16,7 @@ const { getClonedChastityBraKey } = require("./getters/chastity/getClonedChastit
 const { getClonedCollarKey } = require("./getters/collar/getClonedCollarKey");
 const { canAccessCollar } = require("./getters/collar/canAccessCollar");
 const { statsAddCounter } = require("./setters/config/statsAddCounter");
+const { traceFirstParam } = require("./other/TESTS/traceFirstParam");
 
 /****************
  * Rolls a Pat based on the user's bondage and the target's bondage. If hit is false, then boundmiss will note the reason, if it is due to the user being bound. 
@@ -29,6 +30,7 @@ const { statsAddCounter } = require("./setters/config/statsAddCounter");
  * - boundmiss: string ("arms", "blind", "legs", "container")
 *******************/
 function rollPatChance(serverID, user, target) {
+    traceFirstParam(arguments[0]);
     let returnedobject = {
         hit: false,
         crit: false,
@@ -197,7 +199,8 @@ function doHeadpatFunctions(headpatter, recipient, returnedobject) {
  * 
  * - (user id) user - The person to shock!
  ********/
-async function shockUser(user) {
+async function shockUser(serverID, user) {
+    traceFirstParam(arguments[0]);
     try {
         if (getOption(user, "pishockusername") && (typeof getOption(user, "pishockusername") == "string") &&
             getOption(user, "pishockname") && (typeof getOption(user, "pishockname") == "string") &&
@@ -252,7 +255,8 @@ async function shockUser(user) {
  * - (string) type - The type of action being performed ("headpat", "shock", etc)
  * - (boolean) noprompt? - If true, skips DMing and immediately rejects if no suitable user
  ********/
-async function handleTouchEvent(user, target, type, noprompt = false) {
+async function handleTouchEvent(serverID, user, target, type, noprompt = false) {
+    traceFirstParam(arguments[0]);
 	return new Promise(async (res, rej) => {
         if (!user || !target) {
             rej("User or Target does NOT exist")

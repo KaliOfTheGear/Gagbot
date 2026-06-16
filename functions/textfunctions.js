@@ -41,19 +41,19 @@ const texts_chastity = {
                     `USER_TAG whispers a sweet goodbye as USER_THEY wrapUSER_S a VAR_C2 around USER_THEIR waist, sealing USER_THEIR chastity away under lock and key.`,
                     {
                         required: (t) => {
-                            return getArousal(t.interactionuser.id) > 10;
+                            return getArousal(t.serverID, t.interactionuser.id) > 10;
                         },
                         text: `Taking calm, deep breaths, USER_TAG wraps a VAR_C2 on USER_THEIR waist before USER_THEY touch there. USER_THEY_CAP still USER_HAVE the key, but at least it's something...`,
                     },
                     {
                         required: (t) => {
-                            return getArousal(t.interactionuser.id) > 20;
+                            return getArousal(t.serverID, t.interactionuser.id) > 20;
                         },
                         text: `In a vain attempt to be a good USER_PRAISEOBJECT, USER_TAG locks USER_THEMSELF up with a VAR_C2. Though, USER_THEY USER_ISARE still holding the key.`,
                     },
                     {
                         only: (t) => {
-                            return getChastity(t.interactionuser.id)?.chastitytype && getChastity(t.interactionuser.id)?.chastitytype.includes("seal");
+                            return getChastity(t.serverID, t.interactionuser.id)?.chastitytype && getChastity(t.serverID, t.interactionuser.id)?.chastitytype.includes("seal");
                         },
                         text: `USER_TAG presses a VAR_C2 against USER_THEIR skin, feeling it activate and seal USER_THEM away until USER_THEY choose to remove it!`,
                     },
@@ -73,13 +73,13 @@ const texts_chastity = {
                     `USER_TAG whispers a sweet goodbye as USER_THEY wrapUSER_S a VAR_C2 around USER_THEIR chest, sealing USER_THEIR chastity away under lock and key.`,
                     {
                         required: (t) => {
-                            return getArousal(t.interactionuser.id) > 10;
+                            return getArousal(t.serverID, t.interactionuser.id) > 10;
                         },
                         text: `Taking calm, deep breaths, USER_TAG wraps a VAR_C2 on USER_THEIR chest before USER_THEY touch there. USER_THEY_CAP still USER_HAVE the key, but at least it's something...`,
                     },
                     {
                         required: (t) => {
-                            return getArousal(t.interactionuser.id) > 20;
+                            return getArousal(t.serverID, t.interactionuser.id) > 20;
                         },
                         text: `In a vain attempt to be a good USER_PRAISEOBJECT, USER_TAG locks USER_THEMSELF up with a VAR_C2. Though, USER_THEY USER_ISARE still holding the key.`,
                     },
@@ -1353,25 +1353,25 @@ const texts_key = {
             keyholder: [
                 {
                     required: (t) => {
-                        return getArousal(t.interactionuser.id) < 20;
+                        return getArousal(t.serverID, t.interactionuser.id) < 20;
                     },
                     text: `USER_TAG looks one last time at USER_THEIR key to USER_THEIR VAR_C1 and tosses it without a second thought.`,
                 },
                 {
                     required: (t) => {
-                        return !getHeadwearRestrictions(t.interactionuser.id).canInspect;
+                        return !getHeadwearRestrictions(t.serverID, t.interactionuser.id).canInspect;
                     },
                     text: `USER_TAG is unable to see, so USER_THEY decideUSER_S to toss the key to USER_THEIR VAR_C1 somewhere... Who knows where?`,
                 },
                 {
                     required: (t) => {
-                        return getArousal(t.interactionuser.id) > 10;
+                        return getArousal(t.serverID, t.interactionuser.id) > 10;
                     },
                     text: `USER_TAG shudders slightly as USER_THEY stareUSER_S at USER_THEIR VAR_C1 key before flinging it off into the void!`,
                 },
                 {
                     required: (t) => {
-                        return getArousal(t.interactionuser.id) > 20;
+                        return getArousal(t.serverID, t.interactionuser.id) > 20;
                     },
                     text: `Desperate to stay helpless and horny, USER_TAG throws USER_THEIR VAR_C1 key off into the distance!`,
                 },
@@ -2181,13 +2181,13 @@ const texts_touch = {
                         `USER_TAG brushes the hair out of TARGET_TAG's face as USER_THEY runUSER_S USER_THEIR hand over TARGET_THEIR head with a cute little headpat!`,
                         {
                             required: (t) => {
-                                return (getArousal(t.targetuser.id) > 50)
+                                return (getArousal(t.serverID, t.targetuser.id) > 50)
                             },
                             text: `USER_TAG runs USER_THEIR hand over TARGET_TAG's hair. The heat radiating from TARGET_THEIR breath is enough to cook an egg with!`
                         },
                         {
                             required: (t) => {
-                                return (getArousal(t.targetuser.id) > 100)
+                                return (getArousal(t.serverID, t.targetuser.id) > 100)
                             },
                             text: `USER_TAG runs USER_THEIR hand over TARGET_TAG's hair. TARGET_THEIR_CAP eyes are a bit glazed over from how horny TARGET_THEY feelTARGET_S right now...`
                         },

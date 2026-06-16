@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { calcDenialCoefficient } = require("../../vibefunctions");
 const { getOption } = require("../config/getOption");
 const { getArousal } = require("./getArousal");
@@ -16,6 +17,7 @@ const RESET_LIMIT = 0.1;
  * ##### Returns a string representing their arousal
  **********/
 function getArousalDescription(serverID, user) {
+    traceFirstParam(arguments[0]);
 	if (getOption(user, "arousalsystem") === 0) return null; // Disabled Arousal system
 
 	const arousal = getArousal(serverID, user);

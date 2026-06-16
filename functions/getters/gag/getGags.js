@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /*******
  * Get all of the gags worn by the user ID
  * 
@@ -7,6 +9,7 @@
  * ##### Returns an array of gag objects
  *******/
 function getGags(serverID, userID) {
+    traceFirstParam(arguments[0]);
 	if (process.gags == undefined) {
 		process.gags = {};
 	}

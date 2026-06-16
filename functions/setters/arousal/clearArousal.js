@@ -1,4 +1,5 @@
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /*********
  * Sets the user's arousal to 0
@@ -8,6 +9,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### *No return value*
  *********/
 function clearArousal(user) {
+    traceFirstParam(arguments[0]);
 	process.arousal[user] = { arousal: 0, prev: 0, timestamp: Date.now() };
 	markForSave("arousal");
 }

@@ -1,5 +1,6 @@
 const { calcBreath } = require("../../corsetfunctions");
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 
 /*********
@@ -10,6 +11,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### Returns the calculated breath of the user
  *********/
 function getBreath(user) {
+    traceFirstParam(arguments[0]);
     const corset = calcBreath(user);
     markForSave("corset");
     return corset.breath;

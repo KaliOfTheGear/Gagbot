@@ -1,4 +1,5 @@
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /********
  * Removes a corset from a user
@@ -8,6 +9,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### *No return value*
  ********/
 function removeCorset(user) {
+    traceFirstParam(arguments[0]);
 	if (process.corset == undefined) process.corset = {};
 	delete process.corset[user];
 	markForSave("corset");

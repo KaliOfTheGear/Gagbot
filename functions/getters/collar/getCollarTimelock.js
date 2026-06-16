@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { getCollar } = require("./getCollar");
 
 /***********
@@ -9,6 +10,7 @@ const { getCollar } = require("./getCollar");
  * ##### Returns an integer with the unlockTime or a string with the unlock time for Discord.
  ***********/
 function getCollarTimelock(user, UNIXTimestring) {
+    traceFirstParam(arguments[0]);
 	if (!UNIXTimestring) {
 		return getCollar(user)?.unlockTime;
 	} else {

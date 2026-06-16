@@ -1,4 +1,5 @@
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /**************
  * Adds a wearable clothing item to a user. 
@@ -9,6 +10,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### *No return value*
  **************/
 function assignWearable(user, wearable) {
+    traceFirstParam(arguments[0]);
     if (process.wearable == undefined) {
 		process.wearable = {};
 	}

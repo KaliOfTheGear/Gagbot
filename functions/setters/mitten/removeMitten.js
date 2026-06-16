@@ -1,4 +1,5 @@
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /**********
  * Removes mittens from the user.
@@ -8,6 +9,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### *No return value*
  **********/
 function deleteMitten(userID) {
+    traceFirstParam(arguments[0]);
 	if (process.mitten == undefined) {
 		process.mitten = {};
 	}

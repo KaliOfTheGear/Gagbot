@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /************
  * Gets the full collar name of the User ID. Optionally will get the full collar name of a collar by ID.
  * 
@@ -10,6 +12,7 @@
  * ###### Note: Needs rework into separate getCollarName and getCollarNameOnUser functions
  ************/
 function getCollarName(userID, collarid) {
+    traceFirstParam(arguments[0]);
     if (process.collar == undefined) {
         process.collar = {};
     }

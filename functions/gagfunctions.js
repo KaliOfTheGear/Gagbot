@@ -25,6 +25,7 @@ const { getPFP } = require("./getters/config/getPFP.js");
 const { convertPronounsText } = require("./other/convertPronounsText.js");
 const { getAlternateName } = require("./getters/config/getAlternateName.js");
 const { markForSave } = require("./other/markForSave.js");
+const { traceFirstParam } = require("./other/TESTS/traceFirstParam.js");
 
 // Grab all the command files from the commands directory
 const gagtypes = [];
@@ -86,7 +87,8 @@ function loadMittenTypes() {
  * @param userID - The user's discord ID number
  * @param amount - How many violations?
  **********************************************/
-function punishDoll(userID, amount) {
+function punishDoll(serverID, userID, amount) {
+    traceFirstParam(arguments[0]);
 	if (process.dolls == undefined) {
 		process.dolls = {};
 	}

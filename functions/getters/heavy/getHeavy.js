@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { getBaseHeavy } = require("./getBaseHeavy");
 
 /*********
@@ -13,6 +14,7 @@ const { getBaseHeavy } = require("./getBaseHeavy");
  * - namedcontainerowner?: User ID included in container checks
  *********/
 function getHeavy(user, type) {
+    traceFirstParam(arguments[0]);
     if (process.heavy == undefined) {
         process.heavy = {};
     }

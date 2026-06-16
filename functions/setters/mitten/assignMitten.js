@@ -1,4 +1,5 @@
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /**********
  * Adds or modifies mittens on the user.
@@ -10,6 +11,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### *No return value*
  **********/
 function assignMitten(userID, mittentype, origbinder) {
+    traceFirstParam(arguments[0]);
 	if (process.mitten == undefined) {
 		process.mitten = {};
 	}

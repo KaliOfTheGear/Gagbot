@@ -6,6 +6,7 @@ const { forcedtextemoji } = require("../headwear/doll_visor.js");
 const { getHeadwearRestrictions } = require("./getters/headwear/getHeadwearRestrictions.js");
 const { getHeadwear } = require("./getters/headwear/getHeadwear.js");
 const { getHeadwearBlocks } = require("./getters/headwear/getBaseHeadwear.js");
+const { traceFirstParam } = require("./other/TESTS/traceFirstParam.js");
 
 /* // This can probably be retired - leaving here for reference
 const headweartypes = [
@@ -112,7 +113,8 @@ const replaceEmoji = (text, parent, replaceEmoji, msgModified, matchFound) => {
 	}
 }
 // Removes all emoji, optionally using an assigned emoji if they are wearing a mask with it!
-const processHeadwearEmoji = (userID, msgTree, msgModified, dollvisoroverride) => {
+const processHeadwearEmoji = (serverID, userID, msgTree, msgModified, dollvisoroverride) => {
+    traceFirstParam(arguments[0]);
 	// Do nothing if no headwear blocks.
 	if (getHeadwearRestrictions(userID).canEmote) {return;}
 
@@ -297,7 +299,8 @@ const truthgasopposites = (text, parent, msgModified) => {
     return outtext.slice(1) // Cut the leading space
 }
 // Changes words and negates them
-const processHeadwearTruthgas = (userID, msgTree, msgModified) => {
+const processHeadwearTruthgas = (serverID, userID, msgTree, msgModified) => {
+    traceFirstParam(arguments[0]);
 	// Do nothing if no headwear blocks.
 	if (!getHeadwear(userID).includes("gasmask_truthgas")) { return }
 

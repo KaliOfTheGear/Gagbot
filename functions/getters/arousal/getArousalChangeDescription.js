@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { getBotOption } = require("../config/getBotOption");
 const { getOption } = require("../config/getOption");
 const { getProcessVariable } = require("../config/getProcessVariable");
@@ -14,6 +15,7 @@ const ORGASM_LIMIT = 10;
  * ##### Returns a string representing their arousal change
  **********/
 function getArousalChangeDescription(serverID, user) {
+    traceFirstParam(arguments[0]);
 	if (getOption(user, "arousalsystem") != 2) return null;
 
 	const arousal = getProcessVariable(serverID, user, "arousal");

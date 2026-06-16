@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /*******
  * Gets the user's current Resolve
  * 
@@ -6,6 +8,7 @@
  * ##### Returns an integer with the current resolve of the user
  *******/
 function getResolve(user) {
+    traceFirstParam(arguments[0]);
     if (process.delveuserdata == undefined) { process.delveuserdata = {} }
     if (process.delveuserdata[user]) {
         // They started a delve, return their current resolve

@@ -18,11 +18,13 @@ const { getBaseCollar } = require("./getters/collar/getBaseCollar");
 const { statsAddCounter } = require("./setters/config/statsAddCounter");
 const { getTextGeneric } = require("./textfunctions");
 const { markForSave } = require("./other/markForSave");
+const { traceFirstParam } = require("./other/TESTS/traceFirstParam");
 
 const MAX_FUMBLE_CHANCE = 0.95;
 
 // returns how heavy the fumble was (usually 1 = regular, 2 = drop key)
-function rollKeyFumble(keyholder, locked) {
+function rollKeyFumble(serverID, keyholder, locked) {
+    traceFirstParam(arguments[0]);
 	if (process.keyfumbling == undefined) {
 		process.keyfumbling = {};
 	}
@@ -85,6 +87,7 @@ function rollKeyFumble(keyholder, locked) {
 }
 
 function getFumbleChance(serverID, keyholder, locked) {
+    traceFirstParam(arguments[0]);
 	// cannot fumble if disabled
 	if (getOption(locked, "fumbling") == "disabled") return 0;
 	// ... or if not using the dynamic arousal system

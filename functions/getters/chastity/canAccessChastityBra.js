@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { getChastityBra } = require("./getChastityBra");
 
 /************
@@ -14,6 +15,7 @@ const { getChastityBra } = require("./getChastityBra");
  * - hasbelt: Is the **chastityuser** wearing a chastity bra?
  ************/
 function canAccessChastityBra(chastityuser, keyholder, unlock, cloning) {
+    traceFirstParam(arguments[0]);
     // As a reference for access in timelocks:
     // 0: "Everyone Else"
     // 1: "Keyholder Only"

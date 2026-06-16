@@ -1,4 +1,5 @@
 const { arousedtexts } = require("../../../vibes/aroused/aroused_texts");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { calcStaticVibeIntensity } = require("../../vibefunctions");
 const { getOption } = require("../config/getOption");
 const { getProcessVariable } = require("../config/getProcessVariable");
@@ -12,6 +13,7 @@ const { getProcessVariable } = require("../config/getProcessVariable");
  * ##### Returns an array of strings with aroused texts
  *********/
 function getArousedTexts(serverID, user) {
+    traceFirstParam(arguments[0]);
 	const texts = [];
 
 	if (getOption(user, "arousalsystem") == 2) {

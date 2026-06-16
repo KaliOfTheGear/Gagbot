@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /*********
  * Fetches a list of all user IDs where option == value
  * 
@@ -7,6 +9,7 @@
  * ##### Returns an array of user IDs that have selected that value for that option.
  *********/
 function getUsersWithOption(option, value) {
+    traceFirstParam(arguments[0]);
     let userswithval = [];
     if (process.configs && process.configs.users) {
         Object.keys(process.configs.users).forEach((user) => {

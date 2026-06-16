@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { getHeadwearBlocks } = require("./getBaseHeadwear");
 const { getHeadwear } = require("./getHeadwear");
 
@@ -11,6 +12,7 @@ const { getHeadwear } = require("./getHeadwear");
  * - canInspect: The user is able to view details in /inspect
  ***********/
 function getHeadwearRestrictions(userID) {
+    traceFirstParam(arguments[0]);
     let allowedperms = { canEmote: true, canInspect: true, forcedtextemoji: false };
     let wornheadwear = getHeadwear(userID);
     for (let i = 0; i < wornheadwear.length; i++) {

@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /**********
  * Gets a temporary user variable by key
  * 
@@ -7,6 +9,7 @@
  * ##### Returns the value of the key
  **********/
 function getUserVar(user, key) {
+    traceFirstParam(arguments[0]);
 	if (process.usercontext == undefined) {
 		process.usercontext = {};
 	}

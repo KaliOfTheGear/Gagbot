@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /**********
  * Gets the currently held chastity bra keys by the user.
  * 
@@ -6,6 +8,7 @@
  * ##### Returns an array of user IDs the user is the primary keyholder for.
  **********/
 function getChastityBraKeys(user) {
+    traceFirstParam(arguments[0]);
     if (process.chastitybra == undefined) {
 		process.chastitybra = {};
 	}

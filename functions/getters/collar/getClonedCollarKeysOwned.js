@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /***********
  * Gets a list of cloned collar keys the user is holding. 
  * 
@@ -6,6 +8,7 @@
  * ##### Returns an array of held cloned collar keys in the format "0000000000000000_collar"
  ***********/
 function getClonedCollarKeysOwned(userID) {
+    traceFirstParam(arguments[0]);
     if (process.collar == undefined) {
 		process.collar = {};
 	}

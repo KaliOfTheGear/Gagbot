@@ -1,4 +1,5 @@
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { statsAddCounter } = require("../config/statsAddCounter");
 
 /**********
@@ -12,6 +13,7 @@ const { statsAddCounter } = require("../config/statsAddCounter");
  * ##### *No return value*
  **********/
 function assignGag(serverID, userID, gagtype = "ball", intensity = 5, origbinder) {
+    traceFirstParam(arguments[0]);
 	if (process.gags == undefined) {
 		process.gags = {};
 	}

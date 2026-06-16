@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { remindPronouns, pronounsMap } = require("../../pronounfunctions");
 
 /********************************************
@@ -16,6 +17,7 @@ const { remindPronouns, pronounsMap } = require("../../pronounfunctions");
  * ##### Returns a string with the user's pronoun in the appropriate tense
  *******************************************/
 const getPronouns = (user, form, capitalize = false) => {
+    traceFirstParam(arguments[0]);
     if (process.pronouns == undefined) {
         process.pronouns = {};
     }

@@ -1,4 +1,5 @@
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /*******
  * Set a floor prop on the floordata array. This is data only used by the floor itself. 
@@ -11,6 +12,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### *No return value*
  *******/
 function setDelveFloorState(user, floor, prop, value) {
+    traceFirstParam(arguments[0]);
     if (process.delveuserdata == undefined) { process.delveuserdata = {} }
     if (process.delveuserdata[user]) {
         // They started a delve, now check what floor they're on

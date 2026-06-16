@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { getCollar } = require("./getCollar");
 
 /************
@@ -14,6 +15,7 @@ const { getCollar } = require("./getCollar");
  * - hascollar: Is the **collaruser** wearing a collar?
  ************/
 function canAccessCollar(collaruser, keyholder, unlock, cloning) {
+    traceFirstParam(arguments[0]);
     // As a reference for access in timelocks:
     // 0: "Everyone Else"
     // 1: "Keyholder Only"

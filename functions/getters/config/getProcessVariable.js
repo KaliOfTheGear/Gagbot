@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /*******
  * Get the base object for a user. 
  * 
@@ -8,6 +10,7 @@
  * ##### Returns the object if it exists, undefined if it doesn't. 
  *******/
 function getProcessVariable(serverID, userID, processvar) {
+    traceFirstParam(arguments[0]);
     if (process[processvar] == undefined) { process[processvar] = {} }
     if (process[processvar][serverID] == undefined) { process[processvar][serverID] = {} }
     return process[processvar][serverID][userID]

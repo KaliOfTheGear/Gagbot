@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { calcDenialCoefficient } = require("../../vibefunctions");
 const { getArousal } = require("./getArousal");
 
@@ -12,7 +13,8 @@ const ORGASM_LIMIT = 10;
  * ---
  * ##### Returns a string representing a filled bar for arousal percentage
  **********/
-function getArousalBar(userID) {
+function getArousalBar(serverID, userID) {
+    traceFirstParam(arguments[0]);
     const arousal = getArousal(serverID, userID);
     const denialCoefficient = calcDenialCoefficient(userID);
     const orgasmLimit = ORGASM_LIMIT;

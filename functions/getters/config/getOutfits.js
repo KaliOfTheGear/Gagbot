@@ -1,9 +1,12 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /*******
  * Gets all of the outfits for the user.
  * 
  * - (user id) userID - The user whose outfits to retrieve
  *******/
 function getOutfits(userID) {
+    traceFirstParam(arguments[0]);
 	if (process.outfits == undefined) {
 		process.outfits = {};
 	}

@@ -6,6 +6,7 @@ const { getBaseCorset } = require("./getters/corset/getBaseCorset");
 const { getCorset } = require("./getters/corset/getCorset");
 const { getHeadwear } = require("./getters/headwear/getHeadwear");
 const { markForSave } = require("./other/markForSave");
+const { traceFirstParam } = require("./other/TESTS/traceFirstParam");
 
 nlp.extend(nlpSpeech);
 
@@ -131,7 +132,7 @@ const silenceReplacers = [" ", ".", ",", ""];
 const silenceMessages = ["-# *Panting heavily*", "-# *Completely out of breath*", "-# *Desperately gasping for air*", "-# *About to pass out*"];
 
 // Consumes breath and returns possibly modified text
-function corsetLimitWords(text, parent, user, msgModified) {
+function corsetLimitWords(text, parent, user, msgModified, serverID) {
 	// just do nothing if no text
 	if (text.length == 0 || text.match(/^\s*$/)) return text;
 
@@ -250,8 +251,9 @@ function corsetLimitWords(text, parent, user, msgModified) {
 	return outtext;
 }
 
-// calculates current breath and returns corset. Does not save to file.
-function calcBreath(user) {
+// calculates current breath and returns corset. Does not save to file. (server id, user id)
+function calcBreath(serverID, user) {
+    traceFirstParam(arguments[0]);
 	const corset = getCorset(user);
 	const basecorset = getBaseCorset(corset.type);
 	if (!corset) return null;
@@ -283,8 +285,9 @@ function calcBreath(user) {
 }
 
 // consumes specified breath and returns true if user had enough
-function tryExpendBreath(user, exertion) {
-	const corset = calcBreath(user);
+function tryExpendBreath(serverID, user, exertion) {
+    traceFirstParam(arguments[0]);
+	const corset = calcBreath(serverID, user);
 	const basecorset = getBaseCorset(corset.type ?? "corset_leather");
 	corset.breath -= exertion;
 	basecorset.afterUsingBreath({ userID: user, corset: corset });

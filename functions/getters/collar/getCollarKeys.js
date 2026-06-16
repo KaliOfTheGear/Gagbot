@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /**********
  * Gets the currently held collar keys by the user.
  * 
@@ -6,6 +8,7 @@
  * ##### Returns an array of user IDs the user is the primary keyholder for.
  **********/
 function getCollarKeys(user) {
+    traceFirstParam(arguments[0]);
     if (process.collar == undefined) {
 		process.collar = {};
 	}

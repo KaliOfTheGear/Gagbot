@@ -1,8 +1,10 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { getChastity } = require("./getChastity");
 
 /************
  * Checks whether the keyholder has access to do things to the chastityuser. 
  * 
+ * - (server id) serverID - The server this is running on
  * - (user id) chastityuser - The User ID who is **wearing** the collar
  * - (user id) keyholder - The User ID who is **performing the action**
  * - (boolean) unlock - If this action involves unlocking and removing the collar
@@ -13,7 +15,8 @@ const { getChastity } = require("./getChastity");
  * - public: Is this action permitted because of public access?
  * - hasbelt: Is the **chastityuser** wearing a chastity belt?
  ************/
-function canAccessChastity(chastityuser, keyholder, unlock, cloning) {
+function canAccessChastity(serverID, chastityuser, keyholder, unlock, cloning) {
+    traceFirstParam(arguments[0]);
     // As a reference for access in timelocks:
     // 0: "Everyone Else"
     // 1: "Keyholder Only"

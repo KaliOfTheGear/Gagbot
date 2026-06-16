@@ -3,6 +3,7 @@ const { getChastity } = require("../../getters/chastity/getChastity");
 const { getBaseCorset } = require("../../getters/corset/getBaseCorset");
 const { getBreath } = require("../../getters/corset/getBreath");
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /**********
  * Adds or modifies a corset on the user.
@@ -15,6 +16,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### *No return value*
  **********/
 function assignCorset(user, type, tightness, origbinder) {
+    traceFirstParam(arguments[0]);
 	if (process.corset == undefined) process.corset = {};
 	const old = Object.assign({}, process.corset[user]);
 	const currentBreath = process.corset[user] ? getBreath(user) : null;

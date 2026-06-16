@@ -1,6 +1,7 @@
 const { configoptions } = require("../../../lists/configoptions");
 const { initializeOptions } = require("../../other/initializeOptions");
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /********
  * Gets the configured option for the user ID as set in /config
@@ -11,6 +12,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### Returns the exact value of that configured option. Will use default if user has not configured it.
  ********/
 function getOption(userID, option) {
+    traceFirstParam(arguments[0]);
     if (process.configs == undefined) {
         process.configs = {};
     }

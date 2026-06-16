@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { getBaseChastity } = require("./getBaseChastity");
 const { getChastity } = require("./getChastity");
 const { getChastityBra } = require("./getChastityBra");
@@ -77,6 +78,7 @@ function bounded(min, val, max) {
  * - orgasmArousalLeft: Percentage of arousal that will be left on the wearer after letting go.
  ********/
 function getCombinedTraits(user) {
+    traceFirstParam(arguments[0]);
     // Build an object which references the combined properties
     // Any FUNCTIONS will be called from both when their respective unlock is called.
     const beltbase = getChastity(user) ? getBaseChastity(getChastity(user).chastitytype ?? "belt_silver") : undefined;

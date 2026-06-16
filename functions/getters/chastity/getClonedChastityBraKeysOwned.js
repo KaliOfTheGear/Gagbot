@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /***********
  * Gets a list of cloned chastity bra keys the user is holding. 
  * 
@@ -6,6 +8,7 @@
  * ##### Returns an array of held cloned chastity bra keys in the format "0000000000000000_chastitybra"
  ***********/
 function getClonedChastityBraKeysOwned(userID) {
+    traceFirstParam(arguments[0]);
     if (process.chastitybra == undefined) {
 		process.chastitybra = {};
 	}

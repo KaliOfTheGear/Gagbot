@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { getChastityBra } = require("./getChastityBra");
 
 /**********
@@ -8,6 +9,7 @@ const { getChastityBra } = require("./getChastityBra");
  * ##### Returns a string with the user ID of the primary keyholder for the user's chastity bra.
  **********/
 function getChastityBraKeyholder(user) {
+    traceFirstParam(arguments[0]);
 	return getChastityBra(user)?.keyholder;
 }
 

@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /********************************************
  * Get a user's pronouns in typical slash format - Ex: "she/her"
  * ##### NOTE: "it/it" is grammatically correct, but repetitive. Opted for "it/its" as a stylistic choice.
@@ -7,6 +9,7 @@
  * ##### Returns a string with the user's standard pronoun representation
  *******************************************/
 const getPronounsSet = (user) => {
+    traceFirstParam(arguments[0]);
 	if (process.pronouns == undefined) {
 		process.pronouns = {};
 	}

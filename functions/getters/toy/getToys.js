@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /**********
  * Gets all of the toys that a user is wearing
  * 
@@ -9,6 +11,7 @@
  * - origbinder: The user ID who put the toy on the user
  **********/
 function getToys(user) {
+    traceFirstParam(arguments[0]);
     if (process.toys == undefined) { process.toys = {} }
     if (process.toys[user] == undefined) { process.toys[user] = [] }
     return process.toys[user];

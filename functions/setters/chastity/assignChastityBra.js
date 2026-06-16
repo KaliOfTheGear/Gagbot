@@ -1,6 +1,7 @@
 const { getBaseChastity } = require("../../getters/chastity/getBaseChastity");
 const { getChastityBra } = require("../../getters/chastity/getChastityBra");
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /**********
  * Adds or modifies a chastity bra on the user.
@@ -13,6 +14,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### Returns true if successful, false if failed to put it on
  **********/
 function assignChastityBra(user, keyholder, namedchastity, force = false) {
+    traceFirstParam(arguments[0]);
 	if (process.chastitybra == undefined) {
 		process.chastitybra = {};
 	}

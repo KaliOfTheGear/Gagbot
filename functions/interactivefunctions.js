@@ -34,6 +34,7 @@ const { getGags } = require("./getters/gag/getGags.js");
 const { getWearable } = require("./getters/wearable/getWearable.js");
 const { getToys } = require("./getters/toy/getToys.js");
 const { configoptions } = require("../lists/configoptions.js");
+const { traceFirstParam } = require("./other/TESTS/traceFirstParam.js");
 
 // Generates a consent button which the user will have to agree to.
 const consentMessage = (interaction, user) => {
@@ -635,7 +636,8 @@ function checkBondageRemoval(serverID, userID, targetID, type, item) {
 	return false;
 }
 
-async function handleBondageRemoval(user, target, type, change = false) {
+async function handleBondageRemoval(serverID, user, target, type, change = false) {
+    traceFirstParam(arguments[0]);
 	return new Promise(async (res, rej) => {
 		try {
 			let buttons = [new ButtonBuilder().setCustomId("denyButton").setLabel("Deny").setStyle(ButtonStyle.Danger), new ButtonBuilder().setCustomId("acceptButton").setLabel("Allow").setStyle(ButtonStyle.Success)];
@@ -684,7 +686,8 @@ async function handleBondageRemoval(user, target, type, change = false) {
     })*/
 }
 
-async function handleExtremeRestraint(user, target, type, restraint) {
+async function handleExtremeRestraint(serverID, user, target, type, restraint) {
+    traceFirstParam(arguments[0]);
 	return new Promise(async (res, rej) => {
         // cull out multiple styles of the same kind, this is used for things like Gag Harness to group multiple headpieces.
         let origrestraint = restraint
@@ -778,6 +781,7 @@ async function handleExtremeRestraint(user, target, type, restraint) {
 // Will never be available for collars.
 // Will ALWAYS nag the user unless they're collared for that respective restraint.
 async function handleMajorRestraint(user, target, type, restraint) {
+    traceFirstParam(arguments[0]);
 	return new Promise(async (res, rej) => {
 		let hasOption = getOption(target.id, `majorrestraint`);
 		if (canAccessCollar(target.id, user.id).access) {
@@ -1012,7 +1016,8 @@ function generateListTexts() {
 }
 
 // Generates a message box with buttons to give keys for a user to a target, and listing all valid keys along with current cloned keyholders.
-async function generateKeyGivingModal(userid, weareridin, targetidin, keybitin) {
+async function generateKeyGivingModal(serverID, userid, weareridin, targetidin, keybitin) {
+    traceFirstParam(arguments[0]);
     let wearerid = weareridin ?? userid;
     let targetid = targetidin ?? userid;
     let keybit = keybitin ?? "0000"; // first character is give/clone, second, third and fourth are chastity, chastity bra and collar.

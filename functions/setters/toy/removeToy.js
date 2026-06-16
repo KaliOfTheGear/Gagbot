@@ -1,5 +1,6 @@
 const getBaseChastity = require("../../getters/chastity/getBaseChastity");
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /**********
  * Removes a toy from the user.
@@ -12,6 +13,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### *No return value*
  **********/
 function removeToy(user, keyholder, toytype, force = false) {
+    traceFirstParam(arguments[0]);
     if (process.toys == undefined) { process.toys = {} }
     if (process.toys[user] == undefined) { process.toys[user] = [] }
     let index = process.toys[user].findIndex((toy) => toy.type == toytype)

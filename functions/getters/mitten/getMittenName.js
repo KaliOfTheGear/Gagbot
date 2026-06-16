@@ -1,4 +1,5 @@
 const { mittentypes } = require("../../gagfunctions");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /************
  * Gets the full mitten name of the User ID. Optionally will get the full mitten name of mittens by ID.
@@ -12,6 +13,7 @@ const { mittentypes } = require("../../gagfunctions");
  * ###### Note: Needs rework into separate getMittenName and getMittenNameOnUser functions
  ************/
 function getMittenName(userID, mittenname) {
+    traceFirstParam(arguments[0]);
     if (process.mitten == undefined) {
         process.mitten = {};
     }

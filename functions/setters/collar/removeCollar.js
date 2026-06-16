@@ -1,4 +1,5 @@
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /********
  * Removes a collar from a user
@@ -8,6 +9,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### *No return value*
  ********/
 function removeCollar(user) {
+    traceFirstParam(arguments[0]);
     if (process.collar == undefined) {
 		process.collar = {};
 	}

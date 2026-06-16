@@ -1,5 +1,6 @@
 const { getHeavyName } = require("../../getters/heavy/getHeavyName");
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /**************
  * Adds a heavy bondage to a user. 
@@ -12,6 +13,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### *No return value*
  **************/
 function assignHeavy(user, type, origbinder, customname) {
+    traceFirstParam(arguments[0]);
     let namedcontainerowner;
     if ((type === "dominants_lap") || (type === "engulfing_slime")) {
         namedcontainerowner = origbinder;

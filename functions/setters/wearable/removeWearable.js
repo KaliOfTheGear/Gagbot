@@ -1,5 +1,6 @@
 const { getLockedWearable } = require("../../getters/wearable/getLockedWearable");
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /**********
  * Removes a clothing from the user.
@@ -10,6 +11,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### *No return value*
  **********/
 function deleteWearable(userID, wearable) {
+    traceFirstParam(arguments[0]);
     if (process.wearable == undefined) {
         process.wearable = {};
     }

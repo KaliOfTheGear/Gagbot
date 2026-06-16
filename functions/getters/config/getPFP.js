@@ -1,6 +1,7 @@
 const axios = require("axios");
 const sharp = require("sharp");
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /**********
  * Get the combined profile picture of the user, if their original one matches the one we have on file
@@ -11,6 +12,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### Returns a string with the user's PFP URL to use
  **********/
 async function getPFP(member, mods = []) {
+    traceFirstParam(arguments[0]);
     let imagelist = mods.slice(0);
     if (member.displayAvatarDecorationURL()) {
         imagelist.push(member.displayAvatarDecorationURL())

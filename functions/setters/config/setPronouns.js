@@ -1,4 +1,5 @@
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { setOption } = require("./setOption");
 
 /*********
@@ -10,6 +11,7 @@ const { setOption } = require("./setOption");
  * ##### *No return value*
  *********/
 function setPronouns(user, pronouns) {
+    traceFirstParam(arguments[0]);
 	if (process.pronouns == undefined) {
 		process.pronouns = {};
 	}

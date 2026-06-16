@@ -1,4 +1,5 @@
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /*********
  * Remove Heavy Bondage from user. If **type** is not specified, will remove the first heavy bondage in the list. 
@@ -8,6 +9,7 @@ const { markForSave } = require("../../other/markForSave");
  * - (boolean) force? - If true, removes all heavy bondage
  *********/
 const removeHeavy = (user, type, force) => {
+    traceFirstParam(arguments[0]);
 	if (process.heavy == undefined) {
 		process.heavy = {};
 	}

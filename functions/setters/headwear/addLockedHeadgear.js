@@ -1,4 +1,5 @@
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /**********
  * Adds a locked headwear item on the user.
@@ -9,6 +10,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### *No return value*
  **********/
 function addLockedHeadgear(userID, headwear) {
+    traceFirstParam(arguments[0]);
 	if (process.headwear == undefined) {
 		process.headwear = {};
 	}

@@ -1,4 +1,5 @@
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /**********
  * Adds a point to a counter by name in user's stats. Specify amount for custom amount.
@@ -10,6 +11,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### *No return value*
  **********/
 function statsAddCounter(user, countername, amount = 1) {
+    traceFirstParam(arguments[0]);
     if (process.userstats == undefined) { process.userstats = {} }
     if (process.userstats[user] == undefined) { process.userstats[user] = {} }
     let newcount = (process.userstats[user][countername] ?? 0) + amount;

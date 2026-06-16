@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /*******
  * Get the worn headwear for a user
  * 
@@ -6,6 +8,7 @@
  * ##### Returns an array with string item IDs the user is wearing
  *******/
 function getHeadwear(userID) {
+    traceFirstParam(arguments[0]);
     if (process.headwear == undefined) {
 		process.headwear = {};
 	}

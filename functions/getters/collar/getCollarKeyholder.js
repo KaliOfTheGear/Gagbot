@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { getCollar } = require("./getCollar");
 
 /**********
@@ -8,6 +9,7 @@ const { getCollar } = require("./getCollar");
  * ##### Returns a string with the user ID of the primary keyholder for the user's collar.
  **********/
 function getCollarKeyholder(user) {
+    traceFirstParam(arguments[0]);
 	return getCollar(user)?.keyholder;
 }
 

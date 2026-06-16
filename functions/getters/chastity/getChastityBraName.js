@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /************
  * Gets the full chastity bra name of the User ID. Optionally will get the full chastity bra name of a chastity bra by ID.
  * 
@@ -10,6 +12,7 @@
  * ###### Note: Needs rework into separate getChastityName and getChastityNameOnUser functions
  ************/
 function getChastityBraName(userID, chastityname) {
+    traceFirstParam(arguments[0]);
     if (process.chastitybra == undefined) {
 		process.chastitybra = {};
 	}

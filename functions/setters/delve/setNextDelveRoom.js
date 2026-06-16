@@ -1,6 +1,7 @@
 const { getCurrentFloor } = require("../../getters/delve/getCurrentFloor");
 const { getDelvePlayerStats } = require("../../getters/delve/getDelvePlayerStats");
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /*********
  * Sets the next Delve room by choice. If choice is not specified, the user is starting a new delve. This will always default to the delveentrance room.
@@ -11,6 +12,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### *No return value*
  *********/
 function setNextDelveRoom(user, choice) {
+    traceFirstParam(arguments[0]);
     if ((getCurrentFloor(user) == undefined)) {
         process.delveuserdata[user] = {
             floorarr: ["delveentrance"],

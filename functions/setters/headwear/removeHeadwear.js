@@ -1,5 +1,6 @@
 const { getLockedHeadgear } = require("../../getters/headwear/getLockedHeadgear");
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /**********
  * Removes a headwear from the user.
@@ -11,6 +12,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### *No return value*
  **********/
 function deleteHeadwear(userID, headwear, force = true) {
+    traceFirstParam(arguments[0]);
     if (process.headwear == undefined) {
         process.headwear = {};
     }

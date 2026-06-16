@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { getHeavy } = require("./getHeavy");
 
 /********
@@ -9,6 +10,7 @@ const { getHeavy } = require("./getHeavy");
  * ##### Returns a user ID who put this heavy bondage on the user. 
  ********/
 function getHeavyBinder(user, type) {
+    traceFirstParam(arguments[0]);
     if (getHeavy(user)) {
         if (type) {
             return getHeavy(user, type)?.origbinder

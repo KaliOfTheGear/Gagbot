@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /**********
  * Gets a combined list of cloned keys for collars the userID is the primary keyholder for
  * 
@@ -7,6 +9,7 @@
  * ##### is the person wearing the restraint, and the second set is the person holding the key clone.
  **********/
 function getOtherKeysCollar(userID) {
+    traceFirstParam(arguments[0]);
     if (process.collar == undefined) {
 		process.collar = {};
 	}

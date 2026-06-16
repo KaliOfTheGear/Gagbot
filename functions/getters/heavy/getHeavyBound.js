@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { getHeavy } = require("./getHeavy");
 const { getHeavyRestrictions } = require("./getHeavyRestrictions");
 
@@ -10,6 +11,7 @@ const { getHeavyRestrictions } = require("./getHeavyRestrictions");
  * ##### Returns true if the user is able to bind the target, false if not
  **********/
 function getHeavyBound(user, target) {
+    traceFirstParam(arguments[0]);
     if (getHeavy(user) == undefined) {
         return true; // No need to worry, they are able to do anything!
     }

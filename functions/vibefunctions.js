@@ -20,6 +20,7 @@ const { getHeavy } = require("./getters/heavy/getHeavy.js");
 const { heavyDenialCoefficient } = require("./getters/heavy/getHeavyDenialCoefficient.js");
 const { convertPronounsText } = require("./other/convertPronounsText.js");
 const { markForSave } = require("./other/markForSave.js");
+const { traceFirstParam } = require("./other/TESTS/traceFirstParam.js");
 
 // NOTE: canUnequip is currently checked in functions that remove/assign chastity and those functions return if it succeeded, but the text responses are not yet updated
 // probably makes more sense to make custom text responses for the belts/bras that use this that explain why it failed
@@ -193,7 +194,8 @@ const AROUSAL_PERIOD_B = 1 / 33;
 const PENALTY_MULTIPLIER = 1.3;
 
 // Called to prompt the wearer if it is okay to clone a key.
-async function promptCloneChastityKey(user, target, clonekeyholder, bra) {
+async function promptCloneChastityKey(serverID, user, target, clonekeyholder) {
+    traceFirstParam(arguments[0]);
 	return new Promise(async (res, rej) => {
 		let buttons = [new ButtonBuilder().setCustomId("denyButton").setLabel("Deny").setStyle(ButtonStyle.Danger), new ButtonBuilder().setCustomId("acceptButton").setLabel("Allow").setStyle(ButtonStyle.Success)];
 		let dmchannel = await target.createDM();
@@ -230,7 +232,8 @@ async function promptCloneChastityKey(user, target, clonekeyholder, bra) {
 }
 
 // Called to prompt the wearer if it is okay to give a key.
-async function promptTransferChastityKey(user, target, newKeyholder) {
+async function promptTransferChastityKey(serverID, user, target, newKeyholder) {
+    traceFirstParam(arguments[0]);
 	return new Promise(async (res, rej) => {
 		try {
 			let buttons = [new ButtonBuilder().setCustomId("denyButton").setLabel("Deny").setStyle(ButtonStyle.Danger), new ButtonBuilder().setCustomId("acceptButton").setLabel("Allow").setStyle(ButtonStyle.Success)];
@@ -272,7 +275,8 @@ async function promptTransferChastityKey(user, target, newKeyholder) {
 }
 
 // Called to prompt the wearer if it is okay to clone a key.
-async function promptCloneChastityBraKey(user, target, clonekeyholder) {
+async function promptCloneChastityBraKey(serverID, user, target, clonekeyholder) {
+    traceFirstParam(arguments[0]);
 	return new Promise(async (res, rej) => {
         try {
             let buttons = [new ButtonBuilder().setCustomId("denyButton").setLabel("Deny").setStyle(ButtonStyle.Danger), new ButtonBuilder().setCustomId("acceptButton").setLabel("Allow").setStyle(ButtonStyle.Success)];
@@ -314,7 +318,8 @@ async function promptCloneChastityBraKey(user, target, clonekeyholder) {
 }
 
 // Called to prompt the wearer if it is okay to give a key.
-async function promptTransferChastityBraKey(user, target, newKeyholder) {
+async function promptTransferChastityBraKey(serverID, user, target, newKeyholder) {
+    traceFirstParam(arguments[0]);
 	return new Promise(async (res, rej) => {
 		try {
 			let buttons = [new ButtonBuilder().setCustomId("denyButton").setLabel("Deny").setStyle(ButtonStyle.Danger), new ButtonBuilder().setCustomId("acceptButton").setLabel("Allow").setStyle(ButtonStyle.Success)];
@@ -611,7 +616,8 @@ function calcNextArousal(traits, time, arousal, prev, growthCoefficient, decayCo
 }
 
 // user attempts to orgasm, returns if it succeeds
-function tryOrgasm(user) {
+function tryOrgasm(serverID, user) {
+    traceFirstParam(arguments[0]);
 	// always succeed if user isnt using the system
 	if (getOption(user, "arousalsystem") != 2) return true;
 
@@ -655,7 +661,8 @@ function tryOrgasm(user) {
 	return false;
 }
 
-function setArousalCooldown(user, cooldownModifier = 1, arousalLeft = 0) {
+function setArousalCooldown(serverID, user, cooldownModifier = 1, arousalLeft = 0) {
+    traceFirstParam(arguments[0]);
 	const now = Date.now();
 	process.arousal[user].timestamp = now + ORGASM_COOLDOWN * cooldownModifier;
 	const old = process.arousal[user].arousal;
@@ -664,7 +671,8 @@ function setArousalCooldown(user, cooldownModifier = 1, arousalLeft = 0) {
 }
 
 // modify when more things affect it
-function calcStaticVibeIntensity(user) {
+function calcStaticVibeIntensity(serverID, user) {
+    traceFirstParam(arguments[0]);
 	const vibes = getToys(user);
 	if (!vibes) return 0;
 	return vibes.reduce((prev, currVibe) => {
@@ -674,14 +682,16 @@ function calcStaticVibeIntensity(user) {
 }
 
 // modify when more things affect it
-function calcDenialCoefficient(user) {
+function calcDenialCoefficient(serverID, user) {
+    traceFirstParam(arguments[0]);
 	const heavy = getHeavy(user);
 	const chastity = getChastity(user);
 	if (chastity) return (heavy ? heavyDenialCoefficient(heavy.type) : 0) / 2 + getCombinedTraits(user).denialCoefficient;
 	return heavy ? heavyDenialCoefficient(heavy.type) : 1;
 }
 
-function calcFrustration(user) {
+function calcFrustration(serverID, user) {
+    traceFirstParam(arguments[0]);
 	let frustrationmult = getOption(user, "frustration");
 	if (frustrationmult == 0) {
 		return 0;

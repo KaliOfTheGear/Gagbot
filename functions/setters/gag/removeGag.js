@@ -1,4 +1,5 @@
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /**********
  * Removes a gag from the user.
@@ -10,6 +11,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### *No return value*
  **********/
 function deleteGag(userID, specificgag, force = false) {
+    traceFirstParam(arguments[0]);
 	if (process.gags == undefined) {
 		process.gags = {};
 	}

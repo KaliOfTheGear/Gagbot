@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /**********
  * Gets the first worn gag for the user ID, or the specific gag by type if specified
  * 
@@ -11,6 +13,7 @@
  * - origbinder: Who put the gag on the user
  **********/
 function getGag(serverID, userID, gagbyname) {
+    traceFirstParam(arguments[0]);
     if (process.gags == undefined) {
 		process.gags = {};
 	}

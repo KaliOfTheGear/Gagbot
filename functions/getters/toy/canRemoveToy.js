@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /********
  * Check if a toy by ID can be removed from the target by the user
  * 
@@ -8,6 +10,7 @@
  * ##### Returns true if the toy is permitted to be placed
  ********/
 function canRemoveToy(userID, placerID, toy) {
+    traceFirstParam(arguments[0]);
     return (process.toytypes && process.toytypes[toy] && process.toytypes[toy].canUnequip({ userID: userID, placerID: placerID }))
 }
 

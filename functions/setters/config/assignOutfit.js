@@ -9,6 +9,7 @@ const { getToys } = require("../../getters/toy/getToys");
 const { getLockedWearable } = require("../../getters/wearable/getLockedWearable");
 const { getWearable } = require("../../getters/wearable/getWearable");
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /*********
  * Assigns an outfit to a slot for a user
@@ -20,6 +21,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### *No return value*
 **********/
 function assignOutfit(userID, slot, options) {
+    traceFirstParam(arguments[0]);
 	if (process.outfits == undefined) {
 		process.outfits = {};
 	}

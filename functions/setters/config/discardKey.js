@@ -1,4 +1,5 @@
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { statsAddCounter } = require("./statsAddCounter");
 
 /*******
@@ -11,6 +12,7 @@ const { statsAddCounter } = require("./statsAddCounter");
  * ##### Returns "keyholder" or "clone", depending on which key was discarded
  *******/
 function discardKey(userid, keyholderid, device) {
+    traceFirstParam(arguments[0]);
     // If it isnt one of the three devices we know about, go away
     if ((device != "collar") && (device != "chastity belt") && (device != "chastity bra")) { 
         console.log(`Unknown device ${device}. Use "collar", "chastity belt" or "chastity bra"`)

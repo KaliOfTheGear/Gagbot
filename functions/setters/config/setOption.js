@@ -1,4 +1,5 @@
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /********
  * Sets the configured option for the user ID as set in /config
@@ -10,6 +11,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### *No return value*
  ********/
 function setOption(userID, option, choice) {
+    traceFirstParam(arguments[0]);
 	if (process.configs == undefined) {
 		process.configs = {};
 	}

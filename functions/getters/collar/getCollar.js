@@ -1,4 +1,5 @@
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /*********
  * Gets the worn collar for a user. Returns the collar if it exists, or undefined if not.
@@ -17,6 +18,7 @@ const { markForSave } = require("../../other/markForSave");
  * ###### Additional properties may be added by other functions
  *********/
 function getCollar(user) {
+    traceFirstParam(arguments[0]);
 	if (process.collar == undefined) {
 		process.collar = {};
 	}

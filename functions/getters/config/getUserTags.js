@@ -1,4 +1,5 @@
 const { configoptions } = require("../../../lists/configoptions");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { getOption } = require("./getOption");
 
 
@@ -11,6 +12,7 @@ const { getOption } = require("./getOption");
  * ##### Returns an array of string tags to block or prefer
  *********/
 function getUserTags(userID, preferred = false) {
+    traceFirstParam(arguments[0]);
     if (!userID) { return [] }
     let tags = [];
     let optionstocheck = Object.keys(configoptions.Content).map((t) => t.replace("wearabletags-", ""))

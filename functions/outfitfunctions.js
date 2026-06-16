@@ -50,6 +50,7 @@ const { getClonedChastityBraKeysOwned } = require("./getters/chastity/getClonedC
 const { getClonedCollarKeysOwned } = require("./getters/collar/getClonedCollarKeysOwned");
 
 async function generateOutfitModal(serverID, userID, menu, page, options) {
+    traceFirstParam(arguments[0]);
 	let pagecomponents = [new TextDisplayBuilder().setContent(`## Outfitter - ${menu.slice(0, 1).toUpperCase()}${menu.slice(1)}`)];
 	let tabbuttons = [
 		// Restore
@@ -516,6 +517,7 @@ function outfitEntryModal(interaction, slot) {
 }
 
 async function inspectModal(serverID, userID, inspectuserIDin, menu, page) {
+    traceFirstParam(arguments[0]);
     let inspectuserID = inspectuserIDin ?? userID;
     let profilelink = (getOption(inspectuserID, "profilelink") && getOption(inspectuserID, "profilelink").length > 0) ? ` • [Profile](${getOption(inspectuserID, "profilelink")})` : ``
     let kinklistlink = (getOption(inspectuserID, "kinklistlink") && getOption(inspectuserID, "kinklistlink").length > 0) ? ` • [Kink List](${getOption(inspectuserID, "kinklistlink")})` : ``

@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { getGag } = require("./getGag");
 
 /*****
@@ -10,6 +11,7 @@ const { getGag } = require("./getGag");
  * ##### Returns the user ID who put the gag on them
  *****/
 function getGagBinder(serverID, userID, item) {
+    traceFirstParam(arguments[0]);
 	return getGag(serverID, userID, item)?.origbinder;
 }
 

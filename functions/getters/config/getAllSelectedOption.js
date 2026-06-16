@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /*********
  * Fetches a list of all users setting for option mapped by user ID
  * 
@@ -6,6 +8,7 @@
  * ##### Returns an object with keys corresponding to their set value
  *********/
 function getAllSelectedOption(option) {
+    traceFirstParam(arguments[0]);
     let selectedoption = {};
     if (process.configs && process.configs.users) {
         Object.keys(process.configs.users).forEach((user) => {

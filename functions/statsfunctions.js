@@ -1,4 +1,5 @@
 const { statsGetCounter } = require("./getters/config/statsGetCounter");
+const { traceFirstParam } = require("./other/TESTS/traceFirstParam");
 const { parseDuration } = require("./timefunctions");
 
 /*********
@@ -6,7 +7,8 @@ const { parseDuration } = require("./timefunctions");
  * 
  * - (user id) user - User to generate stats for
  *********/
-function statsGeneratePage(user) {
+function statsGeneratePage(serverID, user) {
+    traceFirstParam(arguments[0]);
     let statstogenerate = {
         Restraints: [
             {

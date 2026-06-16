@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /*******
  * Get a floor's props. 
  * 
@@ -9,6 +11,7 @@
  * ##### Returns the current floordata for the floor
  *******/
 function getDelveFloorState(user, floor) {
+    traceFirstParam(arguments[0]);
     if (process.delveuserdata == undefined) { process.delveuserdata = {} }
     if (process.delveuserdata[user]) {
         // They started a delve, now check what floor they're on

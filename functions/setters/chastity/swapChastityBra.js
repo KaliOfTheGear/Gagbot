@@ -1,6 +1,7 @@
 const { getBaseChastity } = require("../../getters/chastity/getBaseChastity");
 const { getChastityBra } = require("../../getters/chastity/getChastityBra");
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /***********
  * Changes a chastity bra on the user in place
@@ -12,6 +13,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### Returns true if successful, false if unable to change
  ***********/
 function swapChastityBra(user, keyholder, namedchastity) {
+    traceFirstParam(arguments[0]);
 	if (process.chastitybra == undefined) {
 		process.chastitybra = {};
 	}

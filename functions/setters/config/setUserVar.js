@@ -1,4 +1,5 @@
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /**********
  * Set a temporary user variable by key
@@ -10,6 +11,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### *No return value*
  **********/
 function setUserVar(user, key, value) {
+    traceFirstParam(arguments[0]);
 	if (process.usercontext == undefined) {
 		process.usercontext = {};
 	}

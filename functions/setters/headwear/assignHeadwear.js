@@ -1,5 +1,6 @@
 const { getBaseHeadwear } = require("../../getters/headwear/getBaseHeadwear");
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /**********
  * Adds or modifies a headwear on the user.
@@ -11,6 +12,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### *No return value*
  **********/
 function assignHeadwear(userID, headwear, origbinder) {
+    traceFirstParam(arguments[0]);
     if (process.headwear == undefined) {
         process.headwear = {};
     }

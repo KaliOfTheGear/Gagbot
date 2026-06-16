@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /*********
  * Gets the worn corset for a user. Returns the corset if it exists, or undefined if not.
  * 
@@ -12,6 +14,7 @@
  * ###### Additional properties may be added by other functions
  *********/
 function getCorset(user) {
+    traceFirstParam(arguments[0]);
     if (process.corset == undefined) process.corset = {};
 	return process.corset[user];
 }

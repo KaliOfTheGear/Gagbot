@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { getBaseHeavy } = require("./getBaseHeavy");
 const { getHeavyList } = require("./getHeavyList");
 
@@ -9,6 +10,7 @@ const { getHeavyList } = require("./getHeavyList");
  * ##### Returns an array of "arms", "legs", or "container"
  *********/
 function getHeavyTagsOnUser(user) {
+    traceFirstParam(arguments[0]);
     if (getHeavyList(user) == undefined) {
         return []; // They're not bound by anything lol
     }

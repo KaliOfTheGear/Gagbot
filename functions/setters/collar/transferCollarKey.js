@@ -1,5 +1,6 @@
 const { getCollar } = require("../../getters/collar/getCollar");
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /********
  * Changes the primary keyholder for a user's collar. Removes cloned keys.
@@ -10,6 +11,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### Returns true if successful, false if lockedUser is not wearing a collar
  ********/
 function transferCollarKey(lockedUser, newKeyholder) {
+    traceFirstParam(arguments[0]);
 	if (getCollar(lockedUser)) {
 		if (getCollar(lockedUser).keyholder != newKeyholder) {
 			getCollar(lockedUser).keyholder = newKeyholder;

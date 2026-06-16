@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /*******
  * Modifies the user's current Resolve, reducing it to 0 at minimum if it goes past that. 
  * 
@@ -5,6 +7,7 @@
  * - (integer) resolveamt - Amount of resolve to add or remove
  *******/
 function modifyResolve(user, resolveamt) {
+    traceFirstParam(arguments[0]);
     if (process.delveuserdata == undefined) { process.delveuserdata = {} }
     if (process.delveuserdata[user]) {
         process.delveuserdata[user].resolve = Math.max(parseInt(process.delveuserdata[user].resolve) + resolveamt, 0);

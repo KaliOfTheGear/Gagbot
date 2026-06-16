@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /******
  * Gets the currently worn mittens for a user.
  * 
@@ -8,6 +10,7 @@
  * - origbinder: The person who put the mittens on the user
  ******/
 function getMitten(userID) {
+    traceFirstParam(arguments[0]);
     if (process.mitten == undefined) {
 		process.mitten = {};
 	}

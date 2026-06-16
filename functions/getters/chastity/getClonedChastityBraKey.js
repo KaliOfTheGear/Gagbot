@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { getChastityBra } = require("./getChastityBra");
 
 /*********
@@ -8,6 +9,7 @@ const { getChastityBra } = require("./getChastityBra");
  * ##### Returns an array of user IDs with secondary access to this collar.
  *********/
 function getClonedChastityBraKey(userID) {
+    traceFirstParam(arguments[0]);
 	return getChastityBra(userID)?.clonedKeyholders ?? [];
 };
 

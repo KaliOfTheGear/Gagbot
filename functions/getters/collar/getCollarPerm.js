@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { getCollar } = require("./getCollar");
 
 /********
@@ -9,6 +10,7 @@ const { getCollar } = require("./getCollar");
  * ##### Returns a boolean if permission is allowed or not, or undefined if not specified.
  ********/
 function getCollarPerm(user, perm) {
+    traceFirstParam(arguments[0]);
     return (getCollar(user) ? getCollar(user)[perm] : undefined)
 }
 

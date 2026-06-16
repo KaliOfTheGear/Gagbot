@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { getOption } = require("../config/getOption");
 
 /********
@@ -9,6 +10,7 @@ const { getOption } = require("../config/getOption");
  * ##### Returns true if the user has arousal disabled and the toy is arousing, false if permitted or the toy isnt arousing
  ********/
 function userBlockArousingToy(user, toy) {
+    traceFirstParam(arguments[0]);
     if (toy && (getOption(user, "arousalsystem") == 0) && (process.toytypes[toy].isArousing())) {
         return true; // Do not add a toy that can increase arousal, thats bad. 
     }

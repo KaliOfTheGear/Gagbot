@@ -4,6 +4,7 @@ const garble = require("garble");
 const { getHeadwear } = require("./getters/headwear/getHeadwear.js");
 const { getOption } = require("./getters/config/getOption.js");
 const { markForSave } = require("./other/markForSave.js");
+const { traceFirstParam } = require("./other/TESTS/traceFirstParam.js");
 
 // Regex to capture the user's intended text segments post-corset and post-vibrator.
 // NOTE: Code uses invisible EOT control characters to encapsulate additions from corset/vibrator.
@@ -181,7 +182,8 @@ const dronecodes = {
  * Typical use: let dollified = checkDollification(userID)
  * @param userID - The user's discord ID number
  *************************************************/
-function checkDollification(userID) {
+function checkDollification(serverID, userID) {
+    traceFirstParam(arguments[0]);
 	if (process.dolls == undefined) {
 		process.dolls = {};
 	}
@@ -209,7 +211,8 @@ function checkDollification(userID) {
  * Determine if a user is wearing doll gear.
  * @param userID - The user's discord ID number
  **********************************************/
-function isValidDoll(userID) {
+function isValidDoll(serverID, userID) {
+    traceFirstParam(arguments[0]);
 	// TODO - Control harness + collar required for dollification?
 
 	return getHeadwear(userID).find((headwear) => DOLLVISORS.includes(headwear));
@@ -219,7 +222,8 @@ function isValidDoll(userID) {
  * Reward a doll for following protocol.
  * @param userID - The user's discord ID number
  **********************************************/
-function rewardDoll(userID) {
+function rewardDoll(serverID, userID) {
+    traceFirstParam(arguments[0]);
 	if (process.dolls == undefined) {
 		process.dolls = {};
 	}

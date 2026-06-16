@@ -18,6 +18,7 @@ const { assignMitten } = require("./setters/mitten/assignMitten")
 const { modifyResolve } = require("./setters/delve/setResolve")
 const { getDelveFloorState } = require("./getters/delve/getDelveFloorState")
 const { markForSave } = require("./other/markForSave")
+const { traceFirstParam } = require("./other/TESTS/traceFirstParam")
 
 /*****************
  * Players will utilize their condition as returned by gags, masks, heavy bondage and the like. 
@@ -438,7 +439,8 @@ const delveroomchoices = {
  * - (user ID) user - The user ID doing the delve
  * - (integer) floor - The floor number the user is visiting.
  *******/
-async function generateDelveModal(user, floor, incomingdelvedata) {
+async function generateDelveModal(serverID, user, floor, incomingdelvedata) {
+    traceFirstParam(arguments[0]);
     let floordata = delveroomchoices[process.delveuserdata[user]?.floorarr[floor]] ?? delveroomchoices["errorroom"]
     let delveuserdata = process.delveuserdata[user]
 
@@ -577,7 +579,8 @@ async function generateDelveModal(user, floor, incomingdelvedata) {
  * - (user id) user - User ID doing the Delve
  * - (integer) roomnumber - Number of rooms to select
  ********/
-function chooseNextRooms(user, roomnumber) {
+function chooseNextRooms(serverID, user, roomnumber) {
+    traceFirstParam(arguments[0]);
     let rooms = {};
     let forcerooms = {};
     let outrooms = [];
@@ -652,7 +655,8 @@ function arrayShuffle(arr) {
  * 
  * - (user id) user - User ID doing the Delve
  *******/
-function delveModalStats(user) {
+function delveModalStats(serverID, user) {
+    traceFirstParam(arguments[0]);
     let outtext = `**Player:** <@${user}>`;
     if (getResolve(user)) {
         outtext = `${outtext}\n**Resolve:** ${getResolve(user)}`

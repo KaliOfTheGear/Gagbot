@@ -1,6 +1,7 @@
 const { getBaseChastity } = require("../../getters/chastity/getBaseChastity");
 const { getOption } = require("../../getters/config/getOption");
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /**********
  * Adds or modifies a toy on the user.
@@ -16,6 +17,7 @@ const { markForSave } = require("../../other/markForSave");
  * ###### Needs cleanup and review on the origbinder param
  **********/
 function assignToy (user, keyholder, intensity, toytype = "vibe_bullet", origbinder) {
+    traceFirstParam(arguments[0]);
     let vibe = process.toytypes[toytype];
     if (!vibe) { return "NoToy" }
     if ((getOption(user, "arousalsystem") == 0) && (vibe.isArousing())) {

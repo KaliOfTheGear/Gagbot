@@ -1,3 +1,4 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 const { getBaseHeadwear } = require("./getBaseHeadwear");
 
 /**********
@@ -11,6 +12,7 @@ const { getBaseHeadwear } = require("./getBaseHeadwear");
  * #### This needs cleanup to remove the userID param as it is not used!
  **********/
 function getHeadwearName(userID, headnname) {
+    traceFirstParam(arguments[0]);
     if (process.headwear == undefined) {
         process.headwear = {};
     }

@@ -1,3 +1,5 @@
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
+
 /*******
  * Gets the protected headgear (/item protect) for the user.
  * 
@@ -6,6 +8,7 @@
  * ##### Returns an array of string item IDs designated as protected with /item protect
  *******/
 function getLockedHeadgear(userID) {
+    traceFirstParam(arguments[0]);
     if (process.headwear == undefined) {
 		process.headwear = {};
 	}

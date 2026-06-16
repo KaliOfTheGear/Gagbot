@@ -1,4 +1,5 @@
 const { markForSave } = require("../../other/markForSave");
+const { traceFirstParam } = require("../../other/TESTS/traceFirstParam");
 
 /********
  * Renames an outfit for a user
@@ -10,6 +11,7 @@ const { markForSave } = require("../../other/markForSave");
  * ##### *No return value*
  ********/
 function renameOutfit(userID, slot, newname) {
+    traceFirstParam(arguments[0]);
 	if (process.outfits == undefined) {
 		process.outfits = {};
 	}
