@@ -102,6 +102,14 @@ const texts_chastity = {
                 nochastity: [
                     `USER_TAG grabs TARGET_TAG and wraps a VAR_C2 around TARGET_THEIR waist and clicking the lock shut before TARGET_THEY can even react!`
                 ],
+            },
+            heavy: {
+                chastity: [
+                    `USER_TAG looks at TARGET_TAG, trying to use USER_THEIR eyes to poke and prod at the locking mechanism holding TARGET_THEIR chastity in place on TARGET_THEIR waist. If only USER_THEY could reach...`
+                ],
+                nochastity: [
+                    `USER_TAG rolls around towards TARGET_TAG, trying to put a VAR_C2 on TARGET_THEIR waist, but struggles to grasp the lewd prison while locked away in USER_THEIR heavy bondage!`
+                ]
             }
         },
         chastitybra: {
@@ -117,6 +125,14 @@ const texts_chastity = {
                 nochastity: [
                     `USER_TAG grabs TARGET_TAG and wraps a VAR_C2 around TARGET_THEIR chest and clicks the lock shut before TARGET_THEY can even react!`
                 ],
+            },
+            heavy: {
+                chastity: [
+                    `USER_TAG looks at TARGET_TAG, trying to use USER_THEIR eyes to look *respectfully* at the chaste prison clinging to TARGET_THEIR chest. If only USER_THEY could touch it...`
+                ],
+                nochastity: [
+                    `USER_TAG rolls around towards TARGET_TAG, trying to put a VAR_C2 on TARGET_THEIR breasts, but struggles to grasp the lewd prison while locked away in USER_THEIR heavy bondage!`
+                ]
             }
         }
     }
