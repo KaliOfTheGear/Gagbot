@@ -1,16 +1,18 @@
 const { SlashCommandBuilder, MessageFlags } = require("discord.js");
-const { getHeavy, getHeavyBound } = require("./../functions/heavyfunctions.js");
-const { getCollar, removeCollar, canAccessCollar, getCollarName } = require("./../functions/collarfunctions.js");
-const { getPronouns } = require("./../functions/pronounfunctions.js");
-const { getConsent, handleConsent } = require("./../functions/interactivefunctions.js");
+const { handleConsent } = require("./../functions/interactivefunctions.js");
 const { getText } = require("./../functions/textfunctions.js");
+const { getHeavy } = require("../functions/getters/heavy/getHeavy.js");
+const { getCollarName } = require("../functions/getters/collar/getCollarName.js");
+const { getCollar } = require("../functions/getters/collar/getCollar.js");
+const { getHeavyBound } = require("../functions/getters/heavy/getHeavyBound.js");
+const { canAccessCollar } = require("../functions/getters/collar/canAccessCollar.js");
+const { removeCollar } = require("../functions/setters/collar/removeCollar.js");
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("uncollar")
 		.setDescription(`Unlock a collar`)
-        .setNSFW(true)
-		.addUserOption((opt) => opt.setName("user").setDescription("Whose collar to unlock (blank for your own)")),
+        .addUserOption((opt) => opt.setName("user").setDescription("Whose collar to unlock (blank for your own)")),
 	async execute(interaction) {
 		try {
 			let collaruser = interaction.options.getUser("user") ? interaction.options.getUser("user") : interaction.user;

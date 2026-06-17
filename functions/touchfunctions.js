@@ -1,16 +1,21 @@
 const { ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType } = require("discord.js");
-const { getCollar, getOtherKeysCollar, getClonedCollarKey, canAccessCollar } = require("./collarfunctions");
-const { getOption } = require("./configfunctions");
-const { getGags, getMitten } = require("./gagfunctions");
-const { getHeadwearRestrictions, getHeadwear } = require("./headwearfunctions");
-const { getHeavyRestrictions, getHeavy } = require("./heavyfunctions");
-const { getToys } = require("./toyfunctions");
-const { getChastityBra } = require("./vibefunctions");
-const { getClonedChastityKey, getChastity } = require("./vibefunctions");
-const { getClonedChastityBraKey } = require("./vibefunctions");
-const { getWearable } = require("./wearablefunctions");
-const { statsAddCounter } = require("./statsfunctions");
 const { emitEvent } = require("./eventhandling");
+const { getHeavyRestrictions } = require("./getters/heavy/getHeavyRestrictions");
+const { getGags } = require("./getters/gag/getGags");
+const { getHeadwear } = require("./getters/headwear/getHeadwear");
+const { getMitten } = require("./getters/mitten/getMitten");
+const { getHeavy } = require("./getters/heavy/getHeavy");
+const { getWearable } = require("./getters/wearable/getWearable");
+const { getToys } = require("./getters/toy/getToys");
+const { getCollar } = require("./getters/collar/getCollar");
+const { getOption } = require("./getters/config/getOption");
+const { getChastity } = require("./getters/chastity/getChastity");
+const { getChastityBra } = require("./getters/chastity/getChastityBra");
+const { getClonedChastityKey } = require("./getters/chastity/getClonedChastityKey");
+const { getClonedChastityBraKey } = require("./getters/chastity/getClonedChastityBraKey");
+const { getClonedCollarKey } = require("./getters/collar/getClonedCollarKey");
+const { canAccessCollar } = require("./getters/collar/canAccessCollar");
+const { statsAddCounter } = require("./setters/config/statsAddCounter");
 
 /****************
  * Rolls a Pat based on the user's bondage and the target's bondage. If hit is false, then boundmiss will note the reason, if it is due to the user being bound. 
@@ -54,29 +59,29 @@ function rollPatChance(user, target) {
     }
 
     // Check if they are blind. If so, the accuracy will go down to 1/4. 
-    if (getHeadwearRestrictions(user) && !getHeadwearRestrictions(user).canInspect) {
+    if (userheavyrestrictions.canInspect == false) {
         returnedobject.boundmiss = "blind"
         hitaccuracy = hitaccuracy / 4;
     }
 
     // Check if their arms are bound. If so, the accuracy will go down to 0. 
-    if (userheavyrestrictions && !userheavyrestrictions.touchself) {
+    if (userheavyrestrictions.touchself == false) {
         returnedobject.boundmiss = "arms"
         hitaccuracy = 0.0;
     }
 
     // Check if the target is blind. If so, the accuracy will be doubled.
-    if (getHeadwearRestrictions(target) && !getHeadwearRestrictions(target).canInspect) {
+    if (targetheavyrestrictions.canInspect == false) {
         hitaccuracy = hitaccuracy * 2;
     }
 
     // Check if the target's legs are bound. If so, the accuracy will be doubled again.
-    if (getHeadwearRestrictions(target) && !getHeadwearRestrictions(target).canInspect) {
+    if (targetheavyrestrictions.canInspect == false) {
         hitaccuracy = hitaccuracy * 2;
     }
 
     // Check if we are headpatting ourselves. If so, then accuracy should be set to 1.0, if our arms aren't bound. 
-    if ((userheavyrestrictions && userheavyrestrictions.touchself) && (user == target)) {
+    if (userheavyrestrictions.touchself && (user == target)) {
         hitaccuracy = 1.0;
     }
 
@@ -184,6 +189,58 @@ function doHeadpatFunctions(headpatter, recipient, returnedobject) {
             }
         }
 	}
+}
+
+/********
+ * Attempt to shock the target user ID, if they have configurations set.
+ * 
+ * - (user id) user - The person to shock!
+ ********/
+async function shockUser(user) {
+    try {
+        if (getOption(user, "pishockusername") && (typeof getOption(user, "pishockusername") == "string") &&
+            getOption(user, "pishockname") && (typeof getOption(user, "pishockname") == "string") &&
+            getOption(user, "pishockcode") && (typeof getOption(user, "pishockcode") == "string") &&
+            getOption(user, "pishockapikey") && (typeof getOption(user, "pishockapikey") == "string")) {
+                // Set up the https request. 
+                const reqdata = JSON.stringify({
+                    Username: getOption(user, "pishockusername"),
+                    Name: getOption(user, "pishockname"),
+                    Code: getOption(user, "pishockcode"),
+                    Intensity: 100,
+                    Duration: 2,
+                    Apikey: getOption(user, "pishockapikey"),
+                    Op: (getOption(user, "pishockop") ? getOption(user, "pishockop") : "0"), // 0 for shock, 1 for vibrate, 2 for beep
+                });
+                const options = {
+                    hostname: 'do.pishock.com/api/apioperate', // without https://
+                    port: 443, // Default SSL port
+                    path: '/path', // Path after the domain
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+
+                fetch('https://do.pishock.com/api/apioperate', {
+                    method: 'POST', // Specifying the method
+                    headers: {
+                        'Content-Type': 'application/json', // Specifying content type as JSON
+                    },
+                    body: reqdata, // Stringifying the JSON body
+                })
+                .then(response => console.log(response)) // Parsing the JSON response
+                .catch((error) => {
+                    console.error('Error:', error); // Error handling
+                });
+        }
+        else {
+            console.log(`No shocker or invalid shocker information configured for ID ${user}.`)
+        }
+    }
+    catch (err) {
+        console.log(err)
+    }
 }
 
 /********
@@ -370,3 +427,4 @@ async function handleTouchEvent(user, target, type, noprompt = false) {
 
 exports.rollPatChance = rollPatChance;
 exports.handleTouchEvent = handleTouchEvent;
+exports.shockUser = shockUser;

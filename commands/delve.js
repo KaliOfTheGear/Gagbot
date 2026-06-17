@@ -5,7 +5,6 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("delve")
 		.setDescription(`ALPHA - Only available to Enraa`)
-        .setNSFW(true)
         .addSubcommand((subcommand) => 
             subcommand
                 .setName("run")
@@ -15,6 +14,11 @@ module.exports = {
             subcommand
                 .setName("inventory")
                 .setDescription("View your Delve Inventory")
+        )
+        .addSubcommand((subcommand) => 
+            subcommand
+                .setName("stats")
+                .setDescription("View your Delve Stats")
         ),
 	async execute(interaction) {
 		try {
@@ -22,7 +26,7 @@ module.exports = {
                 interaction.reply(`You're not <@${process.client.application.owner.id}>. This command is currently in development and is not available for others to run.`)
                 return;
             }
-            await handleDelveSlashCommand(interaction);
+            await handleDelveSlashCommand(interaction);     
 		} catch (err) {
 			console.log(err);
 		}

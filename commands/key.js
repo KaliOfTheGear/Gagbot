@@ -1,35 +1,51 @@
-const { SlashCommandBuilder, ComponentType, ButtonBuilder, ActionRowBuilder, ButtonStyle, MessageFlags } = require("discord.js");
-const { generateConfigModal, configoptions, getOption, setOption, config } = require("./../functions/configfunctions.js");
-const { getHeadwear, getHeadwearName, getLockedHeadgear, addLockedHeadgear, removeLockedHeadgear } = require("./../functions/headwearfunctions.js");
-const { canAccessCollar, promptCloneCollarKey, cloneCollarKey, revokeCollarKey, getClonedCollarKeysOwned, getOtherKeysCollar, getCollar, transferCollarKey, promptTransferCollarKey, collartypes, getCollarName, getBaseCollar, addAdditionalCollarEffect, removeAdditionalCollarEffect } = require("./../functions/collarfunctions.js");
-const { canAccessChastity, promptCloneChastityKey, cloneChastityKey, revokeChastityKey, getClonedChastityKeysOwned, getOtherKeysChastity, getChastity, transferChastityKey, promptTransferChastityKey } = require("./../functions/vibefunctions.js");
+const { SlashCommandBuilder, ComponentType, ButtonBuilder, ActionRowBuilder, ButtonStyle, MessageFlags, TextDisplayBuilder } = require("discord.js");
+const { config } = require("./../functions/configfunctions.js");
 const { getText, getTextGeneric } = require("./../functions/textfunctions.js");
-const { getPronouns } = require("../functions/pronounfunctions.js");
-const { getChastityBra } = require("../functions/vibefunctions.js");
-const { canAccessChastityBra } = require("../functions/vibefunctions.js");
-const { getClonedChastityBraKeysOwned } = require("../functions/vibefunctions.js");
-const { getOtherKeysChastityBra } = require("../functions/vibefunctions.js");
-const { cloneChastityBraKey } = require("../functions/vibefunctions.js");
-const { promptCloneChastityBraKey } = require("../functions/vibefunctions.js");
-const { revokeChastityBraKey } = require("../functions/vibefunctions.js");
-const { transferChastityBraKey } = require("../functions/vibefunctions.js");
-const { promptTransferChastityBraKey } = require("../functions/vibefunctions.js");
-const { getChastityName } = require("../functions/vibefunctions.js");
-const { getChastityBraName } = require("../functions/vibefunctions.js");
-const { swapChastity, swapChastityBra } = require("../functions/vibefunctions.js");
 const { default: didYouMean, ReturnTypeEnums } = require("didyoumean2");
-const { getUserTags } = require("../functions/configfunctions.js");
-const { getBaseChastity } = require("../functions/chastityfunctions.js");
-const { discardKey } = require("../functions/keyfindingfunctions.js");
-const { modalexecute } = require("./config.js");
 const { generateKeyGivingModal, handleExtremeRestraint } = require("../functions/interactivefunctions.js");
+const { getCollar } = require("../functions/getters/collar/getCollar.js");
+const { getChastity } = require("../functions/getters/chastity/getChastity.js");
+const { getChastityBra } = require("../functions/getters/chastity/getChastityBra.js");
+const { canAccessCollar } = require("../functions/getters/collar/canAccessCollar.js");
+const { canAccessChastity } = require("../functions/getters/chastity/canAccessChastity.js");
+const { canAccessChastityBra } = require("../functions/getters/chastity/canAccessChastityBra.js");
+const { getClonedChastityKeysOwned } = require("../functions/getters/chastity/getClonedChastityKeysOwned.js");
+const { getClonedChastityBraKeysOwned } = require("../functions/getters/chastity/getClonedChastityBraKeysOwned.js");
+const { getClonedCollarKeysOwned } = require("../functions/getters/collar/getClonedCollarKeysOwned.js");
+const { getOtherKeysChastity } = require("../functions/getters/chastity/getOtherKeysChastity.js");
+const { getOtherKeysChastityBra } = require("../functions/getters/chastity/getOtherKeysChastityBra.js");
+const { getOtherKeysCollar } = require("../functions/getters/collar/getOtherKeysCollar.js");
+const { getBaseCollar } = require("../functions/getters/collar/getBaseCollar.js");
+const { getBaseChastity } = require("../functions/getters/chastity/getBaseChastity.js");
+const { getUserTags } = require("../functions/getters/config/getUserTags.js");
+const { getCollarName } = require("../functions/getters/collar/getCollarName.js");
+const { getOption } = require("../functions/getters/config/getOption.js");
+const { cloneCollarKey } = require("../functions/setters/collar/cloneCollarKey.js");
+const { cloneChastityKey } = require("../functions/setters/chastity/cloneChastityKey.js");
+const { cloneChastityBraKey } = require("../functions/setters/chastity/cloneChastityBraKey.js");
+const { promptCloneCollarKey, promptTransferCollarKey } = require("../functions/collarfunctions.js");
+const { promptCloneChastityKey, promptCloneChastityBraKey, promptTransferChastityKey } = require("../functions/vibefunctions.js");
+const { getPronouns } = require("../functions/getters/config/getPronouns.js");
+const { revokeCollarKey } = require("../functions/setters/collar/revokeCollarKey.js");
+const { revokeChastityKey } = require("../functions/setters/chastity/revokeChastityKey.js");
+const { revokeChastityBraKey } = require("../functions/setters/chastity/revokeChastityBraKey.js");
+const { transferCollarKey } = require("../functions/setters/collar/transferCollarKey.js");
+const { transferChastityKey } = require("../functions/setters/chastity/transferChastityKey.js");
+const { transferChastityBraKey } = require("../functions/setters/chastity/transferChastityBraKey.js");
+const { getChastityName } = require("../functions/getters/chastity/getChastityName.js");
+const { getChastityBraName } = require("../functions/getters/chastity/getChastityBraName.js");
+const { swapChastity } = require("../functions/setters/chastity/swapChastity.js");
+const { swapChastityBra } = require("../functions/setters/chastity/swapChastityBra.js");
+const { discardKey } = require("../functions/keyfindingfunctions.js");
+const { addAdditionalCollarEffect } = require("../functions/setters/collar/addAdditionalCollarEffect.js");
+const { removeAdditionalCollarEffect } = require("../functions/setters/collar/removeAdditionalCollarEffect.js");
+const { markForSave } = require("../functions/other/markForSave.js");
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("key")
 		.setDescription(`Prevent a worn item from being removed...`)
-        .setNSFW(true)
-		.addSubcommand((subcommand) =>
+        .addSubcommand((subcommand) =>
 			subcommand
 				.setName("clone")
 				.setDescription("Clone a primary key you're holding...")
@@ -80,12 +96,19 @@ module.exports = {
                 )
                 .addUserOption((opt) => opt.setName("wearer").setDescription("Whose collar to add additional effects to?"))
                 .addStringOption((opt) => opt.setName("collareffect").setDescription("Which collar effect to add?").setAutocomplete(true)),
+        )
+        .addSubcommand((subcommand) => 
+            subcommand
+                .setName("discard")
+                .setDescription("Intentionally lose someone's keys...")
+                .addUserOption((opt) => opt.setName("wearer").setDescription(`Whose restraint to "lose" the key for?`))
+				.addStringOption((opt) => opt.setName("restraint").setDescription(`Which restraint of theirs to "lose" the key?`).setAutocomplete(true))
         ),
 	async autoComplete(interaction) {
 		const focusedValue = interaction.options.getFocused();
 		let subcommand = interaction.options.getSubcommand();
 		try {
-			if (subcommand == "clone" || subcommand == "give") {
+			if (subcommand == "clone" || subcommand == "give" || subcommand == "discard") {
 				// We want to return ONLY options that the user COULD clone a key for
 				// So if they own a collar key, it only gives "Collar"
 				let chosenuserid = interaction.options.get("wearer")?.value ?? interaction.user.id; // Note we can only retrieve the user ID here!
@@ -736,7 +759,7 @@ module.exports = {
 
 					if (confirmation.customId === "agreetogivebutton") {
 						// Skip the DM if the wearer is the giver or receiver, or if they have auto accepting enabled
-						if (wearer == interaction.user || wearer == newKeyholder || config.getKeyGivingAuto(wearer.id)) {
+						if (wearer == interaction.user || wearer == newKeyholder || (getOption(wearer, "keygiving") == "auto")) {
 							let data = { textarray: "texts_key", textdata: { interactionuser: interaction.user, targetuser: wearer, c1: chosenrestraintreadable, c2: newKeyholder } };
 							data.give = true;
 							if (wearer == interaction.user) {
@@ -879,10 +902,7 @@ module.exports = {
                                 await interaction.followUp({ content: `Swapping your collar to the ${data.textdata.c2}.`, flags: MessageFlags.Ephemeral })
                                 await interaction.followUp({ content: getText(data) })
                                 getCollar(wearer.id).collartype = newrestraint;
-                                if (process.readytosave == undefined) {
-                                    process.readytosave = {};
-                                }
-                                process.readytosave.collar = true;
+                                markForSave("collar");
                             },
                             async (reject) => {
                                 await interaction.followUp({ content: `The ${data.textdata.c2} swap was rejected.`, flags: MessageFlags.Ephemeral })
@@ -912,10 +932,7 @@ module.exports = {
                                 await interaction.followUp({ content: `Swapping ${wearer}'s collar to the ${data.textdata.c2}.`, flags: MessageFlags.Ephemeral })
                                 await interaction.followUp({ content: getText(data) })
                                 getCollar(wearer.id).collartype = newrestraint;
-                                if (process.readytosave == undefined) {
-                                    process.readytosave = {};
-                                }
-                                process.readytosave.collar = true;
+                                markForSave("collar");
                             },
                             async (reject) => {
                                 await interaction.followUp({ content: `The ${data.textdata.c2} swap was rejected.`, flags: MessageFlags.Ephemeral })
@@ -925,19 +942,13 @@ module.exports = {
 						data.textdata.c1 = getChastityName(wearer.id, getChastity(wearer.id).chastitytype) ?? "chastity belt"; // Old collar
 						data.textdata.c2 = newrestraintname;
 						if(!swapChastity(wearer.id, interaction.user.id, newrestraint)){ interaction.reply({ content: `The chastity belt couldn't be unlocked.`, flags: MessageFlags.Ephemeral }); return; } // I'm gonna leave this like this for now. Maybe once we have belts that can fail to unlock we can improve this.
-						if (process.readytosave == undefined) {
-							process.readytosave = {};
-						}
-						process.readytosave.chastity = true;
+						markForSave("chastity");
 						interaction.reply(getText(data));
 					} else if (restrainttype == "chastitybra") {
 						data.textdata.c1 = getChastityBraName(wearer.id, getChastityBra(wearer.id).chastitytype) ?? "chastity bra"; // Old collar
 						data.textdata.c2 = newrestraintname;
 						if(!swapChastityBra(wearer.id, interaction.user.id, newrestraint)){ interaction.reply({ content: `The chastity bra couldn't be unlocked.`, flags: MessageFlags.Ephemeral }); return; }
-						if (process.readytosave == undefined) {
-							process.readytosave = {};
-						}
-						process.readytosave.chastitybra = true;
+						markForSave("chastitybra");
 						interaction.reply(getText(data));
 					}
 				}
@@ -1093,6 +1104,82 @@ module.exports = {
                         }
                     }
                 }
+            }
+            if (subcommand == "discard") {
+				let wearertodiscard = interaction.options.getUser("wearer") ?? interaction.user;
+				let chosenrestrainttoclone = interaction.options.getString("restraint");
+
+				// We're missing info, back to the start!
+				if (!wearertodiscard || !chosenrestrainttoclone) {
+					interaction.reply({ content: `Something went wrong. The command was parsed as:\nDiscard ${wearertodiscard}'s key for ${chosenrestrainttoclone}!`, flags: MessageFlags.Ephemeral });
+					return;
+				}
+
+				// Check if the interaction user has access to discard the key for target restraint.
+				let candiscard = false;
+				if (chosenrestrainttoclone == "collar" && getCollar(wearertodiscard.id) && canAccessCollar(wearertodiscard.id, interaction.user.id, undefined, true).access) {
+                    candiscard = true
+				}
+				if (chosenrestrainttoclone == "chastitybelt" && getChastity(wearertodiscard.id) && canAccessChastity(wearertodiscard.id, interaction.user.id, undefined, true).access) {
+					candiscard = true
+				}
+				if (chosenrestrainttoclone == "chastitybra" && getChastityBra(wearertodiscard.id) && canAccessChastityBra(wearertodiscard.id, interaction.user.id, undefined, true).access) {
+					candiscard = true
+				}
+				if (!candiscard) {
+                    if (wearertodiscard.id == interaction.user.id) {
+                        interaction.reply({ content: `You do not have the primary keys for your restraint to lose.`, flags: MessageFlags.Ephemeral });
+                    }
+                    else {
+                        interaction.reply({ content: `You do not have the primary keys for ${wearertodiscard}'s restraint to lose.`, flags: MessageFlags.Ephemeral });
+                    }
+					return;
+				}
+
+				// If the wearer has disabled key loss from fumbling, tell them to leave.
+				if (getOption(wearertodiscard.id, "keyloss") == "disabled") {
+                    if (wearertodiscard.id === interaction.user.id) {
+                        interaction.reply({ content: `You've disabled key loss from fumbling.`, flags: MessageFlags.Ephemeral });
+					    return;
+                    }
+                    else {
+                        interaction.reply({ content: `${wearertodiscard} has disabled key loss from fumbling.`, flags: MessageFlags.Ephemeral });
+					    return;
+                    }
+				} 
+
+                let data = { 
+                    textarray: "texts_key", 
+                    textdata: {
+                        interactionuser: interaction.user,
+                        targetuser: wearertodiscard,
+                    },
+                };
+                data.discardkey = true;
+
+                if (wearertodiscard.id == interaction.user.id) {
+                    data.self = true;
+                }
+                else {
+                    data.other = true;
+                }
+                data.keyholder = true;
+
+                if ((chosenrestrainttoclone == "chastitybelt")) {
+                    data.textdata.c1 = getBaseChastity(getChastity(wearertodiscard.id)?.chastitytype ?? `belt_silver`).name
+                    discardKey(wearertodiscard.id, interaction.user.id, "chastity belt");
+                }
+                else if ((chosenrestrainttoclone == "chastitybra")) {
+                    data.textdata.c1 = getBaseChastity(getChastityBra(wearertodiscard.id)?.chastitytype ?? `bra_silver`).name
+                    discardKey(wearertodiscard.id, interaction.user.id, "chastity bra");
+                }
+                else if (chosenrestrainttoclone == "collar") {
+                    data.textdata.c1 = getBaseCollar(getCollar(wearertodiscard.id)?.collartype ?? `collar_leather`).name
+                    discardKey(wearertodiscard.id, interaction.user.id, "collar");
+                }
+
+                interaction.reply(getText(data));
+
             }
 		} catch (err) {
 			console.log(err);

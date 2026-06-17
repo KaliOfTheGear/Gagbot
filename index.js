@@ -5,23 +5,24 @@ dotenv.config()
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
-const { assignMitten, garbleMessage, setUpGags, modifymessage, loadMittenTypes } = require(`./functions/gagfunctions.js`);
+const { garbleMessage, setUpGags, modifymessage, loadMittenTypes } = require(`./functions/gagfunctions.js`);
 const { handleKeyFinding } = require('./functions/keyfindingfunctions.js');
 const { restartChastityTimers } = require('./functions/timelockfunctions.js');
 const { loadHeavyTypes } = require('./functions/heavyfunctions.js');
 const { loadHeadwearTypes } = require('./functions/headwearfunctions.js')
-const { assignCorset, setUpCorsets } = require('./functions/corsetfunctions.js');
+const { setUpCorsets } = require('./functions/corsetfunctions.js');
 const { assignMemeImages, generateListTexts } = require('./functions/interactivefunctions.js');
 const { backupsAreAnnoying, saveFiles, processUnlockTimes, processTimedEvents, importFileNames, scavengeUsers, removeOldMessages } = require('./functions/timefunctions.js');
 const { loadEmoji } = require("./functions/messagefunctions.js");
 const { loadWearables } = require("./functions/wearablefunctions.js");
-const { knownServer, setGlobalCommands, loadWebhooks, getBotOption, getOption } = require('./functions/configfunctions.js');
-const { getAllJoinedGuilds } = require('./functions/configfunctions.js');
+const { setGlobalCommands, loadWebhooks } = require('./functions/configfunctions.js');
 const { setUpToys } = require('./functions/toyfunctions.js');
 const { setUpChastity } = require('./functions/chastityfunctions.js');
 const { loadCollarTypes } = require('./functions/collarfunctions.js');
 const { buttonboard } = require('./contextcommands/message/Button Board.js');
 const { setUpEventFunctions } = require('./functions/eventhandling.js');
+const { getBotOption } = require('./functions/getters/config/getBotOption.js');
+const { getAllJoinedGuilds } = require("./functions/getters/config/getAllJoinedGuilds.js")
 
 // Prevent node from killing us immediately when we do the next line.
 process.stdin.resume();
@@ -68,6 +69,9 @@ process.on('uncaughtExceptionMonitor', (err,origin) => {
     }
 })
 
+// Assign nsfwflag to true. /debug process.nsfwflag = false to forcibly set nsfw commands to sfw. Not recommended, Discord API says this is not allowed.
+process.nsfwflag = true
+
 // If they never changed from the default in .env.md, use base directory. 
 if (process.env.GAGBOTFILEDIRECTORY === "Z:\\Somewhere\\I\\Belong\\") { process.env.GAGBOTFILEDIRECTORY = "." }
 let GagbotSavedFileDirectory = process.env.GAGBOTFILEDIRECTORY ? process.env.GAGBOTFILEDIRECTORY : __dirname
@@ -98,6 +102,7 @@ let processdatatoload = [
     { textname: "delveuserdata.txt", processvar: "delveuserdata", default: {}},
     { textname: "userstats.txt", processvar: "userstats", default: {}},
     { textname: "memberavatars.txt", processvar: "memberavatars", default: {}},
+    { textname: "heldkeytimers.txt", processvar: "heldkeytimers", default: {}},
 ]
 
 processdatatoload.forEach((s) => {
@@ -274,26 +279,19 @@ client.on("clientReady", async () => {
             }
             catch (err) { console.log(err) }
         }, 6000)
-    }
+    } 
     catch (err) {
         console.log(err)
     }
     process.timetick = setInterval(() => {
         processTimedEvents()
     }, getBotOption("bot-timetickrate") ?? 6000)
-    //restartChastityTimers(client);
-    // setInterval(updateArousalValues, Number(process.env.AROUSALSTEPSIZE ?? 6000));
 })
 
 client.on("messageCreate", async (msg) => {
     // This is called when a message is received.
     try {
         if (msg.author.bot || msg.webhookId || msg.stickers?.first()) { return };
-        /*console.log(`${(msg.channel.id != process.env.CHANNELID)}`)
-        console.log(`${msg.webhookId}`)
-        console.log(`${msg.author.bot}`)
-        console.log(`${msg.stickers?.first()}`)
-        console.log(`${msg.attachments?.first()}`)*/
         let channelid = msg.channelId;
         let thread = false;
         if (msg.channel.isThread()) {
@@ -301,17 +299,13 @@ client.on("messageCreate", async (msg) => {
             channelid = msg.channel.parentId
         }
         if (process.webhook[channelid]) {
-            if ((getBotOption("bot-allowkeyfinding") == "Enabled") && (getOption(msg.author.id, "canfindkeys") == "enabled")) {
+            if ((getBotOption("bot-allowkeyfinding") == "Enabled")) {
                 handleKeyFinding(msg);
             }
             process.recentmessages[msg.author.id] = msg.channel.id;
             modifymessage(msg, thread ? msg.channelId : null);
         }
         if ((msg.channel.id != process.env.CHANNELID && msg.channel.parentId != process.env.CHANNELID) || (msg.webhookId) || (msg.author.bot) || (msg.stickers?.first())) { return }
-        //console.log(msg.member.displayAvatarURL())
-        //console.log(msg.member.displayName)
-        //handleKeyFinding(msg);
-        //garbleMessage(msg.channel.isThread() ? msg.channelId : null, msg);
     }
     catch (err) {
         console.log(err);

@@ -1,11 +1,14 @@
 const fs = require("fs");
 const path = require("path");
+const { getLockedWearable } = require("./getters/wearable/getLockedWearable");
 
 let wearabletypes = [
 	// Aesthetic Body Parts
 	{ name: "Ears", value: "ears", category: "Body Part", colorable: true, uniqueColors: ["Cat", "Dog", "Floppy Dog", "Wolf", "Bunny", "Floppy Bunny", "Sheep", "Elf", "Fox", "Pony", "Cybernetic Cat", "Cybernetic Wolf"], forbiddenColors: ["Black", "Red", "Purple", "Green", "Orange", "Red", "Pink", "White", "Yellow", "Cyan", "Aqua", "Blue", "Indigo", "Gray", "Brown"] },
 	{ name: "Eared Headband", value: "earheadband", category: "Body Part", colorable: true, uniqueColors: ["Cat", "Futuristic Cat", "Dog", "Floppy Dog", "Wolf", "Bunny", "Floppy Bunny", "Sheep", "Elf", "Fox", "Pony"], forbiddenColors: ["Black", "Red", "Purple", "Green", "Orange", "Red", "Pink", "White", "Yellow", "Cyan", "Aqua", "Blue", "Indigo", "Gray", "Brown"] },
 	{ name: "Tail", value: "tail", category: "Body Part", colorable: true, uniqueColors: ["Cat", "Dog", "Wolf", "Bunny", "Sheep", "Demon", "Succubus", "Fox", "Pony", "Lizard", "Dragon", "Lamia", "Cybernetic"], forbiddenColors: ["Black", "Red", "Purple", "Green", "Orange", "Red", "Pink", "White", "Yellow", "Cyan", "Aqua", "Blue", "Indigo", "Gray", "Brown"] },
+	{ name: "Fox Tails", value: "tail", category: "Body Part", colorable: true, uniqueColors: ["Twin", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"], forbiddenColors: ["Black", "Red", "Purple", "Green", "Orange", "Red", "Pink", "White", "Yellow", "Cyan", "Aqua", "Blue", "Indigo", "Gray", "Brown"] },
+	{ name: "Cat Tails", value: "tail", category: "Body Part", colorable: true, uniqueColors: ["Twin"], forbiddenColors: ["Black", "Red", "Purple", "Green", "Orange", "Red", "Pink", "White", "Yellow", "Cyan", "Aqua", "Blue", "Indigo", "Gray", "Brown"] },
 	{ name: "Tail Belt", value: "tailbelt", category: "Body Part", colorable: true, uniqueColors: ["Cat", "Dog", "Wolf", "Bunny", "Sheep", "Demon", "Succubus", "Fox", "Pony", "Lizard", "Dragon"], forbiddenColors: ["Black", "Red", "Purple", "Green", "Orange", "Red", "Pink", "White", "Yellow", "Cyan", "Aqua", "Blue", "Indigo", "Gray", "Brown"] },
 	{ name: "Wings", value: "wings", category: "Body Part", colorable: true, uniqueColors: ["Demon", "Angelic", "Imp", "Succubus", "Bat", "Butterfly", "Dragonfly", "Draconic", "Crystal"], forbiddenColors: ["Black", "Red", "Purple", "Green", "Orange", "Red", "Pink", "White", "Yellow", "Cyan", "Aqua", "Blue", "Indigo", "Gray", "Brown"] },
 	{ name: "Horns", value: "horns", category: "Body Part", colorable: true, uniqueColors: ["Curled", "Long", "Short", "Stubby", "Draconic", "Au'Ra", "Demon", "Demonic Sheep", "Sheep", "Goat", "Crystalline", "Cybernetic"], forbiddenColors: ["Black", "Red", "Purple", "Green", "Orange", "Red", "Pink", "White", "Yellow", "Cyan", "Aqua", "Blue", "Indigo", "Gray", "Brown"] },
@@ -115,6 +118,9 @@ let wearabletypes = [
 	{ name: "Nipple Clamps", value: "nippleclamps", colorable: true, category: "Bondage", uniqueColors: ["Hardlight", "Leather", "Rubber", "Magic", "Crystal"] },
 	{ name: "Wingbinders", value: "wingbinders", colorable: true, category: "Bondage", uniqueColors: ["Hardlight", "Steel", "Golden", "Leather", "Rubber", "Cursed"] },
 	{ name: "Tail Bindings", value: "tail_bind", colorable: true, category: "Bondage", uniqueColors: ["Hardlight", "Steel", "Golden", "Leather", "Rubber", "Cursed"] },
+    { name: "Ribbon Body Wrappings", value: "ribbon_wearablebody", colorable: true, category: "Bondage", uniqueColors: ["Festive"] },
+    { name: "Ribbon Leg Wrappings", value: "ribbon_wearablelegs", colorable: true, category: "Bondage", uniqueColors: ["Festive"] },
+    { name: "Ribbon Arm Wrappings", value: "ribbon_wearablearms", colorable: true, category: "Bondage", uniqueColors: ["Festive"] },
 
 	// Cosplay, Swimwear and Outfits
 	{ name: "Labcoat", value: "labcoat", category: "Cosplay" },
@@ -280,6 +286,10 @@ let wearabletypes = [
 	{ name: "Pumps", value: "pumps", colorable: true, category: "Footwear" },
 	{ name: "Anklets", value: "anklets", colorable: true, category: "Footwear", uniqueColors: ["Silver", "Gold", "Platinum", "Cobalt", "Black", "Floral", "Leafy"], forbiddenColors: ["Black", "Red", "Purple", "Green", "Orange", "Red", "Pink", "White", "Yellow", "Cyan", "Aqua", "Blue", "Indigo", "Gray", "Brown"] },
 	{ name: "Greaves", value: "greaves", colorable: true, category: "Footwear", uniqueColors: ["Steel", "Cobalt", "Black"], forbiddenColors: ["Black", "Red", "Purple", "Green", "Orange", "Red", "Pink", "White", "Yellow", "Cyan", "Aqua", "Blue", "Indigo", "Gray", "Brown"] },
+    { name: "Fluffy Paw Socks", value: "socks_fluffypaw", colorable: true, category: "Footwear" },
+    { name: "Socks", value: "socks", colorable: true, category: "Footwear" },
+    { name: "Latex Socks", value: "socks_latex", colorable: true, category: "Footwear" },
+    { name: "Satin Socks", value: "socks_satin", colorable: true, category: "Footwear" },
 
 	// Gloves and Armwear
 	{ name: "Opera Gloves", value: "gloves_opera", colorable: true, category: "Hands", uniqueColors: ["Gothic"] },
@@ -325,6 +335,7 @@ let wearabletypes = [
 	{ name: "Leather Bandolier", value: "bandolier_leather", category: "Misc" },
 	{ name: "", value: "tome", colorable: true, category: "Misc", uniqueColors: ["Tome of Bondage", "Cursed Tome", "Shadowy Tome", "Chained Tome", "Gothic Tome", "Angelic Tome"], forbiddenColors: ["Black", "Red", "Purple", "Green", "Orange", "Red", "Pink", "White", "Yellow", "Cyan", "Aqua", "Blue", "Indigo", "Gray", "Brown"] },
 	{ name: "", value: "staff", colorable: true, category: "Misc", uniqueColors: ["Staff of Chains", "Caduceus", "Elemental Staff", "Lunar Staff", "Dollmaker's Staff", "Quarterstaff", "Gohei"], forbiddenColors: ["Black", "Red", "Purple", "Green", "Orange", "Red", "Pink", "White", "Yellow", "Cyan", "Aqua", "Blue", "Indigo", "Gray", "Brown"] },
+	{ name: "Blåhaj", value: "cuddle_shark", category: "Misc" },
 
 	//Body Modifications 
 	{ name: "Earrings", value: "earrings", colorable: true, category: "Body Modification", tags: { piercing: true, metal: true }, uniqueColors: ["Silver", "Gold", "Platinum", "Cobalt", "Black", "Starmetal", "Titanium"], forbiddenColors: ["Black", "Red", "Purple", "Green", "Orange", "Red", "Pink", "White", "Yellow", "Cyan", "Aqua", "Blue", "Indigo", "Gray", "Brown"] },
@@ -418,144 +429,6 @@ const loadWearables = async () => {
 	console.log(`Wearables list is ${process.autocompletes.wearables.length} entries long.`);
 };
 
-const assignWearable = (userID, wearable) => {
-	if (process.wearable == undefined) {
-		process.wearable = {};
-	}
-	if (process.wearable[userID]) {
-		process.wearable[userID].wornwearable.push(wearable);
-	} else {
-		process.wearable[userID] = { wornwearable: [wearable] };
-	}
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.wearable = true;
-};
-
-const getWearable = (userID) => {
-	if (process.wearable == undefined) {
-		process.wearable = {};
-	}
-	return process.wearable[userID]?.wornwearable ? process.wearable[userID]?.wornwearable : [];
-};
-
-const getLockedWearable = (userID) => {
-	if (process.wearable == undefined) {
-		process.wearable = {};
-	}
-	return process.wearable[userID]?.locked ? process.wearable[userID]?.locked : [];
-};
-
-const addLockedWearable = (userID, wearable) => {
-	if (process.wearable == undefined) {
-		process.wearable = {};
-	}
-	if (process.wearable[userID]) {
-		if (process.wearable[userID].locked == undefined) {
-			process.wearable[userID].locked = [wearable];
-		} else {
-			process.wearable[userID].locked.push(wearable);
-		}
-	}
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.wearable = true;
-};
-
-const removeLockedWearable = (userID, wearable) => {
-	if (process.wearable == undefined) {
-		process.wearable = {};
-	}
-	if (process.wearable[userID]) {
-		if (process.wearable[userID].locked == undefined) {
-			return;
-		} else {
-			if (process.wearable[userID].locked.includes(wearable)) {
-				process.wearable[userID].locked.splice(process.wearable[userID].locked.indexOf(wearable), 1);
-			}
-			if (process.wearable[userID].locked.length == 0) {
-				delete process.wearable[userID].locked;
-			}
-		}
-	}
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.wearable = true;
-};
-
-const deleteWearable = (userID, wearable) => {
-	if (process.wearable == undefined) {
-		process.wearable = {};
-	}
-	if (!process.wearable[userID]) {
-		return false;
-	}
-	if (wearable && process.wearable[userID].wornwearable.includes(wearable) && !getLockedWearable(userID).includes(wearable)) {
-		process.wearable[userID].wornwearable.splice(process.wearable[userID].wornwearable.indexOf(wearable), 1);
-		if (process.wearable[userID].wornwearable.length == 0) {
-			delete process.wearable[userID];
-		}
-	} else if (process.wearable[userID]) {
-		let locks = getLockedWearable(userID);
-		let savedheadgear = [];
-		process.wearable[userID].wornwearable.forEach((g) => {
-			if (locks.includes(g)) {
-				savedheadgear.push(g);
-			}
-		});
-		process.wearable[userID].wornwearable = savedheadgear;
-		if (process.wearable[userID].wornwearable.length == 0) {
-			delete process.wearable[userID];
-		}
-	}
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.wearable = true;
-};
-
-const getWearableName = (userID, wearablename) => {
-	if (process.wearable == undefined) {
-		process.wearable = {};
-	}
-	let convertmittenarr = {};
-	for (let i = 0; i < process.wearabletypes.length; i++) {
-		convertmittenarr[process.wearabletypes[i].value] = process.wearabletypes[i].name;
-	}
-	if (wearablename) {
-		return convertmittenarr[wearablename];
-	} else {
-		return undefined;
-	}
-};
-
-const getBaseWearable = (type) => {
-    try {
-        let returnval = wearabletypes.find((w) => w.value == type)
-        if (!returnval) {
-            let colortosearch = type.split("_").slice(0,-1).join("_"); // remove the last element which should only be the color
-            returnval = wearabletypes.find((w) => w.value == colortosearch)
-        }
-        return returnval;
-    }
-    catch (err) {
-        console.log(err);
-    }
-};
-
 exports.wearabletypes = wearabletypes;
 exports.loadWearables = loadWearables;
 exports.wearablecolors = colors;
-
-exports.assignWearable = assignWearable;
-exports.getWearable = getWearable;
-exports.deleteWearable = deleteWearable;
-exports.getWearableName = getWearableName;
-exports.getBaseWearable = getBaseWearable;
-
-exports.addLockedWearable = addLockedWearable;
-exports.getLockedWearable = getLockedWearable;
-exports.removeLockedWearable = removeLockedWearable;

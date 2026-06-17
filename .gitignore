@@ -166,3 +166,12 @@ webhooks.txt
 /backups
 crashlog.txt
 toyusers.txt
+delveuserdata.txt
+heldkeytimers.txt
+memberavatars.txt
+recordedmessages.txt
+userstats.txt
+.vscode/.auto-import-cache/index.bin
+.vscode/.auto-import-cache/index.bin
+.vscode/.auto-import-cache/index.bin
+*.bin

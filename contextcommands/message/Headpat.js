@@ -1,9 +1,10 @@
 const { ContextMenuCommandBuilder, ApplicationCommandType, MessageFlags } = require('discord.js');
-const { getAllSelectedOption } = require('../../functions/configfunctions');
-const { handleConsent, getConsent } = require('../../functions/interactivefunctions');
+const { handleConsent } = require('../../functions/interactivefunctions');
 const { handleTouchEvent, rollPatChance } = require('../../functions/touchfunctions');
-const { getPronouns } = require('../../functions/pronounfunctions');
 const { getText } = require('../../functions/textfunctions');
+const { getAllSelectedOption } = require('../../functions/getters/config/getAllSelectedOption');
+const { getConsent } = require('../../functions/getters/config/getConsent');
+const { getPronouns } = require('../../functions/getters/config/getPronouns');
 
 module.exports = {
     data: new ContextMenuCommandBuilder()
@@ -30,6 +31,7 @@ module.exports = {
                                 founduserid = k
                             }
                         })
+                        // Doll Visors
                         let dollvisorids = getAllSelectedOption("dollvisorname")
                         Object.keys(dollvisorids).forEach((k) => {
                             // If the visor matches, then we found our doll!
@@ -37,12 +39,39 @@ module.exports = {
                                 founduserid = k
                             }
                         })
+                        // Drone Visors
+                        let dronevisorids = getAllSelectedOption("dronevisorname")
+                        Object.keys(dronevisorids).forEach((k) => {
+                            // If the visor matches, then we found our drone!
+                            if (message.author.username.startsWith(`⬡-Drone ${dronevisorids[k]}`)) {
+                                founduserid = k
+                            }
+                        })
                         // They're probably not visored, so lets search and see if we can find
+                        // Attempt to find the user ID in our recent messages list
+                        if (process.recordedmessages && process.recordedmessages[message.id]) {
+                            founduserid = process.recordedmessages[message.id].authorid
+                        }
                         // them in the guild list. 
                         if (!founduserid) {
-                            let membername = await message.guild.members.search({ query: message.author.username, limit: 1 });
-                            if (membername && membername.first()) {
-                                founduserid = membername.first().user.id
+                            let membername = await message.guild.members.search({ query: message.author.username, limit: 10 });
+                            if (membername) {
+                                console.log(membername)
+                                for (const [userid, member] of membername) {
+                                    // Exact match
+                                    if (member.nickname == message.author.username) {
+                                        founduserid = member.id
+                                    }
+                                    // Parenthesis match
+                                    else if (message.author.username.endsWith(`(${membername})`)) {
+                                        founduserid = member.id
+                                    }
+                                    // Yeah I dunno at this point.
+                                }
+                                // Just target the first if we cant get a good guess
+                                if (!founduserid) {
+                                    founduserid = membername.first().user.id
+                                }
                             }
                         }
                         if (founduserid) {

@@ -2,9 +2,11 @@ const fs = require("fs");
 const path = require("path");
 const nlp = require("compromise");
 const nlpSpeech = require("compromise-speech");
-const { getHeadwear } = require("./headwearfunctions");
-const { getChastity } = require("./vibefunctions");
-const { getBaseChastity } = require("./chastityfunctions");
+const { getBaseCorset } = require("./getters/corset/getBaseCorset");
+const { getCorset } = require("./getters/corset/getCorset");
+const { getHeadwear } = require("./getters/headwear/getHeadwear");
+const { markForSave } = require("./other/markForSave");
+
 nlp.extend(nlpSpeech);
 
 const TRAITS = ["name", "maxBreath", "minBreath", "breathRecovery", "gaspCoefficient", "gaspLimit", "silenceLimit", "minWords", "afterUsingBreath"];
@@ -123,73 +125,10 @@ function setUpCorsets() {
 	});
 }
 
-function getBaseCorset(corsettype) {
-	return process.corsettypes[corsettype];
-}
-
 // NOTE: Encapsulate gaspSounds in EOT characters so the Doll Visor doesn't split on them.
 const gaspSounds = ["*hff*", "*hnnf*", "*ahff*", "*hhh*", "*nnh*", "*hnn*", "*hng*", "*uah*", "*uhf*"];
 const silenceReplacers = [" ", ".", ",", ""];
 const silenceMessages = ["-# *Panting heavily*", "-# *Completely out of breath*", "-# *Desperately gasping for air*", "-# *About to pass out*"];
-
-const assignCorset = (user, type, tightness, origbinder) => {
-	if (process.corset == undefined) process.corset = {};
-	const old = Object.assign({}, process.corset[user]);
-	const currentBreath = process.corset[user] ? getBreath(user) : null;
-	let originalbinder = old?.origbinder;
-	if (old && old.type != type) {
-		// Call the unequip function on the old corset
-		getBaseCorset(old?.type)?.onUnequip({ userID: user, oldcorset: old });
-	}
-	const newMaxBreath = getBaseCorset(type)?.getMaxBreath({ tightness: 0 }) ?? getBaseCorset("corset_leather").getMaxBreath({ tightness: 0 });
-	process.corset[user] = {
-		tightness: tightness ?? old?.tightness ?? 5,
-		breath: currentBreath ? Math.min(currentBreath, newMaxBreath) : newMaxBreath,
-		timestamp: Date.now(),
-		origbinder: originalbinder ?? origbinder, // Preserve original binder until it is removed.
-		type: type,
-	};
-	if (old.type == type) {
-		getBaseCorset(old?.type)?.onAdjustTightness({ userID: user, oldTightness: old.tightness, newTightness: tightness });
-	}
-    if (getChastity(user) && getBaseChastity(getChastity(user).chastitytype)) {
-        getBaseChastity(getChastity(user).chastitytype).onCorsetChange({ userID: user, keyholderID: origbinder, oldcorset: old })
-    }
-	if (old.type != type) {
-		getBaseCorset(type)?.onEquip({ userID: user });
-	}
-    // Increment the worn corset counter
-    if (process.userstats == undefined) { process.userstats = {} }
-    if (process.userstats[user] == undefined) { process.userstats[user] = {} }
-
-    process.userstats[user].worncorsets = (process.userstats[user].worncorsets ?? 0) + 1;
-
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.corset = true;
-    process.readytosave.userstats = true;
-};
-
-const getCorset = (user) => {
-	if (process.corset == undefined) process.corset = {};
-	const corset = process.corset[user];
-	return corset;
-};
-
-const getCorsetBinder = (user) => {
-	if (process.corset == undefined) process.corset = {};
-	return process.corset[user]?.origbinder;
-};
-
-const removeCorset = (user) => {
-	if (process.corset == undefined) process.corset = {};
-	delete process.corset[user];
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.corset = true;
-};
 
 // Consumes breath and returns possibly modified text
 function corsetLimitWords(text, parent, user, msgModified) {
@@ -298,10 +237,7 @@ function corsetLimitWords(text, parent, user, msgModified) {
 
 	let outtext = (silence ? chars.slice(0, silenceIdx + 1) : chars).join("");
 
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.corset = true;
+	markForSave("corset");
 	if (outtext.length == 0) {
 		msgModified.modified = true;
 		return "";
@@ -346,25 +282,13 @@ function calcBreath(user) {
 	return corset;
 }
 
-function getBreath(user) {
-	const corset = calcBreath(user);
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.corset = true;
-	return corset.breath;
-}
-
 // consumes specified breath and returns true if user had enough
 function tryExpendBreath(user, exertion) {
 	const corset = calcBreath(user);
 	const basecorset = getBaseCorset(corset.type ?? "corset_leather");
 	corset.breath -= exertion;
 	basecorset.afterUsingBreath({ userID: user, corset: corset });
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.corset = true;
+	markForSave("corset");
 	return corset.breath > 0;
 }
 
@@ -372,15 +296,10 @@ function silenceMessage() {
 	return silenceMessages[Math.floor(Math.random() * silenceMessages.length)];
 }
 
-exports.assignCorset = assignCorset;
-exports.getCorset = getCorset;
-exports.getBaseCorset = getBaseCorset;
-exports.getCorsetBinder = getCorsetBinder;
-exports.removeCorset = removeCorset;
 exports.corsetLimitWords = corsetLimitWords;
 exports.silenceMessage = silenceMessage;
 
-exports.getBreath = getBreath;
 exports.tryExpendBreath = tryExpendBreath;
 
 exports.setUpCorsets = setUpCorsets;
+exports.calcBreath = calcBreath;

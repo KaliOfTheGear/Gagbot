@@ -1,17 +1,23 @@
 const { SlashCommandBuilder, MessageFlags, TextDisplayBuilder } = require("discord.js");
 const { calculateTimeout } = require("./../functions/timefunctions.js");
-const { getHeavy, assignHeavy, commandsheavy, convertheavy, heavytypes, getBaseHeavy, getHeavyRestrictions, getHeavyBound, getHeavyList } = require("./../functions/heavyfunctions.js");
-const { getPronouns } = require("./../functions/pronounfunctions.js");
-const { getConsent, handleConsent, handleExtremeRestraint, handleMajorRestraint } = require("./../functions/interactivefunctions.js");
+const { heavytypes } = require("./../functions/heavyfunctions.js");
+const { handleConsent, handleExtremeRestraint, handleMajorRestraint } = require("./../functions/interactivefunctions.js");
 const { getText } = require("./../functions/textfunctions.js");
 const { default: didYouMean, ReturnTypeEnums } = require("didyoumean2");
-const { getUserTags } = require("../functions/configfunctions.js");
+const { getUserTags } = require("../functions/getters/config/getUserTags.js");
+const { getBaseHeavy } = require("../functions/getters/heavy/getBaseHeavy.js");
+const { getConsent } = require("../functions/getters/config/getConsent.js");
+const { getHeavy } = require("../functions/getters/heavy/getHeavy.js");
+const { getHeavyBound } = require("../functions/getters/heavy/getHeavyBound.js");
+const { getHeavyList } = require("../functions/getters/heavy/getHeavyList.js");
+const { assignHeavy } = require("../functions/setters/heavy/assignHeavy.js");
+const { convertheavy } = require("../functions/getters/heavy/getHeavyName.js");
+const { getPronouns } = require("../functions/getters/config/getPronouns.js");
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("heavy")
 		.setDescription(`Put heavy bondage on, preventing the use of any command`)
-        .setNSFW(true)
         .addUserOption((opt) => opt.setName("user").setDescription("Who to bind in heavy bondage..."))
 		.addStringOption((opt) =>
 			opt
@@ -70,7 +76,7 @@ module.exports = {
 			}
             // CHECK IF THEY CONSENTED! IF NOT, MAKE THEM CONSENT
 			if (!getConsent(targetuser.id)?.mainconsent) {
-				await handleConsent(interaction, interaction.user.id);
+				await handleConsent(interaction, targetuser.id);
 				return;
 			}
 			
@@ -245,7 +251,7 @@ module.exports = {
 -# Restricted if in heavy bondage
 ${restrictedtext}
 Applies some form of **Heavy Bondage** to yourself. While in heavy bondage, you will be unable to use nearly all commands and will require someone else to **/unheavy** you to gain access to them again.`
-        overviewtextdisplay = new TextDisplayBuilder().setContent(overviewtext)
+        let overviewtextdisplay = new TextDisplayBuilder().setContent(overviewtext)
         return overviewtextdisplay;
     }
 };

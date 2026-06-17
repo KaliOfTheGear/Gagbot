@@ -1,11 +1,18 @@
-const { removeChastity, removeChastityBra, getChastityKeys, transferChastityKey } = require("./vibefunctions");
-const { removeCollar, getCollarKeys, transferCollarKey } = require("./collarfunctions.js");
-const { getPronouns } = require("./pronounfunctions.js");
 const { messageSendChannel } = require("./messagefunctions.js");
 const fs = require("fs");
 const { getTextGeneric } = require("./textfunctions.js");
-const { getChastityBraKeys } = require("./vibefunctions.js");
-const { transferChastityBraKey } = require("./vibefunctions.js");
+const { removeChastity } = require("./setters/chastity/removeChastity.js");
+const { removeChastityBra } = require("./setters/chastity/removeChastityBra.js");
+const { getPronouns } = require("./getters/config/getPronouns.js");
+const { removeCollar } = require("./setters/collar/removeCollar.js");
+const { getCollarKeys } = require("./getters/collar/getCollarKeys.js");
+const { getChastityKeys } = require("./getters/chastity/getChastityKeys.js");
+const { getChastityBraKeys } = require("./getters/chastity/getChastityBraKeys.js");
+const { getOption } = require("./getters/config/getOption.js");
+const { transferCollarKey } = require("./setters/collar/transferCollarKey.js");
+const { transferChastityKey } = require("./setters/chastity/transferChastityKey.js");
+const { transferChastityBraKey } = require("./setters/chastity/transferChastityBraKey.js");
+const { markForSave } = require("./other/markForSave.js");
 
 // returns whether the locking was successful
 function timelockChastity(client, wearer, keyholder, unlockTime, access, keyholderAfter, webhookchannel) {
@@ -27,10 +34,7 @@ function timelockChastity(client, wearer, keyholder, unlockTime, access, keyhold
 	setTimeout(() => {
 		unlockTimelockChastity(client, wearer);
 	}, unlockTime - now);
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.chastity = true;
+    markForSave("chastity");
 	return true;
 }
 
@@ -46,10 +50,7 @@ function unlockTimelockChastity(client, wearer, skipWrite = false) {
 	sendTimelockChastityUnlockMessage(client, wearer, chastity.keyholder);
 	if (!chastity.keyholder) removeChastity(wearer, undefined, true);
 	else if (!skipWrite) {
-		if (process.readytosave == undefined) {
-			process.readytosave = {};
-		}
-		process.readytosave.chastity = true;
+		markForSave("chastity");
 	}
 	return true;
 }
@@ -89,10 +90,7 @@ function timelockChastityBra(client, wearer, keyholder, unlockTime, access, keyh
 	setTimeout(() => {
 		unlockTimelockChastity(client, wearer);
 	}, unlockTime - now);
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.chastitybra = true;
+	markForSave("chastitybra");
 	return true;
 }
 
@@ -108,10 +106,7 @@ function unlockTimelockChastityBra(client, wearer, skipWrite = false) {
 	sendTimelockChastityBraUnlockMessage(client, wearer, chastitybra.keyholder);
 	if (!chastitybra.keyholder) removeChastityBra(wearer, undefined, true);
 	else if (!skipWrite) {
-		if (process.readytosave == undefined) {
-			process.readytosave = {};
-		}
-		process.readytosave.chastitybra = true;
+		markForSave("chastitybra");
 	}
 	return true;
 }
@@ -151,10 +146,7 @@ function timelockCollar(client, wearer, keyholder, unlockTime, access, keyholder
 	setTimeout(() => {
 		unlockTimelockChastity(client, wearer);
 	}, unlockTime - now);
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.collar = true;
+	markForSave("collar");
 	return true;
 }
 
@@ -170,10 +162,7 @@ function unlockTimelockCollar(client, wearer, skipWrite = false) {
 	sendTimelockCollarUnlockMessage(client, wearer, collar.keyholder);
 	if (!collar.keyholder) removeCollar(wearer);
 	else if (!skipWrite) {
-		if (process.readytosave == undefined) {
-			process.readytosave = {};
-		}
-		process.readytosave.collar = true;
+		markForSave("collar");
 	}
 	return true;
 }
@@ -219,9 +208,11 @@ function gagbotHeldKeyTime(wearerid, type) {
             targetuser: { id: wearerid },
         }
         messageSendChannel(getTextGeneric("given_key", data), process.recentmessages[wearerid])
+        let addedtime = Math.floor(Math.max(Math.random(), 0.4) * getOption(wearerid, "gagbotholdtimer")); // 40-100% of the time
         process.heldkeytimers[`${wearerid}_${type}`] = {
-            releasetime: Date.now() + (Math.floor(Math.random() * 480000)) + 120000 // 2-10 minutes
+            releasetime: Date.now() + addedtime
         }
+        markForSave("heldkeytimers");
     }
     else {
         if (process[type] && process[type][wearerid] && process[type][wearerid].keyholder != process.client.user.id) { // Key somehow returned to the wearer, or the device was removed

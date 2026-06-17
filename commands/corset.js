@@ -1,22 +1,25 @@
 const { SlashCommandBuilder, MessageFlags, TextDisplayBuilder } = require("discord.js");
-const { getChastity, getVibe, assignVibe, canAccessChastity } = require("./../functions/vibefunctions.js");
-const { getHeavy, getHeavyBound } = require("./../functions/heavyfunctions.js");
-const { getPronouns } = require("./../functions/pronounfunctions.js");
-const { getConsent, handleConsent } = require("./../functions/interactivefunctions.js");
-const { getCorset, assignCorset, getBaseCorset } = require("./../functions/corsetfunctions.js");
+const { handleConsent } = require("./../functions/interactivefunctions.js");
 const { rollKeyFumble } = require("../functions/keyfindingfunctions.js");
 const { getText, getTextGeneric } = require("./../functions/textfunctions.js");
 const { checkBondageRemoval, handleBondageRemoval } = require("../functions/interactivefunctions.js");
 const { config } = require("../functions/configfunctions.js");
 const { default: didYouMean, ReturnTypeEnums } = require("didyoumean2");
-const { getUserTags } = require("../functions/configfunctions.js");
-const { getBaseChastity } = require("../functions/chastityfunctions.js");
+const { getUserTags } = require("../functions/getters/config/getUserTags.js");
+const { getBaseCorset } = require("../functions/getters/corset/getBaseCorset.js");
+const { getConsent } = require("../functions/getters/config/getConsent.js");
+const { getCorset } = require("../functions/getters/corset/getCorset.js");
+const { getHeavy } = require("../functions/getters/heavy/getHeavy.js");
+const { getHeavyBound } = require("../functions/getters/heavy/getHeavyBound.js");
+const { getChastity } = require("../functions/getters/chastity/getChastity.js");
+const { getBaseChastity } = require("../functions/getters/chastity/getBaseChastity.js");
+const { assignCorset } = require("../functions/setters/corset/assignCorset.js");
+const { canAccessChastity } = require("../functions/getters/chastity/canAccessChastity.js");
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("corset")
 		.setDescription("Put a corset on someone, shortening their messages")
-        .setNSFW(true)
 		.addUserOption((opt) => opt.setName("user").setDescription("Who to corset?"))
 		.addNumberOption((opt) => opt.setName("intensity").setDescription("How tightly to lace their corset!").setMinValue(1).setMaxValue(10))
 		.addStringOption((opt) => opt.setName("type").setDescription("Which type of corset").setAutocomplete(true)),
@@ -464,7 +467,7 @@ module.exports = {
 -# Restricted if in a chastity belt without the key
 ${restrictedtext}
 Places a tight **Corset** on the user, which limits their speech in various ways, reducing their ability to speak in capital letters until they are eventually only able to speak a few words at a time. **Breath** is consumed with each syllable and regenerates over time, slower at higher **Tightness** levels. When out of breath, the user is unable to speak.`;
-		overviewtextdisplay = new TextDisplayBuilder().setContent(overviewtext);
+		let overviewtextdisplay = new TextDisplayBuilder().setContent(overviewtext);
 		return overviewtextdisplay;
 	},
 };

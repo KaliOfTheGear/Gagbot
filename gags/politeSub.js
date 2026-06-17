@@ -1,4 +1,5 @@
-const { setUserVar, getUserVar } = require("../functions/usercontext");
+const { getUserVar } = require("../functions/getters/config/getUserVar");
+const { setUserVar } = require("../functions/setters/config/setUserVar");
 
 const honorifictitles = [
 	// Oh god its hard to type these without caps
@@ -61,8 +62,14 @@ const messagebegin = (msg, msgTree, msgTreeMods, intensity) => {
 
 	if (regexpattern.test(msg.content)) {
 		// They were polite, don't touch it.
+        setUserVar(msg.member.id, "politeSubisPolite", Date.now() + 30000)
 		return;
-	} else {
+	}
+    else if (getUserVar(msg.member.id, "politeSubisPolite") > Date.now()) {
+        // They were polite within the last 30 seconds
+        return;
+    }
+    else {
 		let silenced = {"isSilenced": false}					// Store a bool in an object to pass by reference.
 		msgTree.callFunc(impoliteSub,true,["rawText","moan"],[silenced])	// Run a function on the tree.
 		if(silenced.isSilenced){

@@ -1,14 +1,20 @@
 const { SlashCommandBuilder, ComponentType, ButtonBuilder, ActionRowBuilder, ButtonStyle, MessageFlags, PermissionsBitField, ApplicationCommandOptionChannelTypesMixin } = require("discord.js");
-const { mittentypes } = require("./../functions/gagfunctions.js");
-const { heavytypes } = require("./../functions/heavyfunctions.js");
-const { getPronouns } = require("./../functions/pronounfunctions.js");
-const { getConsent, handleConsent, timelockChastityModalnew } = require("./../functions/interactivefunctions.js");
-const { generateConfigModal, configoptions, getOption, setOption, getServerOption, setServerOption, initializeOptions } = require("./../functions/configfunctions.js");
+const { generateConfigModal, } = require("./../functions/configfunctions.js");
 const { removeAllCommands } = require("../functions/configfunctions.js");
-const { initializeServerOptions } = require("../functions/configfunctions.js");
-const { setCommands, setBotOption, getBotOption, leaveServerOptions, createWebhook, deleteWebhook, generateTextEntryModal } = require("../functions/configfunctions.js");
+const { setCommands, generateTextEntryModal } = require("../functions/configfunctions.js");
 const { processTimedEvents } = require("../functions/timefunctions.js");
 const { generateUserEntryModal } = require("../functions/configfunctions.js");
+const { getOption } = require("../functions/getters/config/getOption.js");
+const { getServerOption } = require("../functions/getters/config/getServerOption.js");
+const { getBotOption } = require("../functions/getters/config/getBotOption.js");
+const { setServerOption } = require("../functions/setters/config/setServerOption.js");
+const { createWebhook } = require("../functions/setters/config/createWebhook.js");
+const { deleteWebhook } = require("../functions/setters/config/deleteWebhook.js");
+const { leaveServerOptions } = require("../functions/setters/config/leaveServerOptions.js");
+const { setOption } = require("../functions/setters/config/setOption.js");
+const { configoptions } = require("../lists/configoptions.js");
+const { initializeServerOptions } = require("../functions/other/initializeServerOptions.js");
+const { markForSave } = require("../functions/other/markForSave.js");
 
 module.exports = {
 	data: new SlashCommandBuilder().setName("config").setDescription(`Configure settings...`),
@@ -212,7 +218,7 @@ module.exports = {
 				// Revoke that CONSENT
 				if (process.consented[interaction.user.id]) {
 					delete process.consented[interaction.user.id];
-					process.readytosave.consented = true;
+					markForSave("consented");
 				}
 				// Finally, reprompt the user, now with the new choice set.
 				interaction.update(await generateConfigModal(interaction, optionparts[2], 1));
@@ -248,6 +254,17 @@ module.exports = {
             choiceinput = interaction.fields.getTextInputValue("choiceinput");
 			setOption(interaction.user.id, optionparts[3], choiceinput.slice(0, 30));
 			await interaction.reply({ content: `Updated your Doll Visor designation to ${choiceinput.slice(0, 30)}`, flags: MessageFlags.Ephemeral });
+			if (process.recentinteraction) {
+				if (process.recentinteraction[interaction.user.id]?.timestamp + 895000 > performance.now()) {
+					await process.recentinteraction[interaction.user.id].interaction.editReply(await generateConfigModal(process.recentinteraction[interaction.user.id].interaction, optionparts[2], optionparts[4]));
+				}
+				delete process.recentinteraction[interaction.user.id];
+			}
+		}
+        if (optionparts[3] == "dronevisorname") {
+            choiceinput = interaction.fields.getTextInputValue("choiceinput");
+			setOption(interaction.user.id, optionparts[3], choiceinput.slice(0, 30));
+			await interaction.reply({ content: `Updated your ⬡-Drone Visor designation to ${choiceinput.slice(0, 30)}`, flags: MessageFlags.Ephemeral });
 			if (process.recentinteraction) {
 				if (process.recentinteraction[interaction.user.id]?.timestamp + 895000 > performance.now()) {
 					await process.recentinteraction[interaction.user.id].interaction.editReply(await generateConfigModal(process.recentinteraction[interaction.user.id].interaction, optionparts[2], optionparts[4]));

@@ -1,20 +1,30 @@
 const fs = require("fs");
 const path = require("path");
 const https = require("https");
-const { messageSend, messageSendImg, messageSendChannel, runMessageEvents, getAlternateName, recordMessage, getPFP } = require(`./../functions/messagefunctions.js`);
-const { getCorset, corsetLimitWords, silenceMessage } = require(`./../functions/corsetfunctions.js`);
-const { stutterText, getArousedTexts } = require(`./../functions/vibefunctions.js`);
-const { getVibeEquivalent } = require("./vibefunctions.js");
-const { getHeadwearRestrictions, processHeadwearEmoji, getHeadwearName, getHeadwear, DOLLVISORS, processHeadwearTruthgas } = require("./headwearfunctions.js");
-const { getOption } = require(`./../functions/configfunctions.js`);
+const { messageSend, messageSendImg, messageSendChannel } = require(`./../functions/messagefunctions.js`);
+const { corsetLimitWords, silenceMessage } = require(`./../functions/corsetfunctions.js`);
+const { stutterText } = require(`./../functions/vibefunctions.js`);
+const { processHeadwearEmoji, processHeadwearTruthgas } = require("./headwearfunctions.js");
 const { getText } = require(`./../functions/textfunctions.js`);
-const { DOLLMAXPUNISHMENT, textGarbleDOLL } = require(`./../functions/dollfunctions.js`);
+const { DOLLMAXPUNISHMENT, textGarbleDOLL, textGarbleDrone } = require(`./../functions/dollfunctions.js`);
 const { splitMessage } = require(`./../functions/messagefunctions.js`);
-const { assignHeavy, getHeavyRestrictions } = require(`./../functions/heavyfunctions.js`);
 const { MessageAST } = require(`./../functions/message_ast.js`);
 const { emitEvent } = require("./eventhandling.js");
-const { convertPronounsText } = require("./pronounfunctions.js");
-const { getUserVar, setUserVar } = require("./usercontext.js");
+const { getHeadwear } = require("./getters/headwear/getHeadwear.js");
+const { getOption } = require("./getters/config/getOption.js");
+const { assignGag } = require("./setters/gag/assignGag.js");
+const { assignMitten } = require("./setters/mitten/assignMitten.js");
+const { assignHeavy } = require("./setters/heavy/assignHeavy.js");
+const { getHeadwearRestrictions } = require("./getters/headwear/getHeadwearRestrictions.js");
+const { getVibeEquivalent } = require("./getters/chastity/getVibeEquivalent.js");
+const { getArousedTexts } = require("./getters/arousal/getArousedTexts.js");
+const { getCorset } = require("./getters/corset/getCorset.js");
+const { getHeavyRestrictions } = require("./getters/heavy/getHeavyRestrictions.js");
+const { getUserVar } = require("./getters/config/getUserVar.js");
+const { getPFP } = require("./getters/config/getPFP.js");
+const { convertPronounsText } = require("./other/convertPronounsText.js");
+const { getAlternateName } = require("./getters/config/getAlternateName.js");
+const { markForSave } = require("./other/markForSave.js");
 
 // Grab all the command files from the commands directory
 const gagtypes = [];
@@ -69,213 +79,6 @@ function loadMittenTypes() {
     process.autocompletes.mitten = mittentypes.map((m) => {
         return { name: m.name, value: m.value }
     })
-}
-
-const convertGagText = (type) => {
-	let convertgagarr;
-	for (let i = 0; i < gagtypes.length; i++) {
-		if (convertgagarr == undefined) {
-			convertgagarr = {};
-		}
-		convertgagarr[gagtypes[i].value] = gagtypes[i].name;
-	}
-	return convertgagarr[type];
-};
-
-/*const assignGag = (userID, gagtype = "ball", intensity = 5, origbinder) => {
-    if (process.gags == undefined) { process.gags = {} }
-    let originalbinder = process.gags[userID]?.origbinder
-    process.gags[userID] = {
-        gagtype: gagtype,
-        intensity: intensity,
-        origbinder: originalbinder ?? origbinder // Preserve original binder until it is removed. 
-    }
-    if (process.readytosave == undefined) { process.readytosave = {} }
-    process.readytosave.gags = true;
-}*/
-
-const assignGag = (userID, gagtype = "ball", intensity = 5, origbinder) => {
-	if (process.gags == undefined) {
-		process.gags = {};
-	}
-	if (process.gags[userID] == undefined) {
-		process.gags[userID] = [];
-	}
-	// Retrieve the index if it is already on the wearer.
-	let foundgag = process.gags[userID].findIndex((s) => s.gagtype == gagtype);
-	let originalbinder = origbinder;
-	if (foundgag > -1) {
-		originalbinder = process.gags[userID][foundgag].origbinder;
-		process.gags[userID].splice(foundgag, 1);
-	}
-	process.gags[userID].push({ gagtype: gagtype, intensity: intensity, origbinder: originalbinder });
-    // Increment the worn corset counter
-    if (process.userstats == undefined) { process.userstats = {} }
-    if (process.userstats[userID] == undefined) { process.userstats[userID] = {} }
-
-    process.userstats[userID].worngags = (process.userstats[userID].worngags ?? 0) + 1;
-    
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.gags = true;
-    process.readytosave.userstats = true;
-};
-
-// to ensure compatibility with existing code, this will retrieve the first gag
-// in the list, if not called with an extra param for specific gag.
-const getGag = (userID, gagbyname) => {
-	if (process.gags == undefined) {
-		process.gags = {};
-	}
-	if (process.gags[userID] == undefined) {
-		return undefined;
-	}
-	if (gagbyname) {
-		let foundgag = process.gags[userID].find((s) => s.gagtype == gagbyname);
-		return foundgag;
-	} else if (process.gags[userID].length > 0) {
-		return process.gags[userID][0].gagtype;
-	}
-	return undefined;
-};
-
-const getGags = (userID) => {
-	if (process.gags == undefined) {
-		process.gags = {};
-	}
-	return process.gags[userID] ?? [];
-};
-
-const getGagLast = (userID) => {
-	if (process.gags == undefined) {
-		process.gags = {};
-	}
-	if (process.gags[userID] == undefined) {
-		return undefined;
-	}
-
-	if (process.gags[userID].length > 0) {
-		return process.gags[userID][process.gags[userID].length - 1].gagtype;
-	} else {
-		return undefined;
-	}
-};
-
-const getGagBinder = (userID) => {
-	if (process.gags == undefined) {
-		process.gags = {};
-	}
-	return process.gags[userID]?.origbinder;
-};
-
-const getGagIntensity = (userID) => {
-	if (process.gags == undefined) {
-		process.gags = {};
-	}
-	if (process.gags[userID] && process.gags[userID].length > 0) {
-		return process.gags[userID][0].intensity;
-	} else {
-		return undefined;
-	}
-};
-
-const deleteGag = (userID, specificgag) => {
-	if (process.gags == undefined) {
-		process.gags = {};
-	}
-	// Remove all gags if none is specified.
-	if (!specificgag && process.gags[userID]) {
-        process.gags[userID].forEach((g) => {
-            if (process.gagtypes[g.gagtype] && process.gagtypes[g.gagtype].onUnlock) {
-                process.gagtypes[g.gagtype].onUnlock(userID);
-            }
-        })
-		delete process.gags[userID];
-	} else if (process.gags[userID]) {
-		let loc = process.gags[userID].findIndex((f) => f.gagtype == specificgag);
-		if (loc > -1) {
-            if (process.gagtypes[process.gags[userID][loc].gagtype] && process.gagtypes[process.gags[userID][loc].gagtype].onUnlock) {
-                process.gagtypes[process.gags[userID][loc].gagtype].onUnlock({ userID: userID });
-            }
-			process.gags[userID].splice(loc, 1);
-		}
-		if (process.gags[userID].length == 0) {
-			delete process.gags[userID];
-		}
-	}
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.gags = true;
-};
-
-const assignMitten = (userID, mittentype, origbinder) => {
-	if (process.mitten == undefined) {
-		process.mitten = {};
-	}
-	let originalbinder = process.mitten[userID]?.origbinder;
-	process.mitten[userID] = {
-		mittenname: mittentype,
-		origbinder: originalbinder ?? origbinder, // Preserve original binder until it is removed.
-	};
-    // Increment the worn corset counter
-    if (process.userstats == undefined) { process.userstats = {} }
-    if (process.userstats[userID] == undefined) { process.userstats[userID] = {} }
-
-    process.userstats[userID].wornmittens = (process.userstats[userID].wornmittens ?? 0) + 1;
-    
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.mitten = true;
-    process.readytosave.userdata = true;
-};
-
-const getMitten = (userID) => {
-	if (process.mitten == undefined) {
-		process.mitten = {};
-	}
-	return process.mitten[userID];
-};
-
-const getMittenBinder = (userID) => {
-	if (process.mitten == undefined) {
-		process.mitten = {};
-	}
-	return process.mitten[userID]?.origbinder;
-};
-
-const deleteMitten = (userID) => {
-	if (process.mitten == undefined) {
-		process.mitten = {};
-	}
-	delete process.mitten[userID];
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.mitten = true;
-};
-
-const getMittenName = (userID, mittenname) => {
-	if (process.mitten == undefined) {
-		process.mitten = {};
-	}
-	let convertmittenarr = {};
-	for (let i = 0; i < mittentypes.length; i++) {
-		convertmittenarr[mittentypes[i].value] = mittentypes[i].name;
-	}
-	if (mittenname) {
-		return convertmittenarr[mittenname];
-	} else if (process.mitten[userID]?.mittenname) {
-		return convertmittenarr[process.mitten[userID]?.mittenname];
-	} else {
-		return undefined;
-	}
-};
-
-function getBaseMitten(type) {
-    return mittentypes.find((m) => m.value == type)
 }
 
 /**********************************************
@@ -337,11 +140,7 @@ function punishDoll(userID, amount) {
 					break;
 			}
 		}
-
-		if (process.readytosave == undefined) {
-			process.readytosave = {};
-		}
-		process.readytosave.dolls = true;
+        markForSave("dolls");
 		return { punish: punishments > 0 ? true : false, punishmentLevel: doll.punishmentLevel, skipped: skipped };
 	}
 }
@@ -415,6 +214,8 @@ const modifymessage = async (msg, threadId, messageonly) => {
 		msgTree.rebuild(msgTree.toString())							// Update AST to account for control char-wrapped moans.
 		textGarbleGag(msg, msgTree, msgTreeMods);					// Text garbling due to Gag
 
+        msgTree.callFunc(textGarbleDrone,true,"rawText",[msg, msgTreeMods])
+
 		// Convert the AST back to a string.
 		outtext = msgTree.toString()
 
@@ -428,6 +229,12 @@ const modifymessage = async (msg, threadId, messageonly) => {
 
 		// Scrub all control characters used to delineate text.
 		outtext = outtext.replaceAll(/[]/g, "");
+
+        // Get Drone Visor if worn
+        /*let dronetext = await textGarbleDrone(msg, outtext);
+        if (dronetext.modifiedmessage) { outtext = dronetext.modifiedmessage }
+        if (dronetext.dollIDDisplay) { dollIDDisplay = dronetext.dollIDDisplay }
+        if (dronetext.modified) { msgTreeMods.modified = true };*/
 
         // Append any extra messages from collar effects
         let appendcollar = await appendCollarEffects(msg, outtext, msgTreeMods);
@@ -587,38 +394,110 @@ async function appendCollarEffects(msg, outtext, msgTreeMods) {
 
     // If they were shocked, then give a shocked message. 
     if (msgTreeMods.shocked) {
-        let shocks = [
-            `*USER_TAG yelps in pain as USER_THEIR speech is cut short!*`,
-            `*USER_TAG grits USER_THEIR teeth as the collar triggers a shock!*`,
-            `*USER_TAG's breath seizes up in USER_THEIR throat as the collar shocks USER_THEM!*`,
-            `*USER_TAG's face flushes red as the shock registers how horny USER_THEY USER_ISARE!*`,
-            `*USER_TAG tries to speak but stops forming words as the collar gives USER_THEM a warning shock!*`,
-            `*Tears run down USER_TAG's face as USER_THEIR speech is interrupted!*`,
-            `*USER_TAG's words trail off and USER_THEY squintUSER_S USER_THEIR eyes shut!*`,
-            `*USER_TAG eeps when the collar gives USER_THEM a tiny shock!*`,
-            {
-                required: (t) => {
-                    return getHeavyRestrictions(t.interactionuser.id).touchself;
+        // Figure out the tone to shock the user with
+        let tone = getOption(msg.author.id, "shocktone") ?? "playful";
+        if (tone == "both") {
+            if (Math.random() > 0.5) { 
+                tone = "playful" 
+            }
+            else { 
+                tone = "painful" 
+            };
+        }
+        let shocks = {
+            playful: [
+                `*USER_TAG's face flushes red as the shock registers how horny USER_THEY USER_ISARE!*`,
+                `*USER_TAG tries to speak but stops forming words as the collar gives USER_THEM a warning shock!*`,
+                `*USER_TAG eeps when the collar gives USER_THEM a tiny shock!*`,
+                {
+                    required: (t) => {
+                        return getHeavyRestrictions(t.interactionuser.id).touchself;
+                    },
+                    text: `*USER_TAG tries to slip a finger under USER_THEIR collar as it stings USER_THEM!*`,
                 },
-                text: `*USER_TAG's grabs USER_THEIR collar with tears as it shocks USER_THEM!*`,
-            },
-            {
-                required: (t) => {
-                    return getHeavyRestrictions(t.interactionuser.id).touchself;
+                `*USER_TAG meeps as USER_THEIR collar gives a barely audible crackle, derailing USER_THEIR train of thought.*`,
+                `*USER_TAG's speech is cut short as a tiny sting chides USER_THEM for being so horny...*`
+            ],
+            painful: [
+                `*USER_TAG yelps in pain as USER_THEIR speech is cut short!*`,
+                `*USER_TAG's breath seizes up in USER_THEIR throat as the collar shocks USER_THEM!*`,
+                `*USER_TAG grits USER_THEIR teeth as the collar triggers a shock!*`,
+                `*Tears run down USER_TAG's face as USER_THEIR speech is interrupted!*`,
+                `*USER_TAG's words trail off and USER_THEY squintUSER_S USER_THEIR eyes shut!*`,
+                {
+                    required: (t) => {
+                        return getHeavyRestrictions(t.interactionuser.id).touchself;
+                    },
+                    text: `*USER_TAG's grabs USER_THEIR collar with tears as it shocks USER_THEM!*`,
                 },
-                text: `*USER_TAG tries to slip a finger under USER_THEIR collar as it stings USER_THEM!*`,
-            },
-        ]
+            ]
+        }
         let texts = [];
-        shocks.forEach((t) => {
-            if (typeof t != "string" && t.required({ interactionuser: msg.member, targetuser: msg.member })) {
-                texts.push(t.text)
+        shocks[tone].forEach((t) => {
+            if (typeof t != "string") {
+                if (t.required({ interactionuser: msg.member, targetuser: msg.member })) {
+                    texts.push(t.text)
+                }
             }
             else {
                 texts.push(t)
             }
         })
         appendmessages.push(convertPronounsText(texts[Math.floor(texts.length * Math.random())], { interactionuser: msg.member, targetuser: msg.member }));
+        /*** This code is ugly because I couldn't call the functions due to circulars. 
+         * 
+         * This should ideally be refactored in the future. 
+        */
+        if (process.userstats == undefined) { process.userstats = {} }
+        if (process.userstats[msg.member.id] == undefined) { process.userstats[msg.member.id] = {} }
+        let newcount = (process.userstats[msg.member.id]["timesshocked"] ?? 0) + 1;
+        process.userstats[msg.member.id]["timesshocked"] = newcount;
+        markForSave("userstats");
+        try {
+            if (getOption(msg.member.id, "pishockusername") && (typeof getOption(msg.member.id, "pishockusername") == "string") &&
+                getOption(msg.member.id, "pishockname") && (typeof getOption(msg.member.id, "pishockname") == "string") &&
+                getOption(msg.member.id, "pishockcode") && (typeof getOption(msg.member.id, "pishockcode") == "string") &&
+                getOption(msg.member.id, "pishockapikey") && (typeof getOption(msg.member.id, "pishockapikey") == "string")) {
+                    // Set up the https request. 
+                    const reqdata = JSON.stringify({
+                        Username: getOption(msg.member.id, "pishockusername"),
+                        Name: getOption(msg.member.id, "pishockname"),
+                        Code: getOption(msg.member.id, "pishockcode"),
+                        Intensity: 100,
+                        Duration: 2,
+                        Apikey: getOption(msg.member.id, "pishockapikey"),
+                        Op: (getOption(msg.member.id, "pishockop") ? getOption(msg.member.id, "pishockop") : "0"), // 0 for shock, 1 for vibrate, 2 for beep
+                    });
+                    const options = {
+                        hostname: 'do.pishock.com/api/apioperate', // without https://
+                        port: 443, // Default SSL port
+                        path: '/path', // Path after the domain
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    }
+
+                    fetch('https://do.pishock.com/api/apioperate', {
+                        method: 'POST', // Specifying the method
+                        headers: {
+                            'Content-Type': 'application/json', // Specifying content type as JSON
+                        },
+                        body: reqdata, // Stringifying the JSON body
+                    })
+                    .then(response => console.log(response)) // Parsing the JSON response
+                    .catch((error) => {
+                        console.error('Error:', error); // Error handling
+                    });
+            }
+            else {
+                console.log(`No shocker or invalid shocker information configured for ID ${msg.member.id}.`)
+            }
+        }
+        catch (err) {
+            console.log(err)
+        }
+        /***/
     }
 
     // If they're wearing a sponsorship collar, 30% chance to add a sponsor. 
@@ -723,10 +602,7 @@ async function sendTheMessage(msg, outtext, dollIDDisplay, threadID, dollProtoco
         if (process.userstats == undefined) { process.userstats = {} }
         if (process.userstats[msg.author.id] == undefined) { process.userstats[msg.author.id] = {} }
         process.userstats[msg.author.id].gaggedmessages = (process.userstats[msg.author.id].gaggedmessages ?? 0) + 1;
-        if (process.readytosave == undefined) {
-            process.readytosave = {};
-        }
-        process.readytosave.userstats = true;
+        markForSave("userstats");
 
 		// Determine if an attachment was posted in the original message.
 		if (msg.attachments.size > 0) {
@@ -822,21 +698,7 @@ async function sendTheMessage(msg, outtext, dollIDDisplay, threadID, dollProtoco
 exports.setUpGags = setUpGags;
 exports.loadMittenTypes = loadMittenTypes;
 
-exports.getBaseMitten = getBaseMitten;
-
-exports.assignGag = assignGag;
-exports.getGag = getGag;
-exports.getGags = getGags;
-exports.getGagLast = getGagLast;
-exports.getGagBinder = getGagBinder;
-exports.getMittenBinder = getMittenBinder;
-exports.getGagIntensity = getGagIntensity;
-exports.deleteGag = deleteGag;
-exports.assignMitten = assignMitten;
-exports.getMitten = getMitten;
-exports.deleteMitten = deleteMitten;
 exports.modifymessage = modifymessage;
-exports.convertGagText = convertGagText;
-exports.getMittenName = getMittenName;
 exports.mittentypes = mittentypes;
 exports.gagtypes = gagtypesout;
+exports.mittentypes = mittentypes;

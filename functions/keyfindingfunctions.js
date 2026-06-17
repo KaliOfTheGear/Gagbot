@@ -1,20 +1,23 @@
-const { findCollarKey, getBaseCollar } = require("./collarfunctions");
-const { findChastityKey, getChastity, getArousal, calcFrustration } = require("./vibefunctions");
+const { calcFrustration } = require("./vibefunctions");
 const { their } = require("./pronounfunctions");
-const { getMitten } = require("./gagfunctions");
 const fs = require("fs");
-const { getUserVar, setUserVar } = require("./usercontext");
-const { getHeavy } = require("./heavyfunctions");
-const { config, getOption } = require("./configfunctions");
-const { findChastityBraKey } = require("./vibefunctions");
 const { messageSendChannel } = require("./messagefunctions.js");
 const { PermissionsBitField } = require("discord.js");
 const { frustrationPenalties } = require("./vibefunctions.js");
-const { getCombinedTraits } = require("./vibefunctions.js");
 const { logConsole } = require("./logfunctions.js");
-const { getBaseChastity } = require("./chastityfunctions.js");
-const { getTextGeneric } = require("./textfunctions.js");
-const { getHeadwearRestrictions } = require("./headwearfunctions.js");
+const { getBotOption } = require("./getters/config/getBotOption");
+const { getOption } = require("./getters/config/getOption");
+const { getUserVar } = require("./getters/config/getUserVar");
+const { setUserVar } = require("./setters/config/setUserVar");
+const { getArousal } = require("./getters/arousal/getArousal");
+const { getMitten } = require("./getters/mitten/getMitten");
+const { getHeavy } = require("./getters/heavy/getHeavy");
+const { getHeadwearRestrictions } = require("./getters/headwear/getHeadwearRestrictions");
+const { getBaseChastity } = require("./getters/chastity/getBaseChastity");
+const { getBaseCollar } = require("./getters/collar/getBaseCollar");
+const { statsAddCounter } = require("./setters/config/statsAddCounter");
+const { getTextGeneric } = require("./textfunctions");
+const { markForSave } = require("./other/markForSave");
 
 const MAX_FUMBLE_CHANCE = 0.95;
 
@@ -23,11 +26,18 @@ function rollKeyFumble(keyholder, locked) {
 	if (process.keyfumbling == undefined) {
 		process.keyfumbling = {};
 	}
-    // Disabled key fumbling, just don't.
-    return 0;
+    if (getBotOption("bot-allowfumbles") == "Disabled") {
+        // Disabled key fumbling, just don't.
+        return 0;
+    }
     
 	// get the initial fumble chance
 	let fumbleChance = getFumbleChance(keyholder, locked);
+
+    if (process.forcefumble) { 
+        process.forcefumble = false;
+        return 2 
+    };
 
 	// just save time and skip this thing if they cannot fumble
 	if (fumbleChance <= 0) return 0;
@@ -37,7 +47,7 @@ function rollKeyFumble(keyholder, locked) {
     if (Math.random() < Math.min(fumbleChance, MAX_FUMBLE_CHANCE)) {
         // They fumbled, lets work with that.
         // Push the chance they had to fumble to blessings
-        if (config.getBlessedLuck(keyholder)) {
+        if (getOption(keyholder, "blessed-luck") == "enabled") {
             // if they use blessed luck, add the success chance to their saved blessing
             const blessing = getUserVar(keyholder, "blessed") ?? 0;
             setUserVar(keyholder, "blessing", blessing + 1 - fumbleChance);
@@ -58,6 +68,11 @@ function rollKeyFumble(keyholder, locked) {
             const penalties = frustrationPenalties.get(keyholder) ?? [];
             penalties.push({ timestamp: Date.now(), value: 15, decay: 2 });
             frustrationPenalties.set(keyholder, penalties);
+
+            markForSave("collar");
+            markForSave("chastity");
+            markForSave("chastitybra");
+
             return 2; // They dropped the key.
         }
         else {
@@ -71,11 +86,11 @@ function rollKeyFumble(keyholder, locked) {
 
 function getFumbleChance(keyholder, locked) {
 	// cannot fumble if disabled
-	if (config.getDisabledKeyFumbling(locked)) return 0;
+	if (getOption(locked, "fumbling") == "disabled") return 0;
 	// ... or if not using the dynamic arousal system
-	if (!config.getDynamicArousal(keyholder)) return 0;
+	if (getOption(locked, "arousalsystem") != 2) return 0;
 	// ... or if it's someone else and either has disable fumbling for others
-	if (keyholder != locked && (!config.getKeyFumblingOthers(keyholder) || !config.getKeyFumblingOthers(locked))) return 0;
+	if ((keyholder != locked) && ((getOption(keyholder, "fumbling") != "everyone") || (getOption(locked, "fumbling") != "everyone"))) return 0;
 
     // Add frustration if trying to unlock OWN device
     // Idk why frustration is broken apparently, but w/e, can fix later. 
@@ -95,7 +110,7 @@ function getFumbleChance(keyholder, locked) {
 	}
 
 	// reduce the fumble chance by saved up blessing from prior unlucky rolls
-	if (config.getBlessedLuck(keyholder)) chance -= getUserVar(keyholder, "blessed") ?? 0;
+	if (getOption(keyholder, "blessed-luck") == "enabled") chance -= getUserVar(keyholder, "blessed") ?? 0;
 
 	// divine intervention
 	if (Math.random() < 0.02) chance -= 50;
@@ -104,59 +119,107 @@ function getFumbleChance(keyholder, locked) {
 }
 
 async function handleKeyFinding(message) {
+    // The new method will only permit finding keys which the original owner currently owns.
+    // That is, you MUST be the primary keyholder for the fumbled key. 
     let processvars = ["collar", "chastity", "chastitybra"];
     processvars.forEach((pv) => {
-        if (process[pv] == undefined) { process[pv] = {}}
+        if (process[pv] == undefined) { process[pv] = {} }
         Object.entries(process[pv]).forEach(async (en) => {
             try {
-                if (en[1]?.fumbled) {
-                    if (Math.random() < (Math.max(Math.min(message.content.length * 0.0005, 0.2), 0.01))) {
-                        // Key was found! Lets make sure the sender AND the user can view the channel.
-                        // Implicitly, the sender should be able to lol
+                if (en[1]?.fumbled && !en[1]?.temporarykeyholder) {
+                    if (Math.random() < (Math.max(Math.min(message.content.length * 0.0005, 0.3), process.forcefindkey ? 1.0 : 0.01))) {
+                        if (process.recentmessages[en[0]] != message.channel.id) { 
+                            // Even if we succeeded the roll, just leave. The wearer needs to be present for their key to be found
+                            // This implicitly protects against finding the key on another server or on threads the wearer isnt in.
+                            return 
+                        }
+                        process.forcefindkey = false;
                         let weareruser = await message.guild.members.fetch(en[0]);
-                        if (message.channel.permissionsFor(weareruser).has(PermissionsBitField.Flags.ViewChannel)) {
-                            // Wearer IS able to view this channel! Both people should be able to see this channel then.
-                            // Determine which string sets to use, starting with other or self.
-                            let finderpart = "other";
-                            if (weareruser.id == message.member.id) {
-                                finderpart = "self";
-                            }
-                            // Now an append if they're in mittens or heavy bondage
-                            let extrafindkeypart = "";
-                            let chance = 1.0
-                            if (getMitten(message.member.id)) {
-                                chance = 0.5;
-                                extrafindkeypart = "_mitten"
-                            }
-                            if (getHeavy(message.member.id)) {
-                                chance = 0.0;
-                                extrafindkeypart = "_heavy"
-                            }
-                            // Blind people cannot see.
-                            if (!getHeadwearRestrictions(message.member.id).canInspect) {
-                                chance = Math.min(chance, 0.25)
-                            }
-                            let data = {
-                                interactionuser: message.member,
-                                targetuser: weareruser
-                            }
-                            if ((pv == "chastity") || (pv == "chastitybra")) {
-                                let def = (pv == "chastity") ? "belt" : "bra"
-                                data.c1 = getBaseChastity(en[1].chastitytype ?? `${def}_silver`).name
-                            }
-                            else if (pv == "collar") {
-                                data.c1 = getBaseCollar(en[1].collartype ?? `collar_leather`).name
-                            }
+                        let finderpart = "other";
+                        if (weareruser.id == message.member.id) {
+                            finderpart = "self";
+                        }
+                        // Now an append if they're in mittens or heavy bondage
+                        let extrafindkeypart = "";
+                        let chance = 1.0
+                        if (getMitten(message.member.id)) {
+                            chance = 0.5;
+                            extrafindkeypart = "_mitten"
+                        }
+                        if (getHeavy(message.member.id)) {
+                            chance = 0.0;
+                            extrafindkeypart = "_heavy"
+                        }
+                        // Blind people cannot see.
+                        if (!getHeadwearRestrictions(message.member.id).canInspect) {
+                            chance = Math.min(chance, 0.25)
+                        }
+                        let data = {
+                            interactionuser: message.member,
+                            targetuser: weareruser
+                        }
+                        if ((pv == "chastity") || (pv == "chastitybra")) {
+                            let def = (pv == "chastity") ? "belt" : "bra"
+                            data.c1 = getBaseChastity(en[1].chastitytype ?? `${def}_silver`).name
+                        }
+                        else if (pv == "collar") {
+                            data.c1 = getBaseCollar(en[1].collartype ?? `collar_leather`).name
+                        }
+                        // Now, we're gonna check if we were allowed to find it in the first place.
+                        // Case 1: We own the keys, this is the conventional unfumble approach. 
+                        // Simply remove the fumbled flag. 
+                        if ((en[1].keyholder == message.member.id)) {
                             if (Math.random() < chance) {
                                 // Successfully found the key!
                                 messageSendChannel(getTextGeneric(`find_key_${finderpart}${extrafindkeypart}`, data), message.channel.id)
-                                // Destroy cloned keyholders if the keyholder is new!
-                                if (message.member.id != process[pv][en[0]].keyholder) {
-                                    process[pv][en[0]].clonedKeyholders = [];
-                                }
-                                // Assign the new keyholder and then delete the fumbled date. 
-                                process[pv][en[0]].keyholder = message.member.id;
+                                // Delete the Fumbled date.
                                 delete process[pv][en[0]].fumbled;
+
+                                statsAddCounter(message.member.id, "fumbledkeysrecovered")
+                                markForSave("collar");
+                                markForSave("chastity");
+                                markForSave("chastitybra");
+                            }
+                            else {
+                                // Fumbled finding the key lol
+                                messageSendChannel(getTextGeneric(`find_keyfail_${finderpart}${extrafindkeypart}`, data), message.channel.id)
+                                statsAddCounter(message.member.id, "fumbledkeysfailedtorecover")
+                            }
+                        }   
+                        // Case 2: We spot our own key... we wont be able to do anything about it though, our keyholder needs to find the key!
+                        // This inherently prevents potentially finding own keys to escape, but if thats really needed we can just bump this down the list probably.
+                        else if (en[0] == message.member.id) {
+                            data.targetuser = await message.guild.members.fetch(en[1].keyholder) // Use the keyholder object to bring that into scope
+                            // @___ spots the key to her chastity belt! She tries to point it out to @___ but they're unable to find it...
+                            messageSendChannel(getTextGeneric(`spot_key_self`, data), message.channel.id)
+                            statsAddCounter(message.member.id, "fumbledkeysfailedtorecover")
+                        }
+                        // Case 3: We can find keys but the person whose restraint it is does NOT want us to find their key
+                        // Simply send a message hinting at a sparkle. 
+                        else if ((getOption(message.member.id, "findkeymode") == "others") && (getOption(en[0], "ownrestraintfindkeymode") == "onlykh")) {
+                            // @___ *thinks* she sees a little glimmer that looks like @___'s chastity belt key, but the moment she blinks, it disappears again...
+                            messageSendChannel(getTextGeneric(`spot_key_other`, data), message.channel.id)
+                            statsAddCounter(message.member.id, "fumbledkeysfailedtorecover")
+                        }
+                        // Case 4: We can find keys and the person whose restraint it is DOES want us to find their key.
+                        // This will result in giving us keyholder using the .temporarykeyholder prop and .temporarykeyholdertime. This MUST be set and checked every bot tick to clear.
+                        else if ((getOption(message.member.id, "findkeymode") == "others") && (getOption(en[0], "ownrestraintfindkeymode") != "onlykh")) {
+                            if (Math.random() < chance) {
+                                // Successfully found the key!
+                                if (getOption(en[0], "ownrestraintfindkeymode") == 0) {
+                                    messageSendChannel(getTextGeneric(`find_key_otherimmediately${extrafindkeypart}`, data), message.channel.id)
+                                    delete process[pv][en[0]].fumbled;
+                                }
+                                else {
+                                    messageSendChannel(getTextGeneric(`find_key_${finderpart}${extrafindkeypart}`, data), message.channel.id)
+                                    // Set temporary keyholder!
+                                    process[pv][en[0]].temporarykeyholder = message.member.id;
+                                    process[pv][en[0]].temporarykeyholdertime = (Date.now() + getOption(en[0], "ownrestraintfindkeymode"))
+                                }
+                                statsAddCounter(message.member.id, "fumbledkeysrecovered")
+                                markForSave("collar");
+                                markForSave("chastity");
+                                markForSave("chastitybra");
                             }
                             else {
                                 // Fumbled finding the key lol
@@ -164,10 +227,13 @@ async function handleKeyFinding(message) {
                             }
                         }
                     }
+                    else {
+                        console.log("Failed roll")
+                    }
                 }
             }
             catch (err) {
-                logConsole(`handleKeyFinding: ${err}`, 4);
+                console.log(err)
             }
         })
     })
@@ -180,6 +246,8 @@ function discardKey(userid, keyholderid, device) {
         console.log(`Unknown device ${device}. Use "collar", "chastity belt" or "chastity bra"`)
         return false 
     }
+    statsAddCounter(keyholderid, "fumbledkeys")
+    statsAddCounter(userid, "restraintkeysfumbled")
     let processvar = "collar";
     if (device == "chastity belt") { processvar = "chastity" }
     if (device == "chastity bra") { processvar = "chastitybra" }
@@ -189,7 +257,7 @@ function discardKey(userid, keyholderid, device) {
     if (process[processvar][userid]) {
         if (process[processvar][userid].keyholder == keyholderid) {
             // Lost primary keys
-            process[processvar][userid].fumbled = Date.now(); // We might be able to track time with this?
+            process[processvar][userid].fumbled = Date.now();
             typelocked = "keyholder";
         }
         else if (process[processvar][userid].clonedKeyholders.includes(keyholderid)) {
@@ -198,49 +266,8 @@ function discardKey(userid, keyholderid, device) {
             typelocked = "clone";
         }
     }
-    if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-    process.readytosave[processvar] = true;
+    markForSave(processvar)
     return typelocked;
-}
-
-function getFindFunction(restraint) {
-	switch (restraint) {
-		case "chastity belt":
-			return findChastityKey;
-		case "collar":
-			return findCollarKey;
-		case "chastity bra":
-			return findChastityBraKey;
-		default:
-			console.log(`No find function for restraint ${restraint}`);
-			return (_0, _1) => false;
-	}
-}
-
-async function sendFindMessage(message, lockedUser, restraint) {
-	try {
-		if (message.author.id == lockedUser) message.channel.send(`${message.author} has found the key to ${their(message.author.id)} ${restraint}!`);
-		else message.channel.send(`${message.author} has found the key to <@${lockedUser}>'s ${restraint}!`);
-	} catch (err) {
-		console.log(err); // Seriously plz dont crash
-	}
-}
-
-async function sendFindFumbleMessage(message, lockedUser, restraint) {
-	try {
-		if (message.author.id == lockedUser) message.channel.send(`${message.author} has found the key to ${their(message.author.id)} ${restraint} but fumbles when trying to pick it up!`);
-		else message.channel.send(`${message.author} has found the key to <@${lockedUser}>'s ${restraint} but fumbles when trying to pick it up!`);
-	} catch (err) {
-		console.log(err); // Seriously plz dont crash
-	}
-}
-
-function calcFindSuccessChance(user) {
-	if (getHeavy(user)) return 0;
-	if (getMitten(user)) return 0.5;
-	else return 1;
 }
 
 exports.getFumbleChance = getFumbleChance;

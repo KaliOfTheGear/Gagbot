@@ -1,5 +1,6 @@
+const { getUserVar } = require("../../functions/getters/config/getUserVar");
 const { messageSendChannel } = require("../../functions/messagefunctions");
-const { setUserVar, getUserVar } = require("../../functions/usercontext");
+const { setUserVar } = require("../../functions/setters/config/setUserVar");
 
 function msgfunction(userid, data) {
     const honorifictitles = [
@@ -68,12 +69,12 @@ function msgfunction(userid, data) {
 	}
 }
 
-async function functiontick(userID) {
+async function tick(userID) {
     if (getUserVar(userID, "politeSubVibeTime") < Date.now()) {
         console.log(`Ending polite vibe for ${userID}`)
         setUserVar(userID, "politeSubVibeTime", undefined)
     }
 }
 
-exports.functiontick = functiontick;
+exports.tick = tick;
 exports.msgfunction = msgfunction;

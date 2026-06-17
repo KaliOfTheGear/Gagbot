@@ -1,6 +1,7 @@
+const { getPronouns } = require("../../functions/getters/config/getPronouns");
+const { getUserVar } = require("../../functions/getters/config/getUserVar");
 const { messageSendChannel } = require("../../functions/messagefunctions");
-const { getPronouns } = require("../../functions/pronounfunctions");
-const { setUserVar, getUserVar } = require("../../functions/usercontext");
+const { setUserVar } = require("../../functions/setters/config/setUserVar");
 
 function msgfunction(userid, data) {
     if (getUserVar(userid, "motionplugtime") == undefined) {
@@ -17,12 +18,12 @@ function msgfunction(userid, data) {
     return;
 }
 
-async function functiontick(userID) {
+async function tick(userID) {
     if (getUserVar(userID, "motionplugtime") < Date.now()) {
         console.log(`Ending Motion Sensitive plug for ${userID}`)
         setUserVar(userID, "motionplugtime", undefined)
     }
 }
 
-exports.functiontick = functiontick;
+exports.tick = tick;
 exports.msgfunction = msgfunction;

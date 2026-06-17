@@ -2,23 +2,38 @@ const fs = require("fs");
 const path = require("path");
 const https = require("https");
 const { SlashCommandBuilder, UserSelectMenuBuilder, MessageFlags, TextInputBuilder, TextInputStyle, ModalBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, LabelBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, TextDisplayBuilder, ComponentType, SectionBuilder, CheckboxGroupBuilder, User } = require("discord.js");
-const { getPronouns } = require("./../functions/pronounfunctions.js");
-const { collartypes, getCollarKeyholder, canAccessCollar, getCollar, getCollarTimelock, getCollarName } = require("./collarfunctions.js");
-const { getOption } = require("./../functions/configfunctions.js");
-const { getChastityKeyholder, getChastity, getChastityTimelock } = require("./../functions/vibefunctions.js");
-const { getHeavyBinder, convertheavy, heavytypes, getHeavyList } = require("./../functions/heavyfunctions.js");
-const { getGagBinder, getMittenBinder, mittentypes, gagtypes, getMittenName, getGags, getMitten } = require("./../functions/gagfunctions.js");
-const { getCorsetBinder } = require("./../functions/corsetfunctions.js");
-const { getHeadwearBinder, headweartypes, getHeadwearName, getHeadwear } = require("./../functions/headwearfunctions.js");
-const { configoptions } = require("./configfunctions.js");
-const { canAccessChastity } = require("./vibefunctions.js");
-const { wearabletypes, getWearable } = require("./wearablefunctions.js");
-const { getChastityName } = require("./vibefunctions.js");
-const { getChastityBra } = require("./vibefunctions.js");
-const { getChastityBraTimelock } = require("./vibefunctions.js");
-const { getChastityBraName } = require("./vibefunctions.js");
-const { getBaseChastity } = require("./chastityfunctions.js");
-const { getToys } = require("./toyfunctions.js");
+const { collartypes } = require("./collarfunctions.js");
+const { mittentypes } = require("./../functions/gagfunctions.js");
+const { wearabletypes } = require("./wearablefunctions.js");
+const { assignConsent } = require("./setters/config/assignConsent.js");
+const { getPronouns } = require("./getters/config/getPronouns.js");
+const { getOption } = require("./getters/config/getOption.js");
+const { canAccessChastity } = require("./getters/chastity/canAccessChastity.js");
+const { canAccessCollar } = require("./getters/collar/canAccessCollar.js");
+const { getHeavyBinder } = require("./getters/heavy/getHeavyBinder.js");
+const { getGagBinder } = require("./getters/gag/getGagBinder.js");
+const { getMittenBinder } = require("./getters/mitten/getMittenBinder.js");
+const { getCorsetBinder } = require("./getters/corset/getCorsetBinder.js");
+const { getHeadwearBinder } = require("./getters/headwear/getHeadwearBinder.js");
+const { getCollarName } = require("./getters/collar/getCollarName.js");
+const { getHeavyName } = require("./getters/heavy/getHeavyName.js");
+const { getCollar } = require("./getters/collar/getCollar.js");
+const { getHeadwearName } = require("./getters/headwear/getHeadwearName.js");
+const { getMittenName } = require("./getters/mitten/getMittenName.js");
+const { getBaseChastity } = require("./getters/chastity/getBaseChastity.js");
+const { heavytypes } = require("./heavyfunctions.js");
+const { getChastity } = require("./getters/chastity/getChastity.js");
+const { getChastityBra } = require("./getters/chastity/getChastityBra.js");
+const { getChastityTimelock } = require("./getters/chastity/getChastityTimelock.js");
+const { getChastityBraTimelock } = require("./getters/chastity/getChastityBraTimelock.js");
+const { getCollarTimelock } = require("./getters/collar/getCollarTimelock.js");
+const { getHeavyList } = require("./getters/heavy/getHeavyList.js");
+const { getMitten } = require("./getters/mitten/getMitten.js");
+const { getHeadwear } = require("./getters/headwear/getHeadwear.js");
+const { getGags } = require("./getters/gag/getGags.js");
+const { getWearable } = require("./getters/wearable/getWearable.js");
+const { getToys } = require("./getters/toy/getToys.js");
+const { configoptions } = require("../lists/configoptions.js");
 
 // Generates a consent button which the user will have to agree to.
 const consentMessage = (interaction, user) => {
@@ -43,27 +58,6 @@ Finally, you should review settings found in **/config** concerning effects from
 	const row = new ActionRowBuilder().addComponents(confirm);
 
 	return { content: outtext, components: [row], withResponse: true };
-};
-
-const assignConsent = (user) => {
-	if (process.consented == undefined) {
-		process.consented = {};
-	}
-	process.consented[user] = { mainconsent: true };
-	if (process.readytosave == undefined) {
-		process.readytosave = {};
-	}
-	process.readytosave.consented = true;
-};
-
-const getConsent = (user) => {
-	if (process.consented == undefined) {
-		process.consented = {};
-	}
-	if (user === process.client.user.id) {
-		return { mainconsent: true }; // Lol, trying to gag us.
-	}
-	return process.consented[user];
 };
 
 // check with getConsent, then pipe to await handleConsent and return.
@@ -592,7 +586,7 @@ const assignMemeImages = () => {
 // Returns a blocking function which can be awaited
 // Will immediately resolve if the user allows everyone to remove bondage
 // else, will prompt them. Will resolve false if rejected.
-function checkBondageRemoval(userID, targetID, type) {
+function checkBondageRemoval(userID, targetID, type, item) {
 	let useroption = getOption(targetID, "removebondage");
 
 	// Return true immediately if it's accepted without question
@@ -618,7 +612,7 @@ function checkBondageRemoval(userID, targetID, type) {
 			restraintobject = getHeavyBinder(targetID, type);
 		}
 		if (type == "gag") {
-			restraintobject = getGagBinder(targetID);
+			restraintobject = getGagBinder(targetID, item);
 		}
 		if (type == "mitten") {
 			restraintobject = getMittenBinder(targetID);
@@ -627,7 +621,7 @@ function checkBondageRemoval(userID, targetID, type) {
 			restraintobject = getCorsetBinder(targetID);
 		}
 		if (type == "headwear") {
-			restraintobject = getHeadwearBinder(targetID);
+			restraintobject = getHeadwearBinder(targetID, item);
 		}
 		// if (type == "vibe") { restraintobject = getVibe(targetID) }
 
@@ -692,6 +686,14 @@ async function handleBondageRemoval(user, target, type, change = false) {
 
 async function handleExtremeRestraint(user, target, type, restraint) {
 	return new Promise(async (res, rej) => {
+        // cull out multiple styles of the same kind, this is used for things like Gag Harness to group multiple headpieces.
+        let origrestraint = restraint
+        let extrahelptextoverride;
+        // Gag Harness
+        if (restraint.startsWith("gagharness")) { 
+            extrahelptextoverride = configoptions["Extreme"][`extreme-mask-gagharness`]?.prompttext
+            restraint = "gagharness"
+        }
 		let hasOption = getOption(target.id, `extreme-${type}-${restraint}`);
 		if (!hasOption || hasOption == "Enabled" || (hasOption == "PromptOthers" && user.id == target.id)) {
 			res(true);
@@ -703,13 +705,16 @@ async function handleExtremeRestraint(user, target, type, restraint) {
 			return;
 		} // NOPE
 
+        // Code Compatibility. 
+        restraint = origrestraint;
+
 		let restraintfullname = ``;
 		switch (type) {
             case "collar":
                 restraintfullname = getCollarName(user, restraint);
                 break;
 			case "heavy":
-				restraintfullname = convertheavy(restraint);
+				restraintfullname = getHeavyName(restraint);
 				break;
 			case "gag":
 				restraintfullname = process.autocompletes.gag.find((f) => f.value == restraint)?.name;
@@ -724,7 +729,7 @@ async function handleExtremeRestraint(user, target, type, restraint) {
 		}
 
 		// We need to ASK
-		let extrahelptext = configoptions["Extreme"][`extreme-${type}-${restraint}`]?.prompttext ?? "Something went wrong retrieving this text.";
+		let extrahelptext = extrahelptextoverride ?? configoptions["Extreme"][`extreme-${type}-${restraint}`]?.prompttext ?? "Something went wrong retrieving this text.";
 		let prompttext = `## ${user} would like to place a ${type} restraint on you: **${restraintfullname}**\n***This is considered an __extreme__ restraint and comes with the following warning label:***\n\n${extrahelptext}\n\nDo you wish to allow this action?`;
 		if (user.id == target.id) {
 			prompttext = `## You are attempting to wear the following restraint: **${restraintfullname}**\n***This is considered an __extreme__ restraint and comes with the following warning label:***\n\n${extrahelptext}\n\nDo you wish to allow this action?`;
@@ -785,6 +790,12 @@ async function handleMajorRestraint(user, target, type, restraint) {
             }
 		} 
 
+        // Always approve ourselves. 
+        if (user.id === target.id) {
+            res(true);
+            return
+        }
+
 		if (hasOption == "disabled") {
 			rej("Disabled");
 			return;
@@ -801,7 +812,7 @@ async function handleMajorRestraint(user, target, type, restraint) {
         let limitationstext = ``;
 		switch (type) {
 			case "heavy":
-				restraintfullname = convertheavy(restraint);
+				restraintfullname = getHeavyName(restraint);
                 prettytype = "Heavy Bondage"
                 emoji = `${process.emojis.armbinder}`;
                 limitationstext = `This will prevent you from using most commands in the bot, including **/unheavy** to free yourself!`
@@ -819,7 +830,7 @@ async function handleMajorRestraint(user, target, type, restraint) {
                 limitationstext = `This will prevent you from using commands to modify relevant toy on your breasts with **/toy**! Additionally, the restraint will be keyed to ${user} until it is unlocked by ${getPronouns(user.id, "object")}!`
 				break;
             case "mitten":
-                restraintfullname = getMittenName(undefined, restraint);
+                restraintfullname = getMittenName(undefined, restraint) ?? "Standard Mittens";
                 prettytype = "Mittens"
                 emoji = `${process.emojis.mitten}`;
                 limitationstext = `This will prevent you from adding or removing gags with **/gag** or masks with **/mask** until someone else unmittens you!`
@@ -1390,7 +1401,6 @@ async function generateExtraConfig(interaction, userid, itemname, force) {
 }
 
 exports.consentMessage = consentMessage;
-exports.getConsent = getConsent;
 exports.handleConsent = handleConsent;
 exports.collarPermModal = collarPermModal;
 exports.timelockChastityModal = timelockChastityModal;

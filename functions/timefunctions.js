@@ -3,14 +3,22 @@ let fs = require("fs");
 let path = require("path");
 let admZip = require("adm-zip");
 const { unlockTimelockChastity, unlockTimelockChastityBra, unlockTimelockCollar, gagbotHeldKeyTime, checkGagbotKeys } = require(`./timelockfunctions.js`);
-const { updateArousalValues, getChastity, getChastityBra } = require("./vibefunctions.js");
-const { getGags, getMitten } = require("./gagfunctions.js");
-const { getHeadwear } = require("./headwearfunctions.js");
-const { getHeavy, getHeavyList } = require("./heavyfunctions.js");
-const { getWearable } = require("./wearablefunctions.js");
-const { getToys } = require("./toyfunctions.js");
-const { getCollar } = require("./collarfunctions.js");
+const { updateArousalValues } = require("./vibefunctions.js");
 const { updateSharedBreath } = require("./vibefunctions.js");
+const { messageSendChannel } = require("./messagefunctions.js");
+const { getTextGeneric } = require("./textfunctions.js");
+const { getBaseCollar } = require("./getters/collar/getBaseCollar.js");
+const { getBaseChastity } = require("./getters/chastity/getBaseChastity.js");
+const { getCollar } = require("./getters/collar/getCollar.js");
+const { getToys } = require("./getters/toy/getToys.js");
+const { getWearable } = require("./getters/wearable/getWearable.js");
+const { getChastityBra } = require("./getters/chastity/getChastityBra.js");
+const { getChastity } = require("./getters/chastity/getChastity.js");
+const { getHeavyList } = require("./getters/heavy/getHeavyList.js");
+const { getMitten } = require("./getters/mitten/getMitten.js");
+const { getHeadwear } = require("./getters/headwear/getHeadwear.js");
+const { getGags } = require("./getters/gag/getGags.js");
+const { markForSave } = require("./other/markForSave.js");
 
 // Takes input string, outputs a date object.
 const parseTime = (text) => {
@@ -122,7 +130,6 @@ const saveFiles = () => {
 		if (process.readytosave == undefined) {
 			process.readytosave = {};
 		}
-		console.log(process.readytosave);
 		Object.keys(process.readytosave).forEach((k) => {
 			let filepath;
 			let processvar;
@@ -221,12 +228,16 @@ const saveFiles = () => {
 					filepath = `${process.GagbotSavedFileDirectory}/memberavatars.txt`;
 					processvar = "memberavatars";
 					break;
+                case "heldkeytimers":
+					filepath = `${process.GagbotSavedFileDirectory}/heldkeytimers.txt`;
+					processvar = "heldkeytimers";
+					break;
 				default:
 					console.log(`Unknown save variable: ${k}`);
 			}
 			if (filepath && processvar) {
 				fs.writeFileSync(filepath, JSON.stringify(process[processvar]));
-				console.log(`----> Successfully Saved file ${filepath}`);
+				console.log(`${(new Date()).toLocaleTimeString()}: Successfully Saved file ${filepath}`);
 			}
 		});
 		process.readytosave = {};
@@ -273,6 +284,7 @@ function processTimedEvents() {
     updateSharedBreath();
 	processUnlockTimes(process.client);
     runTickEvents();
+    checkFumbledTemporaryKeys();
     checkGagbotKeys();
 }
 
@@ -402,6 +414,53 @@ function runTickEvents() {
             }
 		});
 	}
+}
+
+function checkFumbledTemporaryKeys() {
+    let processvars = ["collar", "chastity", "chastitybra"];
+    processvars.forEach((pv) => {
+        if (process[pv] == undefined) { process[pv] = {} }
+        Object.entries(process[pv]).forEach(async (en) => {
+            try {
+                if (en[1]?.fumbled && en[1]?.temporarykeyholdertime && (en[1]?.temporarykeyholdertime < Date.now())) {
+                    let data = {
+                        interactionuser: { id: en[1].temporarykeyholder },
+                        targetuser: { id: en[0] }
+                    }
+
+                    delete en[1].fumbled;
+                    delete en[1].temporarykeyholdertime;
+                    delete en[1].temporarykeyholder;
+
+                    if ((pv == "chastity") || (pv == "chastitybra")) {
+                        let def = (pv == "chastity") ? "belt" : "bra"
+                        data.c1 = getBaseChastity(en[1].chastitytype ?? `${def}_silver`).name
+                    }
+                    else if (pv == "collar") {
+                        data.c1 = getBaseCollar(en[1].collartype ?? `collar_leather`).name
+                    }
+
+                    // Now that @___ has had her fun, she returns the keys for @___'s chastity belt. 
+                    if (process.recentmessages[en[0]]) {
+                        messageSendChannel(getTextGeneric(`returnkeysfromfumble`, data), process.recentmessages[en[0]])
+                    }
+                    else if (process.recentmessages[data.interactionuser.id]) {
+                        messageSendChannel(getTextGeneric(`returnkeysfromfumble`, data), process.recentmessages[data.interactionuser.id])
+                    }
+                    else {
+                        console.log("No suitable channel found for returning temp key.")
+                    }
+                    
+                    markForSave("collar");
+                    markForSave("chastity");
+                    markForSave("chastitybra");
+                }
+            }
+            catch (err) {
+                console.log(err)
+            }
+        })
+    })
 }
 
 // Checks each user ID in process variables against all of the guild member maps

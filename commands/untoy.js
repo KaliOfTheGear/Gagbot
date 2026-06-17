@@ -1,17 +1,21 @@
 const { SlashCommandBuilder, MessageFlags } = require("discord.js");
 const { default: didYouMean, ReturnTypeEnums } = require("didyoumean2");
-const { getBaseToy, getSpecificToy, getToys, removeToy } = require("../functions/toyfunctions");
 const { getText } = require("../functions/textfunctions");
-const { getConsent } = require("../functions/interactivefunctions");
-const { getHeavy, getHeavyBound } = require("../functions/heavyfunctions");
+const { getToys } = require("../functions/getters/toy/getToys");
+const { getBaseToy } = require("../functions/getters/toy/getBaseToy");
+const { getConsent } = require("../functions/getters/config/getConsent");
+const { handleConsent } = require("../functions/interactivefunctions");
+const { getHeavy } = require("../functions/getters/heavy/getHeavy");
+const { getHeavyBound } = require("../functions/getters/heavy/getHeavyBound");
+const { getSpecificToy } = require("../functions/getters/toy/getSpecificToy");
+const { removeToy } = require("../functions/setters/toy/removeToy");
 
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("untoy")
 		.setDescription("Remove a Toy")
-        .setNSFW(true)
-		.addUserOption((opt) => opt.setName("user").setDescription("Who to add a fun toy to"))
+        .addUserOption((opt) => opt.setName("user").setDescription("Who to add a fun toy to"))
 		.addStringOption((opt) =>
 			opt.setName("type")
 			.setDescription("What kind of toy to add")

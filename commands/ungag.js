@@ -1,18 +1,21 @@
 const { SlashCommandBuilder, MessageFlags } = require("discord.js");
-const { getGag, deleteGag, getMitten, getGags } = require("./../functions/gagfunctions.js");
-const { getHeavy, getHeavyBound } = require("./../functions/heavyfunctions.js");
-const { getPronouns } = require("./../functions/pronounfunctions.js");
-const { getConsent, handleConsent } = require("./../functions/interactivefunctions.js");
+const { handleConsent } = require("./../functions/interactivefunctions.js");
 const { getText, getTextGeneric } = require("./../functions/textfunctions.js");
 const { checkBondageRemoval, handleBondageRemoval } = require("../functions/interactivefunctions.js");
 const { default: didYouMean, ReturnTypeEnums } = require("didyoumean2");
+const { getGags } = require("../functions/getters/gag/getGags.js");
+const { getConsent } = require("../functions/getters/config/getConsent.js");
+const { getHeavyBound } = require("../functions/getters/heavy/getHeavyBound.js");
+const { getGag } = require("../functions/getters/gag/getGag.js");
+const { getHeavy } = require("../functions/getters/heavy/getHeavy.js");
+const { getMitten } = require("../functions/getters/mitten/getMitten.js");
+const { deleteGag } = require("../functions/setters/gag/removeGag.js");
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("ungag")
 		.setDescription("Remove a gag from a user")
-        .setNSFW(true)
-		.addUserOption((opt) => opt.setName("user").setDescription("The user to remove gag from (leave blank for yourself)"))
+        .addUserOption((opt) => opt.setName("user").setDescription("The user to remove gag from (leave blank for yourself)"))
 		.addStringOption((opt) => opt.setName("gag").setDescription("Which gag to remove?").setAutocomplete(true)),
 	async autoComplete(interaction) {
 		try {
@@ -140,15 +143,26 @@ module.exports = {
 						if (getGag(gaggeduser.id)) {
 							// We are wearing a gag
 							data.gag = true;
-							if (gagtoremove) {
+                            // Now check if we have any gags that are locked on!
+                            let lockedheadgears = [];
+                            if (process.headwear[gaggeduser.id]) { lockedheadgears = Object.keys(process.headwear[gaggeduser.id]) }
+                            if (gagtoremove && process.headwear[gaggeduser.id] && process.headwear[gaggeduser.id][`gagharness_${gagtoremove}`]) {
+                                data.failed = true
+                                interaction.reply(getText(data));
+                            }
+							else if (gagtoremove) {
 								data.single = true;
 								interaction.reply(getText(data));
 								deleteGag(gaggeduser.id, gagtoremove);
-							} else {
-								data.multiple = true;
+							} else if (lockedheadgears.find((h) => h.startsWith(`gagharness`))) {
+								data.multipleharnessed = true;
 								interaction.reply(getText(data));
 								deleteGag(gaggeduser.id);
-							}
+							} else {
+                                data.multiple = true;
+								interaction.reply(getText(data));
+								deleteGag(gaggeduser.id);
+                            }
 						} else {
 							// Not gagged! Ephemeral
 							data.nogag = true;
@@ -160,6 +174,14 @@ module.exports = {
 						if (getGag(gaggeduser.id)) {
 							// They are wearing a gag
 							data.gag = true;
+                            // Now check if we have any gags that are locked on!
+                            let lockedheadgears = [];
+                            if (process.headwear[gaggeduser.id]) { lockedheadgears = Object.keys(process.headwear[gaggeduser.id]) }
+                            if (gagtoremove && process.headwear[gaggeduser.id] && process.headwear[gaggeduser.id][`gagharness_${gagtoremove}`]) {
+                                data.failed = true
+                                interaction.reply(getText(data));
+                                return;
+                            }
 							// Now lets make sure the wearer wants that.
 							if (checkBondageRemoval(interaction.user.id, gaggeduser.id, "gag") == true) {
 								// Allowed immediately, lets go
@@ -168,7 +190,12 @@ module.exports = {
 									interaction.reply(getText(data));
 									deleteGag(gaggeduser.id, gagtoremove);
 								} else {
-									data.multiple = true;
+                                    if (lockedheadgears.find((h) => h.startsWith(`gagharness`))) {
+                                        data.multipleharnessed = true;
+                                    }
+                                    else {
+                                        data.multiple = true;
+                                    }
 									interaction.reply(getText(data));
 									deleteGag(gaggeduser.id);
 								}
@@ -185,7 +212,12 @@ module.exports = {
 											await interaction.followUp(getText(data));
 											deleteGag(gaggeduser.id, gagtoremove);
 										} else {
-											data.multiple = true;
+											if (lockedheadgears.find((h) => h.startsWith(`gagharness`))) {
+                                                data.multipleharnessed = true;
+                                            }
+                                            else {
+                                                data.multiple = true;
+                                            }
 											await interaction.followUp(getText(data));
 											deleteGag(gaggeduser.id);
 										}

@@ -3,7 +3,7 @@ const { ButtonBuilder } = require("discord.js");
 const { ActionRowBuilder } = require("discord.js");
 const { StringSelectMenuOptionBuilder } = require("discord.js");
 const { StringSelectMenuBuilder } = require("discord.js");
-const { statsGetAllStat } = require("../functions/statsfunctions");
+const { statsGetAllStat } = require("../functions/getters/config/statsGetAllStat");
 
 const PAGE_SIZE = 20;
 
@@ -18,6 +18,8 @@ async function generateList(menuchoice) {
         { name: "Headpat Crits Received", useroption: "headpatcritsreceived" },
         { name: "Headpat Double Crits Received", useroption: "headpatdoublecritsreceived" },
         { name: "Headpat Triple Crits Received", useroption: "headpattriplecritsreceived" },
+        { name: "Shocks Received", useroption: "timesshocked" },
+        { name: "Shocks on Self", useroption: "timesshockedself" },
         { name: "Gagged Messages", useroption: "gaggedmessages" },
         { name: "Struggle Messages", useroption: "strugglemessages" },
     ]
@@ -61,8 +63,7 @@ async function generateList(menuchoice) {
 module.exports = {
 	data: new SlashCommandBuilder()
         .setName("scoreboard")
-        .setDescription("View the Leaderboard for Stats!")
-        .setNSFW(true),
+        .setDescription("View the Leaderboard for Stats!"),
 	async execute(interaction) {
 		try {
 			interaction.reply(await generateList("headpatsgiven"))
@@ -92,7 +93,7 @@ module.exports = {
 ### Usage: /scoreboard
 
 Displays a leaderboard for the top people in a select number of stats.`
-        overviewtextdisplay = new TextDisplayBuilder().setContent(overviewtext)
+        let overviewtextdisplay = new TextDisplayBuilder().setContent(overviewtext)
         return overviewtextdisplay;
     }
 };
