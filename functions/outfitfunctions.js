@@ -627,7 +627,7 @@ async function inspectModal(userID, inspectuserIDin, menu, page) {
             // Lost keys from fumble
             else if (getChastity(inspectuserID)?.fumbled) {
                 if (getChastity(inspectuserID)?.temporarykeyholder) {
-                    wearingtext = `${wearingtext}\n-# ‎   ⤷ ${chastitylockemoji} **Temporarily held by <@${getChastity(inspectuserID)?.temporarykeyholder}>, returning in ${getChastityTempTimelock(inspectuserID, true)}**`
+                    wearingtext = `${wearingtext}\n-# ‎   ⤷ ${chastitylockemoji} **Temporarily held by <@${getChastity(inspectuserID)?.temporarykeyholder}>, returning ${getChastityTempTimelock(inspectuserID, true)}**`
                 }
                 else {
                     wearingtext = `${wearingtext}\n-# ‎   ⤷ ${chastitylockemoji} **Keys are Missing!**`
@@ -664,7 +664,7 @@ async function inspectModal(userID, inspectuserIDin, menu, page) {
             // Lost keys from fumble
             else if (getChastityBra(inspectuserID)?.fumbled) {
                 if (getChastityBra(inspectuserID)?.temporarykeyholder) {
-                    wearingtext = `${wearingtext}\n-# ‎   ⤷ ${chastitybralockemoji} **Temporarily held by <@${getChastityBra(inspectuserID)?.temporarykeyholder}>, returning in ${getChastityBraTempTimelock(inspectuserID, true)}**`
+                    wearingtext = `${wearingtext}\n-# ‎   ⤷ ${chastitybralockemoji} **Temporarily held by <@${getChastityBra(inspectuserID)?.temporarykeyholder}>, returning ${getChastityBraTempTimelock(inspectuserID, true)}**`
                 }
                 else {
                     wearingtext = `${wearingtext}\n-# ‎   ⤷ ${chastitybralockemoji} **Keys are Missing!**`
@@ -710,7 +710,7 @@ async function inspectModal(userID, inspectuserIDin, menu, page) {
             // Lost keys from fumble
             else if (getCollar(inspectuserID)?.fumbled) {
                 if (getCollar(inspectuserID)?.temporarykeyholder) {
-                    wearingtext = `${wearingtext}\n-# ‎   ⤷ ${collarlockemoji} **Temporarily held by <@${getCollar(inspectuserID)?.temporarykeyholder}>, returning in ${getCollarTempTimelock(inspectuserID, true)}**`
+                    wearingtext = `${wearingtext}\n-# ‎   ⤷ ${collarlockemoji} **Temporarily held by <@${getCollar(inspectuserID)?.temporarykeyholder}>, returning ${getCollarTempTimelock(inspectuserID, true)}**`
                 }
                 else {
                     wearingtext = `${wearingtext}\n-# ‎   ⤷ ${collarlockemoji} **Keys are Missing!**`
@@ -819,7 +819,7 @@ async function inspectModal(userID, inspectuserIDin, menu, page) {
             // Lost keys from fumble
             else if (getChastity(inspectuserID)?.fumbled) {
                 if (getChastity(inspectuserID)?.temporarykeyholder) {
-                    keyedrestraints = `${keyedrestraints}\n-# ‎   ⤷ ${chastitylockemoji} **Temporarily held by <@${getChastity(inspectuserID)?.temporarykeyholder}>, returning in ${getChastityTempTimelock(inspectuserID, true)}**`
+                    keyedrestraints = `${keyedrestraints}\n-# ‎   ⤷ ${chastitylockemoji} **Temporarily held by <@${getChastity(inspectuserID)?.temporarykeyholder}>, returning ${getChastityTempTimelock(inspectuserID, true)}**`
                 }
                 else {
                     keyedrestraints = `${keyedrestraints}\n-# ‎   ⤷ ${chastitylockemoji} **Keys are Missing!**`
@@ -862,7 +862,7 @@ async function inspectModal(userID, inspectuserIDin, menu, page) {
             // Lost keys from fumble
             else if (getChastityBra(inspectuserID)?.fumbled) {
                 if (getChastityBra(inspectuserID)?.temporarykeyholder) {
-                    keyedrestraints = `${keyedrestraints}\n-# ‎   ⤷ ${chastitybralockemoji} **Temporarily held by <@${getChastityBra(inspectuserID)?.temporarykeyholder}>, returning in ${getChastityBraTempTimelock(inspectuserID, true)}**`
+                    keyedrestraints = `${keyedrestraints}\n-# ‎   ⤷ ${chastitybralockemoji} **Temporarily held by <@${getChastityBra(inspectuserID)?.temporarykeyholder}>, returning ${getChastityBraTempTimelock(inspectuserID, true)}**`
                 }
                 else {
                     keyedrestraints = `${keyedrestraints}\n-# ‎   ⤷ ${chastitybralockemoji} **Keys are Missing!**`
@@ -914,7 +914,7 @@ async function inspectModal(userID, inspectuserIDin, menu, page) {
             // Lost keys from fumble
             else if (getCollar(inspectuserID)?.fumbled) {
                 if (getCollar(inspectuserID)?.temporarykeyholder) {
-                    keyedrestraints = `${keyedrestraints}\n-# ‎   ⤷ ${collarlockemoji} **Temporarily held by <@${getCollar(inspectuserID)?.temporarykeyholder}>, returning in ${getCollarTempTimelock(inspectuserID, true)}**`
+                    keyedrestraints = `${keyedrestraints}\n-# ‎   ⤷ ${collarlockemoji} **Temporarily held by <@${getCollar(inspectuserID)?.temporarykeyholder}>, returning ${getCollarTempTimelock(inspectuserID, true)}**`
                 }
                 else {
                     keyedrestraints = `${keyedrestraints}\n-# ‎   ⤷ ${collarlockemoji} **Keys are Missing!**`
