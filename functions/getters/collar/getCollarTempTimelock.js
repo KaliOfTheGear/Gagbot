@@ -10,10 +10,10 @@ const { getCollar } = require("./getCollar");
  ***********/
 function getCollarTempTimelock(user, UNIXTimestring) {
 	if (!UNIXTimestring) {
-		return getCollar(user)?.fumbled;
+		return getCollar(user)?.temporarykeyholdertime;
 	} else {
-		if (getCollar(user)?.fumbled) {
-			return `<t:${Math.floor(getCollar(user)?.fumbled / 1000)}:R>`;
+		if (getCollar(user)?.temporarykeyholdertime) {
+			return `<t:${Math.floor(getCollar(user)?.temporarykeyholdertime / 1000)}:R>`;
 		} else {
 			return null;
 		}

@@ -10,10 +10,10 @@ const { getChastity } = require("./getChastity");
  ***********/
 function getChastityTempTimelock(user, UNIXTimestring) {
 	if (!UNIXTimestring) {
-		return getChastity(user)?.fumbled;
+		return getChastity(user)?.temporarykeyholdertime;
 	} else {
-		if (getChastity(user)?.fumbled) {
-			return `<t:${Math.floor(getChastity(user)?.fumbled / 1000)}:R>`;
+		if (getChastity(user)?.temporarykeyholdertime) {
+			return `<t:${Math.floor(getChastity(user)?.temporarykeyholdertime / 1000)}:R>`;
 		} else {
 			return null;
 		}

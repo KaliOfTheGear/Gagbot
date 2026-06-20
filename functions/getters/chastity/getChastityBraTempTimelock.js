@@ -1,3 +1,4 @@
+const { getOption } = require("../config/getOption");
 const { getChastityBra } = require("./getChastityBra");
 
 /***********
@@ -10,10 +11,10 @@ const { getChastityBra } = require("./getChastityBra");
  ***********/
 function getChastityBraTempTimelock(user, UNIXTimestring) {
 	if (!UNIXTimestring) {
-		return getChastityBra(user)?.fumbled;
+		return getChastityBra(user)?.temporarykeyholdertime;
 	} else {
-		if (getChastityBra(user)?.fumbled) {
-			return `<t:${Math.floor(getChastityBra(user)?.fumbled / 1000)}:R>`;
+		if (getChastityBra(user)?.temporarykeyholdertime) {
+			return `<t:${Math.floor((getChastityBra(user)?.temporarykeyholdertime) / 1000)}:R>`;
 		} else {
 			return null;
 		}
