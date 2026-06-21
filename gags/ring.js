@@ -82,6 +82,7 @@ const garbleText = (text, parent, intensity, msg) => {
 				//randomly choose interruption message
 				let msgIndex = Math.floor(Math.random() * ringGagInterruptList.length);
 				// convert and add the message to interrupt
+                output = `${output.slice(0, -1)}-` // Replace the last space with a - to indicate an interrupt!
 				output += convertPronounsText(ringGagInterruptList[msgIndex], { interactionuser: msg.member });
 				output += " ";
 			}
